@@ -9,6 +9,7 @@
 
 import { db } from '../core/db.js';
 import { recalculateNetWorth, saveGame } from '../core/state.js';
+import { applyStatEffects as applyCoreStatEffects } from '../core/stat_engine.js';
 import {
   clampStat,
   checkRequirement,
@@ -90,29 +91,11 @@ function applyCareerEduStatEffects(state, effects, studyEfficiencyMult = 1.0) {
 
   if (!effects || typeof effects !== 'object' || !state.stats) return deltas;
 
-  const cappedKeys = ['health', 'happiness', 'intelligence', 'connections', 'appearance'];
-  for (const key of cappedKeys) {
-    if (effects[key] === undefined || Number(effects[key]) === 0) continue;
-
-    let rawDelta = Number(effects[key]);
-    if (key === 'intelligence' && rawDelta > 0 && studyEfficiencyMult !== 1.0) {
-      rawDelta = Math.max(1, Math.round(rawDelta * studyEfficiencyMult));
-    } else {
-      rawDelta = Math.round(rawDelta);
-    }
-
-    const before = Number(state.stats[key] ?? 0);
-    const after = clampStat(before + rawDelta, 0, 100);
-    state.stats[key] = after;
-    deltas[key] = after - before;
-  }
-
-  const meritDelta = Math.round(Number(effects.merit ?? 0) + Number(effects.karma ?? 0));
-  if (meritDelta !== 0) {
-    const beforeMerit = Number(state.stats.merit ?? 0);
-    const afterMerit = clampStat(beforeMerit + meritDelta, -9999, null);
-    state.stats.merit = afterMerit;
-    deltas.merit = afterMerit - beforeMerit;
+  const resolvedDeltas = applyCoreStatEffects(state, effects, {
+    studyEfficiencyMultiplier: studyEfficiencyMult
+  });
+  for (const key of ['health', 'happiness', 'intelligence', 'connections', 'appearance', 'merit']) {
+    deltas[key] = resolvedDeltas[key] || 0;
   }
 
   return deltas;
@@ -1317,7 +1300,7 @@ export function processAnnualCareerAndStudyProgression(state, options = {}) {
     const adjusted = { ...(effects || {}) };
     const intelligence = Number(adjusted.intelligence || 0);
     if (intelligence > 0 && efficiency !== 1.0) {
-      adjusted.intelligence = Math.max(1, Math.round(intelligence * efficiency));
+      adjusted.intelligence = intelligence * efficiency;
     }
     collectAnnualPassiveStatEffects(state, adjusted);
     return adjusted;

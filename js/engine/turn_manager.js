@@ -16,6 +16,7 @@ import {
   MAX_FREE_ACTION_POINTS
 } from '../core/state.js';
 import { clampStat, getPlayerFlagSet } from '../core/utils.js';
+import { applyStatEffects as applyCoreStatEffects } from '../core/stat_engine.js';
 import { resetAnnualPassiveStatEffects, collectAnnualPassiveStatEffects, applyAnnualPassiveStatEffects } from '../core/annual_passive_stats.js';
 
 import {
@@ -122,21 +123,7 @@ function removeFlagOrStatus(state, flagId) {
 function applyNonCashStatEffects(state, effects) {
   if (!effects || typeof effects !== 'object' || !state.stats) return;
 
-  const cappedKeys = ['health', 'happiness', 'intelligence', 'connections', 'appearance'];
-  for (const key of cappedKeys) {
-    if (effects[key] !== undefined && Number(effects[key]) !== 0) {
-      state.stats[key] = clampStat(
-        Number(state.stats[key] ?? 0) + Math.round(Number(effects[key])),
-        0,
-        100
-      );
-    }
-  }
-
-  const meritDelta = Math.round(Number(effects.merit ?? 0) + Number(effects.karma ?? 0));
-  if (meritDelta !== 0) {
-    state.stats.merit = clampStat(Number(state.stats.merit ?? 0) + meritDelta, -9999, null);
-  }
+  applyCoreStatEffects(state, effects);
 }
 
 /**

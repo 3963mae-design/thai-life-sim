@@ -22,6 +22,7 @@ import {
   formatCurrency
 } from '../core/utils.js';
 import { smashPiggyBankAtAge7 } from './economy_engine.js';
+import { applyStatEffects as applyCoreStatEffects } from '../core/stat_engine.js';
 
 // ============================================================================
 // Constants & Thai Month Mapping
@@ -191,22 +192,9 @@ function applyEventStatEffects(state, effects) {
 
   if (!effects || typeof effects !== 'object') return deltas;
 
-  const cappedKeys = ['health', 'happiness', 'intelligence', 'connections', 'appearance'];
-  for (const key of cappedKeys) {
-    if (effects[key] !== undefined && Number(effects[key]) !== 0) {
-      const before = Number(state.stats[key] ?? 0);
-      const after = clampStat(before + Number(effects[key]), 0, 100);
-      state.stats[key] = after;
-      deltas[key] = after - before;
-    }
-  }
-
-  const meritInput = Number(effects.merit ?? 0) + Number(effects.karma ?? 0);
-  if (meritInput !== 0) {
-    const beforeMerit = Number(state.stats.merit ?? 0);
-    const afterMerit = clampStat(beforeMerit + meritInput, -9999, null);
-    state.stats.merit = afterMerit;
-    deltas.merit = afterMerit - beforeMerit;
+  const coreDeltas = applyCoreStatEffects(state, effects);
+  for (const key of ['health', 'happiness', 'intelligence', 'connections', 'appearance', 'merit']) {
+    deltas[key] = coreDeltas[key] || 0;
   }
 
   const cashInput = Math.round(Number(effects.cash ?? 0));

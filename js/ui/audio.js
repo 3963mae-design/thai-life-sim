@@ -1,17 +1,23 @@
 /**
  * js/ui/audio.js
- * ระบบจัดการเสียงเพลงพื้นหลัง (BGM จาก ./assets/audio/bgm.mp3)
- * และเสียงเอฟเฟกต์กดปุ่ม (SFX ผ่าน Web Audio API)
+ * จัดการเพลงพื้นหลัง 2 แทร็ก (bgm_chill.mp3 หน้า Lobby/จุติใหม่ และ bgm_main.mp3 หน้าเล่นเกม)
+ * พร้อมปลดล็อก Autoplay ตอนแตะหน้าจอครั้งแรก และเสียงกดปุ่ม SFX ผ่าน Web Audio API
  */
 
 const AUDIO_STORAGE_KEY = 'thai_life_sim_audio_v1';
-const BGM_SRC = './assets/audio/bgm.mp3';
 
-let bgmAudio = null;
-let bgmLoadFailed = false;
-let audioCtx = null;
+const BGM_TRACKS = {
+  chill: './assets/audio/bgm_chill.mp3',
+  main: './assets/audio/bgm_main.mp3'
+};
+
+const trackPlayers = {};
+const failedTracks = new Set();
+
+let currentTrackKey = 'chill';
 let hasUserInteracted = false;
-
+let audioCtx = null;
+let isInitialized = false;
 let prefs = loadPrefs();
 
 function loadPrefs() {
@@ -28,22 +34,26 @@ function savePrefs() {
   try {
     localStorage.setItem(AUDIO_STORAGE_KEY, JSON.stringify(prefs));
   } catch {
-    // ignore storage errors
+    // ignore
   }
 }
 
-function ensureBgmElement() {
-  if (bgmAudio || bgmLoadFailed) return bgmAudio;
-  bgmAudio = new Audio(BGM_SRC);
-  bgmAudio.loop = true;
-  bgmAudio.volume = prefs.bgmVolume;
-  bgmAudio.preload = 'auto';
+function getOrCreatePlayer(trackKey) {
+  const src = BGM_TRACKS[trackKey];
+  if (!src || failedTracks.has(trackKey)) return null;
 
-  bgmAudio.addEventListener('error', () => {
-    bgmLoadFailed = true;
-    console.warn('[Audio] ไม่พบไฟล์ ./assets/audio/bgm.mp3 (ข้ามการเล่นเพลงพื้นหลัง)');
-  });
-  return bgmAudio;
+  if (!trackPlayers[trackKey]) {
+    const audio = new Audio(src);
+    audio.loop = true;
+    audio.preload = 'auto';
+    audio.volume = prefs.bgmVolume;
+    audio.addEventListener('error', () => {
+      failedTracks.add(trackKey);
+      console.warn(`[Audio] โหลดไฟล์ ${src} ไม่สำเร็จ`);
+    });
+    trackPlayers[trackKey] = audio;
+  }
+  return trackPlayers[trackKey];
 }
 
 function getAudioContext() {
@@ -61,19 +71,50 @@ export function getAudioPrefs() {
   return { ...prefs };
 }
 
-export function tryPlayBgm() {
-  if (!prefs.bgmEnabled || bgmLoadFailed) return;
-  const audio = ensureBgmElement();
-  if (!audio) return;
-  audio.volume = prefs.bgmVolume;
-  audio.play().catch(() => {
-    // รอจนกว่าผู้ใช้จะแตะหน้าจออีกครั้ง (Browser Autoplay Policy)
-  });
+export function pauseAllBgm() {
+  for (const audio of Object.values(trackPlayers)) {
+    if (audio && !audio.paused) {
+      audio.pause();
+    }
+  }
 }
 
-export function pauseBgm() {
-  if (bgmAudio && !bgmAudio.paused) {
-    bgmAudio.pause();
+export function playCurrentBgm() {
+  if (!prefs.bgmEnabled) return;
+  const player = getOrCreatePlayer(currentTrackKey);
+  if (!player) return;
+
+  for (const [key, audio] of Object.entries(trackPlayers)) {
+    if (key !== currentTrackKey && audio && !audio.paused) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  }
+
+  player.volume = prefs.bgmVolume;
+  if (player.paused) {
+    player.play().catch(() => {
+      // รอจนกว่าผู้ใช้จะแตะหน้าจอ
+    });
+  }
+}
+
+/**
+ * สลับแทร็กเพลงตามหน้าจอ ('chill' | 'main')
+ */
+export function setBgmTrack(trackKey) {
+  if (!BGM_TRACKS[trackKey]) return;
+  if (currentTrackKey !== trackKey) {
+    const prev = trackPlayers[currentTrackKey];
+    if (prev) {
+      prev.pause();
+      prev.currentTime = 0;
+    }
+    currentTrackKey = trackKey;
+  }
+
+  if (hasUserInteracted && prefs.bgmEnabled) {
+    playCurrentBgm();
   }
 }
 
@@ -81,10 +122,10 @@ export function toggleBgm() {
   prefs.bgmEnabled = !prefs.bgmEnabled;
   savePrefs();
   if (prefs.bgmEnabled) {
-    bgmLoadFailed = false;
-    tryPlayBgm();
+    failedTracks.delete(currentTrackKey);
+    playCurrentBgm();
   } else {
-    pauseBgm();
+    pauseAllBgm();
   }
   return prefs.bgmEnabled;
 }
@@ -96,9 +137,6 @@ export function toggleSfx() {
   return prefs.sfxEnabled;
 }
 
-/**
- * เล่นเสียงเอฟเฟกต์เบาๆ (click | success | error | coin)
- */
 export function playSfx(type = 'click') {
   if (!prefs.sfxEnabled) return;
   const ctx = getAudioContext();
@@ -114,7 +152,7 @@ export function playSfx(type = 'click') {
     osc.type = 'triangle';
     osc.frequency.setValueAtTime(523.25, now);
     osc.frequency.setValueAtTime(659.25, now + 0.06);
-    gain.gain.setValueAtTime(0.06, now);
+    gain.gain.setValueAtTime(0.05, now);
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
     osc.start(now);
     osc.stop(now + 0.19);
@@ -122,36 +160,51 @@ export function playSfx(type = 'click') {
     osc.type = 'sine';
     osc.frequency.setValueAtTime(220, now);
     osc.frequency.linearRampToValueAtTime(160, now + 0.14);
-    gain.gain.setValueAtTime(0.07, now);
+    gain.gain.setValueAtTime(0.06, now);
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
     osc.start(now);
     osc.stop(now + 0.17);
   } else {
     osc.type = 'sine';
     osc.frequency.setValueAtTime(480, now);
-    osc.frequency.exponentialRampToValueAtTime(320, now + 0.045);
-    gain.gain.setValueAtTime(0.04, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+    osc.frequency.exponentialRampToValueAtTime(320, now + 0.04);
+    gain.gain.setValueAtTime(0.035, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
     osc.start(now);
-    osc.stop(now + 0.055);
+    osc.stop(now + 0.05);
   }
 }
 
 export function initAudioSystem() {
-  const unlock = () => {
+  if (isInitialized) return;
+  isInitialized = true;
+
+  const unlockOnFirstGesture = () => {
     if (!hasUserInteracted) {
       hasUserInteracted = true;
       getAudioContext();
-      if (prefs.bgmEnabled) tryPlayBgm();
+      if (prefs.bgmEnabled) {
+        playCurrentBgm();
+      }
     }
   };
 
-  window.addEventListener('pointerdown', unlock, { passive: true });
+  window.addEventListener('pointerdown', unlockOnFirstGesture, { passive: true });
+  window.addEventListener('keydown', unlockOnFirstGesture, { passive: true });
+
+  // เล่นเสียงคลิกอัตโนมัติเมื่อกดปุ่มใดๆ ในเกม
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('button:not(:disabled)')) {
+      playSfx('click');
+    }
+  });
+
+  // พักเพลงอัตโนมัติเมื่อสลับแอปหรือพับหน้าจอ
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-      pauseBgm();
+      pauseAllBgm();
     } else if (hasUserInteracted && prefs.bgmEnabled) {
-      tryPlayBgm();
+      playCurrentBgm();
     }
   });
 }

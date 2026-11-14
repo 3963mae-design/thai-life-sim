@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "database_name": "Core_Rules_&_Locations",
   "game_constants": {
     "min_stat": 0,
@@ -45,7 +45,102 @@
       "phase_4_young_adult": 84000,
       "phase_5_middle_age": 108000,
       "phase_6_elder": 72000
-    }
+    },
+    "initial_birth_gift_rate": 0.05,
+    "parent_allowance_by_age": [
+      {
+        "min_age": 0,
+        "max_age": 4,
+        "rate": 0,
+        "minimum_annual_cash": 0
+      },
+      {
+        "min_age": 5,
+        "max_age": 6,
+        "rate": 0.1,
+        "minimum_annual_cash": 300
+      },
+      {
+        "min_age": 7,
+        "max_age": 12,
+        "rate": 0.2,
+        "minimum_annual_cash": 900
+      },
+      {
+        "min_age": 13,
+        "max_age": 17,
+        "rate": 0.4,
+        "minimum_annual_cash": 1800
+      }
+    ],
+    "parent_support_relationship_multiplier": {
+      "base": 0.6,
+      "relationship_scale": 0.4,
+      "single_parent_multiplier": 0.7
+    },
+    "annual_passive_stat_gain_caps": [
+      {
+        "min_stat": 0,
+        "max_stat": 79,
+        "max_positive_gain": 3
+      },
+      {
+        "min_stat": 80,
+        "max_stat": 89,
+        "max_positive_gain": 2
+      },
+      {
+        "min_stat": 90,
+        "max_stat": 100,
+        "max_positive_gain": 1
+      }
+    ],
+    "life_paths": [
+      {
+        "path_id": "life_path_balanced",
+        "name_th": "สมดุลทุกด้าน",
+        "description_th": "เปิดโอกาสให้เหตุการณ์ด้านช่วงวัย งาน ความสัมพันธ์ และการค้นหาประสบการณ์กระจายใกล้เคียงค่าพื้นฐาน",
+        "event_pool_weight_multipliers": {
+          "life_phase": 1,
+          "career": 1,
+          "relationship": 1,
+          "location_karma": 1
+        }
+      },
+      {
+        "path_id": "life_path_career",
+        "name_th": "มุ่งมั่นสร้างตัว",
+        "description_th": "มีโอกาสพบเหตุการณ์ด้านงาน อาชีพ และการสร้างฐานะบ่อยขึ้น แต่ยังพบเหตุการณ์ชีวิตและความสัมพันธ์ได้ตามปกติ",
+        "event_pool_weight_multipliers": {
+          "life_phase": 0.85,
+          "career": 1.75,
+          "relationship": 0.75,
+          "location_karma": 0.85
+        }
+      },
+      {
+        "path_id": "life_path_family",
+        "name_th": "ให้ความสำคัญกับครอบครัว",
+        "description_th": "เพิ่มโอกาสพบเหตุการณ์ด้านครอบครัว เพื่อน และความสัมพันธ์ โดยไม่ปิดโอกาสด้านอื่น",
+        "event_pool_weight_multipliers": {
+          "life_phase": 1,
+          "career": 0.75,
+          "relationship": 1.8,
+          "location_karma": 0.85
+        }
+      },
+      {
+        "path_id": "life_path_explorer",
+        "name_th": "เปิดโลกและค้นหาโอกาส",
+        "description_th": "เพิ่มโอกาสพบเหตุการณ์ด้านจังหวัด สังคมท้องถิ่น การเดินทาง และแต้มบุญ โดยยังเล่นเหตุการณ์หมวดอื่นได้",
+        "event_pool_weight_multipliers": {
+          "life_phase": 0.9,
+          "career": 0.85,
+          "relationship": 0.8,
+          "location_karma": 1.8
+        }
+      }
+    ]
   },
   "core_stats_definitions": [
     {
@@ -416,8 +511,8 @@
       "region": "north",
       "tier": "regional_hub",
       "relocation_cost": 3500,
-      "cost_of_living_multiplier": 1.0,
-      "job_opportunity_multiplier": 1.0,
+      "cost_of_living_multiplier": 1,
+      "job_opportunity_multiplier": 1,
       "education_quality_bonus": 1,
       "yearly_passive_effects": {
         "health": -2,
@@ -436,7 +531,7 @@
       "tier": "regional_hub",
       "relocation_cost": 3000,
       "cost_of_living_multiplier": 0.9,
-      "job_opportunity_multiplier": 1.0,
+      "job_opportunity_multiplier": 1,
       "education_quality_bonus": 1,
       "yearly_passive_effects": {
         "health": 0,
@@ -454,7 +549,7 @@
       "tier": "regional_hub",
       "relocation_cost": 3000,
       "cost_of_living_multiplier": 0.9,
-      "job_opportunity_multiplier": 1.0,
+      "job_opportunity_multiplier": 1,
       "education_quality_bonus": 0,
       "yearly_passive_effects": {
         "health": 0,
@@ -485,13 +580,13 @@
       ],
       "flavor_text": "แผ่นดินอีสานใต้ที่ผู้คนมีน้ำใจและผูกพันกับวิถีเกษตรกรรม ค่าครองชีพถูกและชีวิตเรียบง่ายสงบสุข แต่หนุ่มสาวส่วนใหญ่ต้องดิ้นรนเข้าเมืองหลวงเพื่อหางานรายได้สูง"
     },
-        {
+    {
       "location_id": "loc_ayutthaya",
       "name_th": "พระนครศรีอยุธยา",
       "region": "central",
       "tier": "industrial_tourism",
       "relocation_cost": 3000,
-      "cost_of_living_multiplier": 1.0,
+      "cost_of_living_multiplier": 1,
       "job_opportunity_multiplier": 1.1,
       "education_quality_bonus": 0,
       "yearly_passive_effects": {
@@ -528,8 +623,8 @@
       "region": "south",
       "tier": "regional_hub",
       "relocation_cost": 3500,
-      "cost_of_living_multiplier": 1.0,
-      "job_opportunity_multiplier": 1.0,
+      "cost_of_living_multiplier": 1,
+      "job_opportunity_multiplier": 1,
       "education_quality_bonus": 1,
       "yearly_passive_effects": {
         "health": 0,
@@ -561,4 +656,3 @@
     }
   ]
 }
-

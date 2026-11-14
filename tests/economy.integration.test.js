@@ -203,7 +203,6 @@ test('uses available GSB savings to reduce a negative cash balance before offeri
   assert.equal(result.resolved, false);
   assert.equal(result.deficitAmount, 200);
   assert.equal(state.finance.cash, -200);
-  assert.equal(state.finance.investments.inv_gsb_savings.amountCash, 0);
   assert.equal(Object.hasOwn(state.finance.investments, 'inv_gsb_savings'), false);
   assert.ok(result.availableOptions.some(
     (option) => option.optionType === 'forced_informal_shark_loan_to_cover_deficit'

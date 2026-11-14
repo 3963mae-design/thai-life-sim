@@ -179,3 +179,18 @@ test('school activity annual rewards are moderated while preserving distinct tra
  assert.ok(football.health>study.health);
  assert.ok(music.connections>pc.connections);
 });
+
+test('higher education programs have moderated distinct annual intelligence gains', () => {
+ const programs=new Map(db.raw.eduJobs.higher_education_programs.map(p=>[p.program_id,p]));
+ assert.equal(programs.get('edu_deg_medicine').yearly_stat_effects.intelligence,5);
+ assert.equal(programs.get('edu_deg_it').yearly_stat_effects.intelligence,5);
+ assert.equal(programs.get('edu_deg_law').yearly_stat_effects.intelligence,4);
+ assert.equal(programs.get('edu_deg_business').yearly_stat_effects.intelligence,3);
+ assert.equal(programs.get('edu_deg_comm_arts').yearly_stat_effects.intelligence,3);
+ assert.equal(programs.get('edu_high_vocational').yearly_stat_effects.intelligence,2);
+ assert.ok(programs.get('edu_deg_medicine').yearly_stat_effects.health<0);
+ assert.ok(programs.get('edu_deg_business').yearly_stat_effects.connections>
+   programs.get('edu_deg_medicine').yearly_stat_effects.connections);
+ assert.ok(programs.get('edu_deg_comm_arts').yearly_stat_effects.happiness>
+   programs.get('edu_deg_it').yearly_stat_effects.happiness);
+});

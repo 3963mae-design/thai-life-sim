@@ -161,7 +161,7 @@ test('two consecutive missed personal-loan payments compound interest and trigge
   state.flags.push('flag_personal_loan_active', 'flag_credit_good');
 
   const firstRateMultiplier = getCombinedActionMultipliers(state).loan_interest_rate;
-  const firstInterest = Math.round(10_000 * 0.18 * firstRateMultiplier);
+  const firstInterest = Math.round(10_000 * 0.18 * firstRateMultiplier * 0.8);
   processAnnualEconomyAndMarket(state);
   const principalAfterFirstDefault = 10_000 + firstInterest;
   assert.equal(state.finance.activeLoans[0].principalRemaining, principalAfterFirstDefault);
@@ -171,7 +171,7 @@ test('two consecutive missed personal-loan payments compound interest and trigge
 
   state.profile.age = 26;
   const secondRateMultiplier = getCombinedActionMultipliers(state).loan_interest_rate;
-  const secondInterest = Math.round(principalAfterFirstDefault * 0.18 * secondRateMultiplier);
+  const secondInterest = Math.round(principalAfterFirstDefault * 0.18 * secondRateMultiplier * 0.8);
   processAnnualEconomyAndMarket(state);
 
   assert.equal(

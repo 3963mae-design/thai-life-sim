@@ -239,6 +239,21 @@ export function processAnnualLocationAndFlagPassives(state) {
 }
 
 /**
+ * Apply a threshold effect only when its flag becomes active.
+ * Threshold checks also run after individual event choices, so applying the
+ * reward on every check would multiply the effect within a single year.
+ */
+function grantThresholdFlagOnce(state, flagId, effects, grantedThresholdFlags) {
+  const wasActive = getPlayerFlagSet(state).has(flagId);
+  addFlagOrStatus(state, flagId);
+  if (wasActive) return false;
+
+  if (effects) applyNonCashStatEffects(state, effects);
+  grantedThresholdFlags.push(flagId);
+  return true;
+}
+
+/**
  * ตรวจสอบขีดสุดของหลอดทั้ง 6 (0 และ 100) ตาม Core_Rules_&_Locations.json
  * และเช็กเงื่อนไขจบเกม (health <= 0 หรือ age >= 100)
  * @param {object} state
@@ -259,9 +274,7 @@ export function checkStatThresholdsAndDeath(state) {
   // 1. Health (0 = เสียชีวิตทันที / 100 = บัฟร่างกายเหล็กไหล flag_iron_body)
   if (Number(s.health) >= 100) {
     s.health = 100;
-    addFlagOrStatus(state, 'flag_iron_body');
-    applyNonCashStatEffects(state, { happiness: 1, appearance: 1 });
-    grantedThresholdFlags.push('flag_iron_body');
+    grantThresholdFlagOnce(state, 'flag_iron_body', { happiness: 1, appearance: 1 }, grantedThresholdFlags);
   } else {
     removeFlagOrStatus(state, 'flag_iron_body');
   }
@@ -275,13 +288,16 @@ export function checkStatThresholdsAndDeath(state) {
   // 2. Happiness (0 ติดกัน 2 ปี = โรคซึมเศร้า flag_depression / 100 = ออร่าพลังบวก flag_optimist_aura)
   if (Number(s.happiness) <= 0) {
     s.happiness = 0;
-    state.statCounters.zeroHappinessStreakYears =
-      Number(state.statCounters?.zeroHappinessStreakYears || 0) + 1;
+    state.statCounters = state.statCounters || {};
+    const age = Number(state.profile.age || 0);
+    if (Number(state.statCounters.lastZeroHappinessCountedAge ?? -1) !== age) {
+      state.statCounters.zeroHappinessStreakYears =
+        Number(state.statCounters.zeroHappinessStreakYears || 0) + 1;
+      state.statCounters.lastZeroHappinessCountedAge = age;
+    }
 
     if (state.statCounters.zeroHappinessStreakYears >= 2) {
-      addFlagOrStatus(state, 'flag_depression');
-      applyNonCashStatEffects(state, { health: -5, intelligence: -2 });
-      grantedThresholdFlags.push('flag_depression');
+      grantThresholdFlagOnce(state, 'flag_depression', { health: -5, intelligence: -2 }, grantedThresholdFlags);
     }
   } else {
     state.statCounters.zeroHappinessStreakYears = 0;
@@ -289,9 +305,7 @@ export function checkStatThresholdsAndDeath(state) {
 
   if (Number(s.happiness) >= 100) {
     s.happiness = 100;
-    addFlagOrStatus(state, 'flag_optimist_aura');
-    applyNonCashStatEffects(state, { health: 2, connections: 2 });
-    grantedThresholdFlags.push('flag_optimist_aura');
+    grantThresholdFlagOnce(state, 'flag_optimist_aura', { health: 2, connections: 2 }, grantedThresholdFlags);
   } else {
     removeFlagOrStatus(state, 'flag_optimist_aura');
   }
@@ -299,18 +313,14 @@ export function checkStatThresholdsAndDeath(state) {
   // 3. Intelligence (0 = flag_severe_learning_disability / 100 = flag_genius_mind)
   if (Number(s.intelligence) <= 0) {
     s.intelligence = 0;
-    addFlagOrStatus(state, 'flag_severe_learning_disability');
-    applyNonCashStatEffects(state, { connections: -1 });
-    grantedThresholdFlags.push('flag_severe_learning_disability');
+    grantThresholdFlagOnce(state, 'flag_severe_learning_disability', { connections: -1 }, grantedThresholdFlags);
   } else {
     removeFlagOrStatus(state, 'flag_severe_learning_disability');
   }
 
   if (Number(s.intelligence) >= 100) {
     s.intelligence = 100;
-    addFlagOrStatus(state, 'flag_genius_mind');
-    applyNonCashStatEffects(state, { connections: 2 });
-    grantedThresholdFlags.push('flag_genius_mind');
+    grantThresholdFlagOnce(state, 'flag_genius_mind', { connections: 2 }, grantedThresholdFlags);
   } else {
     removeFlagOrStatus(state, 'flag_genius_mind');
   }
@@ -318,33 +328,25 @@ export function checkStatThresholdsAndDeath(state) {
   // 4. Connections (0 = flag_public_enemy / 100 = flag_beloved_icon)
   if (Number(s.connections) <= 0) {
     s.connections = 0;
-    addFlagOrStatus(state, 'flag_public_enemy');
-    applyNonCashStatEffects(state, { happiness: -2 });
-    grantedThresholdFlags.push('flag_public_enemy');
+    grantThresholdFlagOnce(state, 'flag_public_enemy', { happiness: -2 }, grantedThresholdFlags);
   } else {
     removeFlagOrStatus(state, 'flag_public_enemy');
   }
 
   if (Number(s.connections) >= 100) {
     s.connections = 100;
-    addFlagOrStatus(state, 'flag_beloved_icon');
-    applyNonCashStatEffects(state, { happiness: 2 });
-    grantedThresholdFlags.push('flag_beloved_icon');
+    grantThresholdFlagOnce(state, 'flag_beloved_icon', { happiness: 2 }, grantedThresholdFlags);
   } else {
     removeFlagOrStatus(state, 'flag_beloved_icon');
   }
 
   // 5. Merit (<= 0 = flag_cursed_fate / >= 100 = flag_blessed_destiny)
   if (Number(s.merit) <= 0) {
-    addFlagOrStatus(state, 'flag_cursed_fate');
+    grantThresholdFlagOnce(state, 'flag_cursed_fate', { health: -2, happiness: -2 }, grantedThresholdFlags);
     removeFlagOrStatus(state, 'flag_blessed_destiny');
-    applyNonCashStatEffects(state, { health: -2, happiness: -2 });
-    grantedThresholdFlags.push('flag_cursed_fate');
   } else if (Number(s.merit) >= 100) {
-    addFlagOrStatus(state, 'flag_blessed_destiny');
+    grantThresholdFlagOnce(state, 'flag_blessed_destiny', { happiness: 2, connections: 1 }, grantedThresholdFlags);
     removeFlagOrStatus(state, 'flag_cursed_fate');
-    applyNonCashStatEffects(state, { happiness: 2, connections: 1 });
-    grantedThresholdFlags.push('flag_blessed_destiny');
   } else {
     removeFlagOrStatus(state, 'flag_cursed_fate');
     removeFlagOrStatus(state, 'flag_blessed_destiny');
@@ -353,18 +355,14 @@ export function checkStatThresholdsAndDeath(state) {
   // 6. Appearance (0 = flag_social_outcast_look / 100 = flag_beauty_privilege)
   if (Number(s.appearance) <= 0) {
     s.appearance = 0;
-    addFlagOrStatus(state, 'flag_social_outcast_look');
-    applyNonCashStatEffects(state, { happiness: -2, connections: -2 });
-    grantedThresholdFlags.push('flag_social_outcast_look');
+    grantThresholdFlagOnce(state, 'flag_social_outcast_look', { happiness: -2, connections: -2 }, grantedThresholdFlags);
   } else {
     removeFlagOrStatus(state, 'flag_social_outcast_look');
   }
 
   if (Number(s.appearance) >= 100) {
     s.appearance = 100;
-    addFlagOrStatus(state, 'flag_beauty_privilege');
-    applyNonCashStatEffects(state, { connections: 3, happiness: 1 });
-    grantedThresholdFlags.push('flag_beauty_privilege');
+    grantThresholdFlagOnce(state, 'flag_beauty_privilege', { connections: 3, happiness: 1 }, grantedThresholdFlags);
   } else {
     removeFlagOrStatus(state, 'flag_beauty_privilege');
   }

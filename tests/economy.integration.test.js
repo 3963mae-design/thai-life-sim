@@ -11,6 +11,7 @@ import {
 } from '../js/core/state.js';
 import {
   calculateJobAnnualIncome,
+  processAnnualEconomyAndMarket,
   forceInformalSharkLoanToCoverDeficit,
   getCombinedActionMultipliers,
   getElderAnnualAllowance,
@@ -464,4 +465,56 @@ test('location × career × social-class simulation compares opportunity gains w
     ruralGovernmentIncome,
     'government salary should remain location-independent as configured'
   );
+});
+
+
+test('annual cash-flow slip applies location living costs, housing discount, installments, and loan repayment', () => {
+  const state = createEconomyState(25);
+  state.profile.currentLocationId = 'loc_bangkok';
+  state.profile.spawnClassId = 'class_3';
+  state.profile.currentClassId = 'class_3';
+  state.finance.cash = 1_000_000;
+  state.finance.hasPiggyBankSmashed = true;
+  state.careerAndEdu.mainJobId = 'career_junior_office';
+  state.careerAndEdu.salaryMultiplier = 1;
+  state.finance.installments = [{
+    itemId: 'test_home_installment',
+    annualPayment: 12000,
+    yearsRemaining: 2
+  }];
+  state.finance.activeLoans = [{
+    loanId: 'loan_student_gys',
+    principalRemaining: 30000,
+    annualRate: 0.01,
+    missedYears: 0
+  }];
+
+  const slip = processAnnualEconomyAndMarket(state);
+  const livingExpense = slip.expenseItems.find((item) => item.labelTh.includes('ค่าครองชีพประจำปี'));
+  const installmentExpense = slip.expenseItems.find((item) => item.labelTh.includes('ค่างวดผ่อน'));
+  const gysExpense = slip.expenseItems.find((item) => item.labelTh.includes('ชำระหนี้'));
+
+  assert.ok(livingExpense);
+  assert.equal(livingExpense.amount, -126000);
+  assert.ok(installmentExpense);
+  assert.equal(installmentExpense.amount, -12000);
+  assert.ok(gysExpense);
+  assert.equal(gysExpense.amount, -15300);
+  assert.equal(state.finance.installments.length, 1);
+  assert.equal(state.finance.installments[0].yearsRemaining, 1);
+  assert.equal(state.finance.activeLoans[0].principalRemaining, 30000 - 15000);
+});
+
+test('annual living-cost engine applies its documented 20 percent housing discount', () => {
+  const state = createEconomyState(25);
+  state.profile.currentLocationId = 'loc_bangkok';
+  state.finance.cash = 500000;
+  state.finance.hasPiggyBankSmashed = true;
+  state.flags.push('flag_has_own_home');
+
+  const slip = processAnnualEconomyAndMarket(state);
+  const livingExpense = slip.expenseItems.find((item) => item.labelTh.includes('ค่าครองชีพประจำปี'));
+
+  assert.ok(livingExpense);
+  assert.equal(livingExpense.amount, -100800);
 });

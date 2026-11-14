@@ -493,7 +493,7 @@ export function startNextYearTurn(state = getState()) {
   const socialReport = processAnnualSocialAndFamilyProgression(state,{ deferAnnualPassives:true });
 
   // ขั้นที่ 3: ประมวลผลการเรียน กิจกรรมตามวัย อายุงาน โรคจากการทำงาน และการเกษียณ
-  const careerEduReport = processAnnualCareerAndStudyProgression(state);
+  const careerEduReport = processAnnualCareerAndStudyProgression(state,{ deferAnnualPassives:true });
 
   // ขั้นที่ 4: คำนวณเศรษฐกิจรายปี รายรับ-รายจ่าย ตลาดหุ้น สลากออมสิน และสร้างสลิปงบ
   const annualSlip = processAnnualEconomyAndMarket(state);

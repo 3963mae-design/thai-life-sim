@@ -7,6 +7,7 @@ import {calculateParentalSupport,getParentalSupportMultiplier} from '../js/core/
 import {createEmptyGameState,createNewCharacter} from '../js/core/state.js';
 import {getAnnualEventPoolWeights} from '../js/engine/event_engine.js';
 import {getLifePathPoolWeights,normalizeLifePathId} from '../js/engine/life_path_engine.js';
+import {processAnnualCareerAndStudyProgression} from '../js/engine/career_edu_engine.js';
 import {applyAnnualPassiveStatEffects,collectAnnualPassiveStatEffects,resetAnnualPassiveStatEffects} from '../js/core/annual_passive_stats.js';
 const oldRaw=db.raw,oldLoaded=db.isLoaded,oldStorage=globalThis.localStorage,storage=new Map(),oldIndexes=Object.fromEntries(Object.entries(db.indexes).map(([k,m])=>[k,new Map(m)])),fixture={};
 for(const [k,file] of Object.entries(DATA_MANIFEST))fixture[k]=JSON.parse(await readFile(fileURLToPath(new URL(`../data/${file}`,import.meta.url)),'utf8'));
@@ -25,6 +26,23 @@ test('family allowance changes by age and separates direct-paid support from pla
  assert.equal(b.cashAllowance,2232);assert.equal(c.cashAllowance,4464);assert.equal(d.cashAllowance,8928);
  assert.equal(adult.cashAllowance,0);assert.equal(adult.familyPaidSupport,0);
 });
+test('poor-family teen allowance is capped by the actual family support budget',()=>{
+ const s=parents({fr:100,mr:100}),g=db.getGameConstants();
+ const result=calculateParentalSupport({state:s,age:13,baseAnnualSupport:1200,gameConstants:g});
+ assert.equal(result.familySupportCapacity,1200);
+ assert.equal(result.cashAllowance,1200);
+ assert.equal(result.familyPaidSupport,0);
+ assert.ok(result.cashAllowance+result.familyPaidSupport<=result.familySupportCapacity);
+});
+
+test('high-income family allowance respects the annual personal-cash ceiling',()=>{
+ const s=parents({fr:100,mr:100}),g=db.getGameConstants();
+ const result=calculateParentalSupport({state:s,age:13,baseAnnualSupport:600000,gameConstants:g});
+ assert.equal(result.cashAllowance,10000);
+ assert.equal(result.familyPaidSupport,590000);
+ assert.equal(result.cashAllowance+result.familyPaidSupport,result.familySupportCapacity);
+});
+
 test('parent relationship and household composition affect support multipliers',()=>{
  const rule=db.getGameConstants().parent_support_relationship_multiplier;
  assert.equal(getParentalSupportMultiplier(parents({fr:100,mr:100}),rule),1);
@@ -61,6 +79,21 @@ test('annual passive stat gains are cumulatively capped while negative effects r
  assert.equal(r.health,3);assert.equal(r.happiness,-1);assert.equal(r.intelligence,-1);assert.equal(r.connections,3);assert.equal(r.merit,6);
  assert.deepEqual(s.turn.annualPassiveStatEffects,{});
 });
+test('annual career and study passives use the shared diminishing-gain cap',()=>{
+ const s=createEmptyGameState();s.profile.age=15;s.careerAndEdu.currentActivityId='test_activity';
+ s.stats.health=70;s.stats.intelligence=95;
+ const originalGetActivity=db.getActivity;
+ db.getActivity=(id)=>id==='test_activity'?{min_age:0,max_age:100,yearly_stat_effects:{health:5,intelligence:5}}:null;
+ try{
+  resetAnnualPassiveStatEffects(s);
+  processAnnualCareerAndStudyProgression(s,{deferAnnualPassives:true});
+  assert.equal(s.stats.health,70,'recurring career passives are deferred to the annual aggregator');
+  const applied=applyAnnualPassiveStatEffects(s,db.getGameConstants().annual_passive_stat_gain_caps);
+  assert.equal(applied.health,3);
+  assert.equal(applied.intelligence,1);
+ } finally { db.getActivity=originalGetActivity; }
+});
+
 test('stacked Trait and Status multipliers remain within configured bounds',async()=>{
  const {getCombinedActionMultipliers}=await import('../js/engine/economy_engine.js');
  const s=createEmptyGameState();s.flags=['stack'];

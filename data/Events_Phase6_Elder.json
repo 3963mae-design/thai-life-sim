@@ -6,9 +6,9 @@
     "min_age": 60,
     "max_age": 100
   },
-  "total_events": 40,
+  "total_events": 42,
   "quota_breakdown": {
-    "total": 40,
+    "total": 42,
     "shared_total": 32,
     "poor_class_1_2_total": 4,
     "rich_class_4_5_total": 4

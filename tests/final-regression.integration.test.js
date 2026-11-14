@@ -113,7 +113,7 @@ test('full opening-life regression: create, initialize, resolve events, unlock a
     resolvedEvents += 1;
 
     const advanceResult = triggerPrimaryActionButton(state);
-    assert.equal(advanceResult.success, true);
+    assert.ok(advanceResult.completedQueue || advanceResult.nextEvent, 'primary action should advance the event queue');
   }
 
   assert.ok(resolvedEvents > 0);

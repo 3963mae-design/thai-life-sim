@@ -182,8 +182,8 @@ test('pays annual dividends with withholding tax and the elite-connection bonus,
   });
 
   const slip = processAnnualEconomyAndMarket(state);
-  const savingsInterest = slip.incomeItems.find((item) => item.labelTh.includes('เงินฝาก ธนาคารออมสิน'));
-  const lotteryInterest = slip.incomeItems.find((item) => item.labelTh.includes('สลากออมสินพิเศษ'));
+  const savingsInterest = slip.incomeItems.find((item) => item.labelTh.includes('ธนาคารออมสิน'));
+  const lotteryInterest = slip.incomeItems.find((item) => item.labelTh.includes('สลากออมสิน'));
   const bondDividend = slip.incomeItems.find((item) => item.labelTh.includes('เงินปันผลสุทธิ') && item.labelTh.includes('พันธบัตร'));
 
   assert.equal(savingsInterest?.amount, 150);

@@ -599,6 +599,7 @@ export function loadGame() {
 
     return currentState;
   } catch (err) {
+    currentState = null;
     console.error('[State] โหลดเซฟเกมจาก localStorage ล้มเหลว:', err);
     return null;
   }

@@ -8,10 +8,10 @@ import {createEmptyGameState,createNewCharacter} from '../js/core/state.js';
 import {getAnnualEventPoolWeights} from '../js/engine/event_engine.js';
 import {getLifePathPoolWeights,normalizeLifePathId} from '../js/engine/life_path_engine.js';
 import {applyAnnualPassiveStatEffects,collectAnnualPassiveStatEffects,resetAnnualPassiveStatEffects} from '../js/core/annual_passive_stats.js';
-const oldRaw=db.raw,oldLoaded=db.isLoaded,oldIndexes=Object.fromEntries(Object.entries(db.indexes).map(([k,m])=>[k,new Map(m)])),fixture={};
+const oldRaw=db.raw,oldLoaded=db.isLoaded,oldStorage=globalThis.localStorage,storage=new Map(),oldIndexes=Object.fromEntries(Object.entries(db.indexes).map(([k,m])=>[k,new Map(m)])),fixture={};
 for(const [k,file] of Object.entries(DATA_MANIFEST))fixture[k]=JSON.parse(await readFile(fileURLToPath(new URL(`../data/${file}`,import.meta.url)),'utf8'));
-test.beforeEach(()=>{db.raw=structuredClone(fixture);db.buildIndexes();db.isLoaded=true;});
-test.after(()=>{db.raw=oldRaw;db.isLoaded=oldLoaded;for(const [k,m] of Object.entries(db.indexes)){m.clear();for(const [id,v] of oldIndexes[k])m.set(id,v);}});
+test.beforeEach(()=>{storage.clear();globalThis.localStorage={getItem(k){return storage.has(k)?storage.get(k):null;},setItem(k,v){storage.set(k,String(v));},removeItem(k){storage.delete(k);}};db.raw=structuredClone(fixture);db.buildIndexes();db.isLoaded=true;});
+test.after(()=>{db.raw=oldRaw;db.isLoaded=oldLoaded;if(oldStorage===undefined)delete globalThis.localStorage;else globalThis.localStorage=oldStorage;for(const [k,m] of Object.entries(db.indexes)){m.clear();for(const [id,v] of oldIndexes[k])m.set(id,v);}});
 function parents({fa=true,mo=true,fr=80,mr=85}={}){const s=createEmptyGameState();s.relationships.npcs=[{id:'f',archetypeId:'npc_arch_father',isAlive:fa,relationship:fr},{id:'m',archetypeId:'npc_arch_mother',isAlive:mo,relationship:mr}];return s;}
 
 test('family allowance changes by age and separates direct-paid support from player cash',()=>{

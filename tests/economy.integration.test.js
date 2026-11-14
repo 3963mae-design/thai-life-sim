@@ -332,3 +332,136 @@ test('baseline lifetime cash-flow scenarios use configured family support, caree
   assert.ok(scenarios[4].result.cash > scenarios[3].result.cash);
   assert.equal(scenarios[4].result.yearsWithCareer, 31);
 });
+
+
+test('location × career × social-class simulation compares opportunity gains with living costs', () => {
+  const locationIds = [
+    'loc_mae_hong_son',
+    'loc_chiangmai',
+    'loc_chonburi',
+    'loc_bangkok',
+    'loc_phuket'
+  ];
+  const scenarios = [
+    { classId: 'class_1', careerId: 'job_daily_construction' },
+    { classId: 'class_2', careerId: 'career_factory_technician' },
+    { classId: 'class_3', careerId: 'career_junior_office' },
+    { classId: 'class_4', careerId: 'career_creative_marketer' },
+    { classId: 'class_5', careerId: 'career_c_level_ceo' }
+  ];
+
+  function project(locationId, classId, careerId) {
+    const location = db.getLocation(locationId);
+    const familyClass = db.getClass(classId);
+    const career = db.getJob(careerId);
+    assert.ok(location, `location ${locationId} should exist`);
+    assert.ok(familyClass, `class ${classId} should exist`);
+    assert.ok(career, `career ${careerId} should exist`);
+
+    const state = createEconomyState(0);
+    state.profile.currentLocationId = locationId;
+    state.profile.spawnClassId = classId;
+    state.profile.currentClassId = classId;
+    state.flags = [...(familyClass.starting_flags || [])];
+    const multipliers = getCombinedActionMultipliers(state);
+    let careerIncome = 0;
+    let livingCost = 0;
+    let careerYears = 0;
+
+    for (let age = 18; age <= 65; age += 1) {
+      const phase = db.getLifePhaseByAge(age);
+      livingCost += Math.round(
+        Number(phase?.baseAnnualLivingCost || 0) *
+        Number(location.cost_of_living_multiplier || 1)
+      );
+
+      if (age >= Number(career.min_age || 0) &&
+          age <= Number(career.retirement_age ?? 65)) {
+        careerIncome += calculateJobAnnualIncome(career, {
+          profile: { currentLocationId: locationId },
+          careerAndEdu: { salaryMultiplier: 1 }
+        }, multipliers, true);
+        careerYears += 1;
+      }
+    }
+
+    return {
+      careerIncome,
+      livingCost,
+      careerYears,
+      netBeforeOtherIncome: careerIncome - livingCost
+    };
+  }
+
+  const results = scenarios.flatMap((scenario) =>
+    locationIds.map((locationId) => ({
+      ...scenario,
+      locationId,
+      result: project(locationId, scenario.classId, scenario.careerId)
+    }))
+  );
+
+  for (const scenario of scenarios) {
+    const rows = results.filter((row) => row.classId === scenario.classId);
+    const baseline = rows.find((row) => row.locationId === 'loc_chiangmai').result;
+    assert.ok(baseline.careerYears > 0);
+    assert.ok(rows.every((row) => row.result.careerYears === baseline.careerYears));
+
+    for (const row of rows) {
+      const location = db.getLocation(row.locationId);
+      assert.equal(
+        row.result.livingCost,
+        Math.round(4_536_000 * Number(location.cost_of_living_multiplier || 1))
+      );
+      assert.ok(Number.isFinite(row.result.netBeforeOtherIncome));
+    }
+  }
+
+  const bangkok = db.getLocation('loc_bangkok');
+  const phuket = db.getLocation('loc_phuket');
+  const rural = db.getLocation('loc_mae_hong_son');
+  assert.equal(bangkok.job_opportunity_multiplier, 1.4);
+  assert.equal(bangkok.cost_of_living_multiplier, 1.5);
+  assert.equal(phuket.job_opportunity_multiplier, 1.3);
+  assert.equal(phuket.cost_of_living_multiplier, 1.5);
+  assert.equal(rural.job_opportunity_multiplier, 0.6);
+  assert.equal(rural.cost_of_living_multiplier, 0.6);
+
+  const constructionBangkok = results.find(
+    (row) => row.classId === 'class_1' && row.locationId === 'loc_bangkok'
+  ).result;
+  const constructionRural = results.find(
+    (row) => row.classId === 'class_1' && row.locationId === 'loc_mae_hong_son'
+  ).result;
+  assert.ok(
+    constructionBangkok.careerIncome > constructionRural.careerIncome,
+    'location-sensitive entry-level work should earn more in a higher-opportunity city'
+  );
+  assert.ok(
+    constructionBangkok.livingCost > constructionRural.livingCost,
+    'the same city also raises lifetime living costs'
+  );
+
+  const governmentIndependent = db.getJob('gov_civil_officer');
+  assert.equal(governmentIndependent.affected_by_location_multiplier, false);
+  const governmentState = createEconomyState(25);
+  governmentState.profile.currentLocationId = 'loc_bangkok';
+  const bangkokGovernmentIncome = calculateJobAnnualIncome(
+    governmentIndependent,
+    { profile: { currentLocationId: 'loc_bangkok' }, careerAndEdu: { salaryMultiplier: 1 } },
+    getCombinedActionMultipliers(governmentState),
+    true
+  );
+  governmentState.profile.currentLocationId = 'loc_mae_hong_son';
+  const ruralGovernmentIncome = calculateJobAnnualIncome(
+    governmentIndependent,
+    { profile: { currentLocationId: 'loc_mae_hong_son' }, careerAndEdu: { salaryMultiplier: 1 } },
+    getCombinedActionMultipliers(governmentState),
+    true
+  );
+  assert.equal(
+    bangkokGovernmentIncome,
+    ruralGovernmentIncome,
+    'government salary should remain location-independent as configured'
+  );
+});

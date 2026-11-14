@@ -166,8 +166,8 @@ test('runs the annual pipeline and applies social, career, economy, passive, and
   assert.equal(result.annualSlip.endingCash, state.finance.cash);
 
   // Step 5: location and flag passives are applied before threshold checks.
-  assert.equal(state.stats.health, 72);
-  assert.equal(state.stats.intelligence, 63);
+  assert.equal(state.stats.health, 70, 'small positive health passives are retained as fractional progress');
+  assert.equal(state.stats.intelligence, 61, 'positive intelligence passives use diminishing returns');
 
   // Step 7: the new year's event queue is generated and the annual summary is saved.
   assert.ok(Array.isArray(state.turn.pendingEvents));

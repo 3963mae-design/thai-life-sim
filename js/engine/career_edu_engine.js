@@ -18,6 +18,7 @@ import {
   formatCurrency
 } from '../core/utils.js';
 import { getCombinedActionMultipliers, calculateJobAnnualIncome } from './economy_engine.js';
+import { collectAnnualPassiveStatEffects } from '../core/annual_passive_stats.js';
 import { stripEmojis } from './event_engine.js';
 
 // ============================================================================
@@ -1291,12 +1292,22 @@ export function requestPromotionOrRaise(state) {
  * @param {object} state GameState ปัจจุบัน (หลังจากบวกอายุ +1 ปีแล้ว)
  * @returns {object} รายงานสรุปการเปลี่ยนแปลงประจำปี
  */
-export function processAnnualCareerAndStudyProgression(state) {
+export function processAnnualCareerAndStudyProgression(state, options = {}) {
   if (!state?.careerAndEdu) return {};
 
   const age = Number(state.profile.age || 0);
   const multipliers = getCombinedActionMultipliers(state);
   const studyMult = Number(multipliers.study_efficiency ?? 1.0);
+  const applyRecurringEffects = (effects, efficiency = 1.0) => {
+    if (!options.deferAnnualPassives) return applyCareerEduStatEffects(state, effects, efficiency);
+    const adjusted = { ...(effects || {}) };
+    const intelligence = Number(adjusted.intelligence || 0);
+    if (intelligence > 0 && efficiency !== 1.0) {
+      adjusted.intelligence = Math.max(1, Math.round(intelligence * efficiency));
+    }
+    collectAnnualPassiveStatEffects(state, adjusted);
+    return adjusted;
+  };
 
   const report = {
     dischargedFromMilitary: false,
@@ -1333,7 +1344,7 @@ export function processAnnualCareerAndStudyProgression(state) {
   if (state.careerAndEdu.currentActivityId) {
     const actDef = db.getActivity(state.careerAndEdu.currentActivityId);
     if (actDef && age >= Number(actDef.min_age || 0) && age <= Number(actDef.max_age ?? 100)) {
-      applyCareerEduStatEffects(state, actDef.yearly_stat_effects || {}, studyMult);
+      applyRecurringEffects(actDef.yearly_stat_effects || {}, studyMult);
       for (const rf of actDef.removes_flags || []) {
         removeFlagOrStatus(state, rf);
       }
@@ -1363,7 +1374,7 @@ export function processAnnualCareerAndStudyProgression(state) {
   if (study && study.programId) {
     const progDef = db.getProgram(study.programId);
     if (progDef) {
-      applyCareerEduStatEffects(state, progDef.yearly_stat_effects || {}, studyMult);
+      applyRecurringEffects(progDef.yearly_stat_effects || {}, studyMult);
     }
 
     study.yearsCompleted = Number(study.yearsCompleted || 0) + 1;
@@ -1452,7 +1463,7 @@ export function processAnnualCareerAndStudyProgression(state) {
         );
       } else {
         state.careerAndEdu.yearsInMainJob = Number(state.careerAndEdu.yearsInMainJob || 0) + 1;
-        applyCareerEduStatEffects(state, mainJob.yearly_stat_effects || {});
+        applyRecurringEffects(mainJob.yearly_stat_effects || {});
         checkOccupationalStatusTrigger(mainJob);
       }
     }
@@ -1467,7 +1478,7 @@ export function processAnnualCareerAndStudyProgression(state) {
         safelyRemoveEmploymentFlags(state, ptJob);
         state.careerAndEdu.partTimeJobId = null;
       } else {
-        applyCareerEduStatEffects(state, ptJob.yearly_stat_effects || {});
+        applyRecurringEffects(ptJob.yearly_stat_effects || {});
         checkOccupationalStatusTrigger(ptJob);
       }
     }

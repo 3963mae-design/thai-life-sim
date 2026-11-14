@@ -1398,15 +1398,22 @@ export function getCurrentPendingEvent(state) {
       };
     });
 
-    // ป้องกันกรณีสุดวิสัยที่ทุกช้อยส์ในการ์ดล็อกหมด ให้ปลดล็อกช้อยส์สุดท้ายเป็นทางออกสำรองเสมอ
-    if (evaluatedChoices.length > 0 && evaluatedChoices.every((c) => c.isLocked)) {
-      const lastIdx = evaluatedChoices.length - 1;
-      evaluatedChoices[lastIdx] = {
-        ...evaluatedChoices[lastIdx],
+    // หากไม่มีตัวเลือกที่ใช้ได้ ให้เพิ่มตัวเลือกสำรองของระบบแทนการปลดล็อกตัวเลือกที่ติดเงื่อนไข
+    // ตัวเลือกนี้ไม่มีผลต่อค่าสถานะ ธง หรือความสัมพันธ์ของผู้เล่น
+    if (evaluatedChoices.length === 0 || evaluatedChoices.every((choice) => choice.isLocked)) {
+      evaluatedChoices.push({
+        choice_id: '__system_no_available_choice__',
+        label_th: 'ดำเนินต่อโดยไม่มีตัวเลือกเพิ่มเติม',
+        outcome_text_th: 'ไม่มีตัวเลือกที่ตรงตามเงื่อนไขในขณะนี้ จึงข้ามเหตุการณ์นี้โดยไม่เปลี่ยนแปลงสถานะ',
+        stat_effects: {},
+        grants_flags: [],
+        removes_flags: [],
         isLocked: false,
         lockReasonTh: '',
-        lockIconKey: null
-      };
+        lockIconKey: null,
+        hasRngRoll: false,
+        effectiveSuccessChance: 100
+      });
     }
 
     return {

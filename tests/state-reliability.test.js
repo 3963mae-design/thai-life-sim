@@ -9,9 +9,26 @@ import {
   migrateGameState,
   recalculateNetWorth,
   getState,
-  setState
+  setState,
+  loadGame
 } from '../js/core/state.js';
 import { startNextGenerationAsChild } from '../js/engine/ending_engine.js';
+
+const originalLocalStorage = globalThis.localStorage;
+const testStorage = new Map();
+globalThis.localStorage = {
+  getItem(key) { return testStorage.has(key) ? testStorage.get(key) : null; },
+  setItem(key, value) { testStorage.set(key, String(value)); },
+  removeItem(key) { testStorage.delete(key); }
+};
+
+test.after(() => {
+  if (originalLocalStorage === undefined) {
+    delete globalThis.localStorage;
+  } else {
+    globalThis.localStorage = originalLocalStorage;
+  }
+});
 
 test('migrates a legacy save without schemaVersion to the current schema', () => {
   const legacySave = {
@@ -24,6 +41,25 @@ test('migrates a legacy save without schemaVersion to the current schema', () =>
   assert.equal(migrated.meta.schemaVersion, CURRENT_GAME_SCHEMA_VERSION);
   assert.equal(migrated.meta.runId, 'legacy-run');
   assert.equal(migrated.profile.age, 24);
+});
+
+test('loads and upgrades a legacy save through the real loadGame path', () => {
+  testStorage.set('thai_life_sim_save_v1', JSON.stringify({
+    meta: { runId: 'legacy-load' },
+    profile: { age: 42 },
+    finance: { cash: 900 }
+  }));
+
+  const loaded = loadGame();
+
+  assert.equal(loaded.meta.schemaVersion, CURRENT_GAME_SCHEMA_VERSION);
+  assert.equal(loaded.meta.runId, 'legacy-load');
+  assert.equal(loaded.profile.age, 42);
+  assert.equal(loaded.finance.cash, 900);
+  assert.deepEqual(loaded.turn.pendingEvents, []);
+
+  setState(null);
+  testStorage.clear();
 });
 
 test('does not silently downgrade a save from a newer game version', () => {

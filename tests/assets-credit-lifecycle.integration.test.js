@@ -8,6 +8,7 @@ import { createEmptyGameState } from '../js/core/state.js';
 import {
   buyShopItem,
   processAnnualEconomyAndMarket,
+  getCombinedActionMultipliers,
   repayLoan,
   sellOwnedAsset
 } from '../js/engine/economy_engine.js';
@@ -159,16 +160,24 @@ test('two consecutive missed personal-loan payments compound interest and trigge
   }];
   state.flags.push('flag_personal_loan_active', 'flag_credit_good');
 
+  const firstRateMultiplier = getCombinedActionMultipliers(state).loan_interest_rate;
+  const firstInterest = Math.round(10_000 * 0.18 * firstRateMultiplier);
   processAnnualEconomyAndMarket(state);
-  assert.equal(state.finance.activeLoans[0].principalRemaining, 11_440);
+  const principalAfterFirstDefault = 10_000 + firstInterest;
+  assert.equal(state.finance.activeLoans[0].principalRemaining, principalAfterFirstDefault);
   assert.equal(state.finance.activeLoans[0].missedYears, 1);
   assert.ok(state.flags.includes('flag_loan_payment_overdue'));
   assert.equal(state.statCounters.onTimeLoanPaymentStreakYears, 0);
 
   state.profile.age = 26;
+  const secondRateMultiplier = getCombinedActionMultipliers(state).loan_interest_rate;
+  const secondInterest = Math.round(principalAfterFirstDefault * 0.18 * secondRateMultiplier);
   processAnnualEconomyAndMarket(state);
 
-  assert.equal(state.finance.activeLoans[0].principalRemaining, 13_087);
+  assert.equal(
+    state.finance.activeLoans[0].principalRemaining,
+    principalAfterFirstDefault + secondInterest
+  );
   assert.equal(state.finance.activeLoans[0].missedYears, 2);
   assert.ok(state.flags.includes('flag_credit_blacklist'));
   assert.ok(state.flags.includes('flag_loan_payment_overdue'));

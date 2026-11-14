@@ -36,6 +36,7 @@ export const DATA_MANIFEST = {
 class GameDatabase {
   constructor() {
     this.isLoaded = false;
+    this.isLoaded = false;
     this.raw = {};
     this.loadErrors = [];
 
@@ -136,13 +137,14 @@ class GameDatabase {
 
     await Promise.allSettled(promises);
 
-    // ไฟล์หลักที่ขาดไม่ได้ในการบูตเกมครั้งแรก
-    const criticalKeys = ['coreRules'];
-    const missingCritical = criticalKeys.filter((k) => !this.raw[k]);
+    // ทุกไฟล์ใน Manifest เป็นส่วนหนึ่งของฐานข้อมูลเกม จึงต้องโหลดครบก่อนเริ่มเกม
+    const requiredKeys = Object.keys(DATA_MANIFEST);
+    const missingRequired = requiredKeys.filter((key) => !this.raw[key]);
 
-    if (missingCritical.length > 0 || (strict && this.loadErrors.length > 0)) {
+    if (missingRequired.length > 0 || (strict && this.loadErrors.length > 0)) {
+      this.isLoaded = false;
       throw new Error(
-        `ไม่สามารถเริ่มเกมได้เนื่องจากโหลดข้อมูลหลักไม่สำเร็จ (${missingCritical.join(', ')}). รายละเอียด: ${this.loadErrors.join(' | ')}`
+        `ไม่สามารถเริ่มเกมได้เนื่องจากโหลดฐานข้อมูลไม่ครบ (${missingRequired.join(', ')}). รายละเอียด: ${this.loadErrors.join(' | ')}`
       );
     }
 

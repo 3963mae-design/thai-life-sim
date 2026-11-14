@@ -222,3 +222,37 @@ test('high responsibility careers exchange larger income for recurring wellbeing
  assert.ok(ceo.happiness<jobs.get('gov_civil_officer').yearly_stat_effects.happiness);
  assert.ok(doctor.merit===5);
 });
+
+test('life-course stat progression stress test keeps recurring gains bounded', () => {
+ const constants=db.getGameConstants();
+ const caps=constants.annual_passive_stat_gain_caps;
+ const jobs=new Map([
+  ...db.raw.eduJobs.corporate_and_professional_careers,
+  ...db.raw.eduJobs.civil_service_careers
+ ].map(j=>[j.job_id,j]));
+ const runPath=(careerId)=>{
+  const state=createEmptyGameState();
+  state.stats.health=70;state.stats.happiness=70;
+  state.stats.intelligence=50;state.stats.connections=50;state.stats.appearance=50;
+  const career=jobs.get(careerId);
+  for(let age=15;age<=65;age++){
+   resetAnnualPassiveStatEffects(state);
+   if(age<=17) collectAnnualPassiveStatEffects(state,{health:-1,happiness:-1,intelligence:3,connections:1});
+   if(age>=18&&age<=23) collectAnnualPassiveStatEffects(state,{health:-1,happiness:0,intelligence:3,connections:2});
+   if(age>=career.min_age) collectAnnualPassiveStatEffects(state,career.yearly_stat_effects);
+   applyAnnualPassiveStatEffects(state,caps);
+  }
+  return state.stats;
+ };
+ const doctor=runPath('career_medical_doctor');
+ const executive=runPath('career_c_level_ceo');
+ for(const stats of [doctor,executive]){
+  for(const key of ['health','happiness','intelligence','connections','appearance']){
+   assert.ok(stats[key]>=0&&stats[key]<=100,`${key} remains within bounds`);
+  }
+  assert.ok(Object.values(stats).filter(v=>v===100).length<5,'a full life should not automatically max every core stat');
+ }
+ assert.ok(doctor.health<70,'long-term high-responsibility work accumulates a health cost');
+ assert.ok(executive.health<doctor.health,'the CEO workload carries a greater recurring health cost');
+ assert.ok(doctor.merit>executive.merit,'medical service retains its distinct Merit progression');
+});

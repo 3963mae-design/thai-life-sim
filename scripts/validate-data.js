@@ -40,7 +40,11 @@ for (const [manifestKey, filename] of Object.entries(DATA_MANIFEST)) {
   if (data.total_events !== actualCount) {
     errors.push(`[${manifestKey}] ${filename}: total_events ระบุ ${data.total_events} แต่พบจริง ${actualCount}`);
   }
-  if (data.quota_breakdown && data.quota_breakdown.total !== actualCount) {
+  if (
+    data.quota_breakdown &&
+    Object.hasOwn(data.quota_breakdown, 'total') &&
+    data.quota_breakdown.total !== actualCount
+  ) {
     errors.push(`[${manifestKey}] ${filename}: quota_breakdown.total ระบุ ${data.quota_breakdown.total} แต่พบจริง ${actualCount}`);
   }
 

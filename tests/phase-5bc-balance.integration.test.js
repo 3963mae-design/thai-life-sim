@@ -156,3 +156,26 @@ test('repeatable non-resellable purchases still grant their effects every time',
  assert.equal(s.stats.merit,10);
  assert.equal(s.turn.freeActionPoints,1);
 });
+
+test('school activity annual rewards are moderated while preserving distinct trade-offs', () => {
+ const activities=new Map(db.raw.eduJobs.age_progression_activities.map(a=>[a.activity_id,a]));
+ const study=activities.get('act_school_study_hard').yearly_stat_effects;
+ const cram=activities.get('act_school_cram_class').yearly_stat_effects;
+ const football=activities.get('act_school_football_club').yearly_stat_effects;
+ const pc=activities.get('act_school_pc_cafe').yearly_stat_effects;
+ const music=activities.get('act_school_music_art_club').yearly_stat_effects;
+ assert.equal(study.intelligence,3);
+ assert.equal(study.health,-1);
+ assert.equal(cram.intelligence,4);
+ assert.equal(cram.health,-2);
+ assert.equal(cram.happiness,-2);
+ assert.equal(football.health,3);
+ assert.equal(football.connections,2);
+ assert.equal(pc.happiness,3);
+ assert.equal(pc.health,-2);
+ assert.equal(music.connections,3);
+ assert.equal(music.happiness,3);
+ assert.ok(cram.intelligence>study.intelligence);
+ assert.ok(football.health>study.health);
+ assert.ok(music.connections>pc.connections);
+});

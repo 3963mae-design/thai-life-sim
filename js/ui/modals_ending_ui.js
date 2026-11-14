@@ -73,6 +73,13 @@ export function closeModal() {
 /**
  * Modal สลิปสรุปงบการเงินต้นปี (YEAR_SUMMARY)
  */
+const ANNUAL_INCOME_CATEGORY_LABELS = { employment: 'เงินเดือนและงานเสริม', family: 'เงินสนับสนุนจากครอบครัว', assets: 'รายได้จากสินทรัพย์', investment: 'ดอกเบี้ยและเงินปันผล', benefits: 'สวัสดิการ', retirement: 'เงินบำนาญ', other: 'รายรับอื่น' };
+const ANNUAL_EXPENSE_CATEGORY_LABELS = { living: 'ค่าครองชีพ', education: 'การศึกษา', family: 'ครอบครัว', medical: 'สุขภาพและการรักษา', installment: 'ค่างวดผ่อน', debt: 'ภาระหนี้', other: 'รายจ่ายอื่น' };
+
+export function renderAnnualBreakdownRows(breakdown, labels, amountClass) {
+  return Object.entries(breakdown || {}).filter(([, amount]) => Number(amount || 0) > 0).map(([category, amount]) => `
+    <div class="slip-row slip-row--category"><span>${escapeHtml(labels[category] || labels.other)}</span><strong class="${amountClass}">${escapeHtml(formatCurrency(amount))}</strong></div>`).join('');
+}
 export function openAnnualSlipModal(state, onComplete) {
   const slip = state?.finance?.lastAnnualSlip;
   if (!slip) return;
@@ -97,6 +104,8 @@ export function openAnnualSlipModal(state, onComplete) {
     )
     .join('');
 
+  const incomeBreakdownRows = renderAnnualBreakdownRows(slip.incomeBreakdown, ANNUAL_INCOME_CATEGORY_LABELS, 'amt-pos');
+  const expenseBreakdownRows = renderAnnualBreakdownRows(slip.expenseBreakdown, ANNUAL_EXPENSE_CATEGORY_LABELS, 'amt-neg');
   const marketHtml = slip.marketHeadlineTh
     ? `
       <div class="card card--warning" style="padding:10px 12px;">
@@ -154,9 +163,11 @@ export function openAnnualSlipModal(state, onComplete) {
 
     <div class="card" style="padding:10px 12px;">
       <div style="font-weight:700;font-size:13px;margin-bottom:4px;color:var(--success);">รายรับประจำปี</div>
+      ${incomeBreakdownRows ? `<div class="slip-breakdown">${incomeBreakdownRows}</div><div class="divider"></div>` : ''}
       ${incomeRows || '<div style="font-size:12.5px;color:var(--text-muted);">ไม่มีรายรับเงินสดในปีนี้</div>'}
       <div class="divider"></div>
       <div style="font-weight:700;font-size:13px;margin:4px 0;color:var(--danger);">รายจ่ายและภาระหนี้สิน</div>
+      ${expenseBreakdownRows ? `<div class="slip-breakdown">${expenseBreakdownRows}</div><div class="divider"></div>` : ''}
       ${expenseRows || '<div style="font-size:12.5px;color:var(--text-muted);">ไม่มีรายจ่ายเงินสดในปีนี้</div>'}
     </div>
 

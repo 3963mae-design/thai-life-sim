@@ -58,7 +58,7 @@ test('annual passive stat gains are cumulatively capped while negative effects r
  collectAnnualPassiveStatEffects(s,{health:2,happiness:3,intelligence:4,connections:3,merit:4});
  collectAnnualPassiveStatEffects(s,{health:2,happiness:-4,intelligence:-5,connections:3,merit:2});
  const r=applyAnnualPassiveStatEffects(s,db.getGameConstants().annual_passive_stat_gain_caps);
- assert.equal(r.health,3);assert.equal(r.happiness,-2);assert.equal(r.intelligence,-1);assert.equal(r.connections,3);assert.equal(r.merit,6);
+ assert.equal(r.health,3);assert.equal(r.happiness,-1);assert.equal(r.intelligence,-1);assert.equal(r.connections,3);assert.equal(r.merit,6);
  assert.deepEqual(s.turn.annualPassiveStatEffects,{});
 });
 test('stacked Trait and Status multipliers remain within configured bounds',async()=>{

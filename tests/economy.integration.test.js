@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 import { DATA_MANIFEST, db } from '../js/core/db.js';
+import { calculateParentalSupport } from '../js/core/family_support.js';
 import {
   createEmptyGameState,
   recalculateNetWorth
@@ -243,4 +244,80 @@ test('adds a new deficit to an existing informal loan instead of duplicating the
   assert.equal(state.finance.activeLoans.length, 1);
   assert.equal(state.finance.activeLoans[0].principalRemaining, 2000);
   assert.equal(state.finance.cash, 0);
+});
+
+
+test('baseline lifetime cash-flow scenarios use configured family support, careers, and living costs', () => {
+  const rules = db.getGameConstants();
+  const location = db.getLocation('loc_chiangmai');
+  const multipliers = { ...getCombinedActionMultipliers(createEconomyState(18)), work_efficiency: 1, business_income: 1 };
+
+  function project(classId, careerId) {
+    const familyClass = db.getClass(classId);
+    const career = db.getJob(careerId);
+    const state = createEconomyState(0);
+    state.profile.currentLocationId = 'loc_chiangmai';
+    state.profile.spawnClassId = classId;
+    state.profile.currentClassId = classId;
+    state.relationships.npcs = [];
+    const familyCapacity = Number(familyClass.parent_annual_support_age_0_to_17 || 0);
+    let cash = Math.round(familyCapacity * Number(rules.initial_birth_gift_rate ?? 0.05));
+    let lifetimeIncome = cash;
+    let lifetimeLivingCost = 0;
+    let yearsWithCareer = 0;
+
+    for (let age = 0; age <= 65; age += 1) {
+      if (age <= 17) {
+        const support = calculateParentalSupport({
+          state,
+          age,
+          baseAnnualSupport: familyCapacity,
+          gameConstants: rules
+        });
+        cash += support.cashAllowance;
+        lifetimeIncome += support.cashAllowance;
+      }
+
+      if (age >= 18) {
+        const phase = db.getLifePhaseByAge(age);
+        const livingCost = Math.round(Number(phase?.baseAnnualLivingCost || 0) * Number(location.cost_of_living_multiplier || 1));
+        cash -= livingCost;
+        lifetimeLivingCost += livingCost;
+
+        if (career && age >= Number(career.min_age || 0) && age <= Number(career.retirement_age ?? 65)) {
+          const income = calculateJobAnnualIncome(career, {
+            profile: { currentLocationId: 'loc_chiangmai' },
+            careerAndEdu: { salaryMultiplier: 1 }
+          }, multipliers, true);
+          cash += income;
+          lifetimeIncome += income;
+          yearsWithCareer += 1;
+        }
+
+        const elderAllowance = getElderAnnualAllowance(age);
+        cash += elderAllowance;
+        lifetimeIncome += elderAllowance;
+      }
+    }
+
+    return { cash, lifetimeIncome, lifetimeLivingCost, yearsWithCareer, initialGift: Math.round(familyCapacity * Number(rules.initial_birth_gift_rate ?? 0.05)) };
+  }
+
+  const scenarios = [
+    { classId: 'class_1', careerId: 'job_daily_construction' },
+    { classId: 'class_2', careerId: 'career_factory_technician' },
+    { classId: 'class_3', careerId: 'career_junior_office' },
+    { classId: 'class_4', careerId: 'career_creative_marketer' },
+    { classId: 'class_5', careerId: 'career_c_level_ceo' }
+  ].map((x) => ({ ...x, result: project(x.classId, x.careerId) }));
+
+  assert.deepEqual(scenarios.map(x => x.result.initialGift), [60, 300, 1200, 6000, 30000]);
+  assert.ok(scenarios.every(x => x.result.lifetimeLivingCost === 4_536_000));
+  assert.ok(scenarios.every(x => x.result.yearsWithCareer > 0));
+  assert.ok(scenarios[0].result.cash < 0, 'low-income construction path falls short of baseline adult living costs');
+  assert.ok(scenarios[1].result.cash > scenarios[0].result.cash);
+  assert.ok(scenarios[2].result.cash > scenarios[1].result.cash);
+  assert.ok(scenarios[3].result.cash > scenarios[2].result.cash);
+  assert.ok(scenarios[4].result.cash > scenarios[3].result.cash);
+  assert.equal(scenarios[4].result.yearsWithCareer, 31);
 });

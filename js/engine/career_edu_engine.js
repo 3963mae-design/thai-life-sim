@@ -398,7 +398,13 @@ export function getAvailableEducationPrograms(state) {
   const conscripted = isPlayerConscripted(state);
   const completedSet = new Set(state.careerAndEdu?.completedDegrees || []);
 
-  return programs.map((prog) => {
+  return programs.filter((prog) => {
+    const completed = completedSet.has(prog.program_id);
+    const enrolled = state.careerAndEdu?.activeStudy?.programId === prog.program_id;
+    const inAge = age >= Number(prog.min_age || 18) && age <= Number(prog.max_age ?? 100);
+    const meetsReq = checkRequirement(prog.req_stats || {}, [], state, { reqAnyFlags: prog.req_any_flags || [] });
+    return completed || enrolled || (inAge && meetsReq && !conscripted && !state.careerAndEdu?.activeStudy);
+  }).map((prog) => {
     const alreadyGraduated = completedSet.has(prog.program_id);
     const isCurrentlyEnrolled = state.careerAndEdu?.activeStudy?.programId === prog.program_id;
     const hasOtherActiveStudy = Boolean(state.careerAndEdu?.activeStudy) && !isCurrentlyEnrolled;
@@ -646,42 +652,50 @@ export function getAvailableLicenses(state) {
   const ownedSet = new Set(state.careerAndEdu?.licenses || []);
   const activeFlags = getPlayerFlagSet(state);
 
-  return allLicenses.map((lic) => {
-    const allFlagsAlreadyOwned =
-      Array.isArray(lic.grants_flags) &&
-      lic.grants_flags.length > 0 &&
-      lic.grants_flags.every((f) => activeFlags.has(f));
+  return allLicenses
+    .filter((lic) => {
+      const allFlagsAlreadyOwned =
+        Array.isArray(lic.grants_flags) &&
+        lic.grants_flags.length > 0 &&
+        lic.grants_flags.every((flag) => activeFlags.has(flag));
+      const isOwned = ownedSet.has(lic.license_id) || allFlagsAlreadyOwned;
+      const inAge = age >= Number(lic.min_age || 15) && age <= Number(lic.max_age ?? 100);
+      const meetsReq = checkRequirement(lic.req_stats || {}, lic.req_flags || [], state);
+      // Owned permits remain visible; future or unqualified permits are not exposed yet.
+      return isOwned || (inAge && meetsReq);
+    })
+    .map((lic) => {
+      const allFlagsAlreadyOwned =
+        Array.isArray(lic.grants_flags) &&
+        lic.grants_flags.length > 0 &&
+        lic.grants_flags.every((flag) => activeFlags.has(flag));
+      const isOwned = ownedSet.has(lic.license_id) || allFlagsAlreadyOwned;
+      const inAge = age >= Number(lic.min_age || 15) && age <= Number(lic.max_age ?? 100);
+      const meetsReq = checkRequirement(lic.req_stats || {}, lic.req_flags || [], state);
+      const cost = Number(lic.cost_cash || 0);
+      const canAfford = Number(state.finance?.cash || 0) >= cost;
+      const lockReasonTh = isOwned
+        ? 'ได้รับใบอนุญาต/ขึ้นทะเบียนเรียบร้อยแล้ว'
+        : !inAge
+          ? `ต้องมีอายุครบ ${lic.min_age} ปีบริบูรณ์ขึ้นไป`
+          : !meetsReq
+            ? buildRequirementLockReasonTh(lic.req_stats, lic.req_flags, [], [], state)
+            : !canAfford
+              ? `เงินสดไม่พอชำระค่าธรรมเนียม (${formatCurrency(cost)})`
+              : '';
+      const isLocked = isOwned || !inAge || !meetsReq || !canAfford;
 
-    const isOwned = ownedSet.has(lic.license_id) || allFlagsAlreadyOwned;
-    const inAge = age >= Number(lic.min_age || 15);
-    const meetsReq = checkRequirement(lic.req_stats || {}, lic.req_flags || [], state);
-    const cost = Number(lic.cost_cash || 0);
-    const canAfford = Number(state.finance?.cash || 0) >= cost;
-
-    let lockReasonTh = '';
-    if (isOwned) {
-      lockReasonTh = 'ได้รับใบอนุญาต/ขึ้นทะเบียนเรียบร้อยแล้ว';
-    } else if (!inAge) {
-      lockReasonTh = `ต้องมีอายุครบ ${lic.min_age} ปีบริบูรณ์ขึ้นไป`;
-    } else if (!meetsReq) {
-      lockReasonTh = buildRequirementLockReasonTh(lic.req_stats, lic.req_flags, [], [], state);
-    } else if (!canAfford) {
-      lockReasonTh = `เงินสดไม่พอชำระค่าธรรมเนียม (${formatCurrency(cost)})`;
-    }
-
-    const isLocked = isOwned || !inAge || !meetsReq || !canAfford;
-
-    return {
-      ...lic,
-      name_th: stripEmojis(lic.name_th),
-      unlocks_description_th: stripEmojis(lic.unlocks_description_th),
-      iconKey: isOwned ? 'check' : 'id_card',
-      isOwned,
-      isLocked,
-      lockIconKey: isLocked && !isOwned ? 'lock' : null,
-      lockReasonTh
-    };
-  });
+      return {
+        ...lic,
+        name_th: stripEmojis(lic.name_th),
+        unlocks_description_th: stripEmojis(lic.unlocks_description_th),
+        iconKey: isOwned ? 'check' : 'id_card',
+        isOwned,
+        isLocked,
+        lockIconKey: isLocked && !isOwned ? 'lock' : null,
+        lockReasonTh
+      };
+    });
 }
 
 /**
@@ -946,7 +960,7 @@ export function getCategorizedJobsForUI(state) {
       lockReasonTh: check.lockReasonTh
     };
 
-    if (categories[jobDef.job_category]) {
+    if (categories[jobDef.job_category] && (check.eligible || check.isEmployedHere)) {
       categories[jobDef.job_category].push(cardObj);
     }
   }

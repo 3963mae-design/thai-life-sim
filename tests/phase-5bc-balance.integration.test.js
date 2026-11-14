@@ -102,3 +102,29 @@ test('stacked Trait and Status multipliers remain within configured bounds',asyn
  assert.equal(r.study_efficiency,1.75);assert.equal(r.work_efficiency,1.75);assert.equal(r.business_income,2);
  assert.equal(r.medical_cost,0);assert.equal(r.lucky_draw_chance,2.5);assert.equal(r.vehicle_maintenance_cost,2.5);assert.equal(r.loan_interest_rate,2.5);
 });
+
+test('age-based progression hides future license, education, job and shop entries', async () => {
+ const {getAvailableEducationPrograms,getAvailableLicenses,getCategorizedJobsForUI}=await import('../js/engine/career_edu_engine.js');
+ const {renderTab2WorkStudy}=await import('../js/ui/tab2_work_study.js');
+ const {renderTab5LifestyleShop}=await import('../js/ui/tab5_lifestyle_shop.js');
+ const s=createEmptyGameState();s.profile.age=12;s.flags=['flag_thai_id_card'];s.finance.cash=100000;s.finance.hasPiggyBankSmashed=true;s.turn.freeActionPoints=3;s.turn.maxFreeActionPoints=3;
+ assert.equal(getAvailableLicenses(s).some(x=>x.license_id==='lic_motorcycle'),false);
+ assert.equal(getAvailableEducationPrograms(s).length,0);
+ assert.equal(Object.values(getCategorizedJobsForUI(s)).flat().length,0);
+ const workHtml=renderTab2WorkStudy(s,{onRefresh(){}}).html;
+ assert.equal(workHtml.includes('สอบใบอนุญาต'),false);
+ assert.equal(workHtml.includes('มหาวิทยาลัย/ปวส.'),false);
+ const shopHtml=renderTab5LifestyleShop(s,{onRefresh(){}}).html;
+ assert.equal(shopHtml.includes('ยานพาหนะ'),false);
+ assert.equal(shopHtml.includes('มอเตอร์ไซค์จ่ายตลาดมือสอง'),false);
+});
+
+test('motorcycle purchase requires the matching license even when age and cash are sufficient', async () => {
+ const {buyShopItem}=await import('../js/engine/economy_engine.js');
+ const s=createEmptyGameState();s.profile.age=15;s.finance.cash=100000;s.finance.hasPiggyBankSmashed=true;s.turn.freeActionPoints=3;
+ const denied=buyShopItem(s,'asset_secondhand_motorcycle','cash');
+ assert.equal(denied.success,false);
+ s.flags.push('flag_motor_license');
+ const allowed=buyShopItem(s,'asset_secondhand_motorcycle','cash');
+ assert.equal(allowed.success,true);
+});

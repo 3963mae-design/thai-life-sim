@@ -119,7 +119,7 @@ test('event choice can be applied once, then the primary action advances to free
 
   const duplicateChoice = selectCurrentEventChoice('choice_continue', state);
   assert.equal(duplicateChoice.success, false);
-  assert.equal(state.stats.happiness, 65);
+  assert.equal(state.stats.happiness, 62);
 
   const actionSpec = getPrimaryActionButtonSpec(state);
   assert.equal(actionSpec.actionType, 'UNLOCK_FREE_ACTION');

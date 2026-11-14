@@ -7,6 +7,7 @@
  */
 
 import { db } from '../core/db.js';
+import { getLifePathPoolWeights } from './life_path_engine.js';
 import { recalculateNetWorth, saveGame } from '../core/state.js';
 import {
   clampStat,
@@ -1160,6 +1161,20 @@ function resolveBucketIconKey(bucketId, evt) {
  * @param {object} state GameState ปัจจุบัน
  * @returns {Array<object>} คิวอีเวนต์ประจำปีที่จัดเดือนเรียบร้อยแล้ว
  */
+/**
+ * Resolve default and Life Path-adjusted annual event pool weights.
+ * Every pool remains eligible; the path only changes relative draw chance.
+ */
+export function getAnnualEventPoolWeights(state){
+ const r=db.raw.loansCrisesEndings?.event_pool_mixing_rules?.pool_weights_percent||{};
+ return getLifePathPoolWeights(state?.profile?.lifePathId,{
+  life_phase:Number(r.life_phase_pool_8_1_to_8_6??40),
+  career:Number(r.career_and_job_pool_8_7_to_8_9??30),
+  relationship:Number(r.relationship_pool_8_10_to_8_11??15),
+  location_karma:Number(r.location_and_karma_pool_8_12??15)
+ });
+}
+
 export function buildAnnualEventQueue(state) {
   if (!state || !state.turn) return [];
 
@@ -1191,12 +1206,10 @@ export function buildAnnualEventQueue(state) {
   // อายุ 0-12 หรือ 60+: ดึง 1 ใบ | อายุ 13-59: ดึง 2 ใบจากคนละหมวดถัง (ยกเว้นมีใบพิเศษเยอะเกินแล้วจะคุมให้ลื่นไหล)
   const targetPoolDraws = age >= 13 && age <= 59 ? 2 : 1;
 
-  const weightsRule = db.raw.loansCrisesEndings?.event_pool_mixing_rules?.pool_weights_percent || {};
-  let availableBuckets = [
-    { id: 'life_phase', weight: Number(weightsRule.life_phase_pool_8_1_to_8_6 ?? 40) },
-    { id: 'career', weight: Number(weightsRule.career_and_job_pool_8_7_to_8_9 ?? 30) },
-    { id: 'relationship', weight: Number(weightsRule.relationship_pool_8_10_to_8_11 ?? 15) },
-    { id: 'location_karma', weight: Number(weightsRule.location_and_karma_pool_8_12 ?? 15) }
+  const w=getAnnualEventPoolWeights(state);
+  let availableBuckets=[
+    {id:'life_phase',weight:w.life_phase},{id:'career',weight:w.career},
+    {id:'relationship',weight:w.relationship},{id:'location_karma',weight:w.location_karma}
   ];
 
   // วัยทารก (0-4 ปี) บังคับดึงจากถังช่วงวัยเป็นหลักเพื่อให้สอดคล้องพัฒนาการทารก

@@ -5,6 +5,7 @@
  */
 
 import { db } from '../core/db.js';
+import { calculateParentalSupport } from '../core/family_support.js';
 import { recalculateNetWorth, saveGame } from '../core/state.js';
 import {
   clampStat,
@@ -224,9 +225,14 @@ export function getCombinedActionMultipliers(state) {
     }
   }
 
-  // ปัดทศนิยมกัน Floating-point drift
+  // Bound compounded Trait/Status modifiers to avoid runaway economy and action odds.
+  const bounds = {
+    study_efficiency:[0.25,1.75],work_efficiency:[0.25,1.75],business_income:[0.25,2.0],
+    medical_cost:[0,3.0],lucky_draw_chance:[0.5,2.5],vehicle_maintenance_cost:[0.25,2.5],loan_interest_rate:[0.25,2.5]
+  };
   for (const key of Object.keys(combined)) {
-    combined[key] = Number(combined[key].toFixed(4));
+    const [min,max] = bounds[key] || [0,3];
+    combined[key] = Number(Math.min(max,Math.max(min,combined[key])).toFixed(4));
   }
 
   return combined;
@@ -371,20 +377,20 @@ export function processAnnualEconomyAndMarket(state) {
   // [A] ฝั่งรายรับ (ANNUAL INCOMES)
   // =========================================================================
 
-  // A1. อายุ 0 - 17 ปี: เงินซัพพอร์ตรายปีจากพ่อแม่ตามชนชั้นกำเนิด
-  if (age >= 0 && age <= 17) {
-    let supportAmount = Number(spawnClass?.parent_annual_support_age_0_to_17 ?? state.finance.parentAnnualSupport ?? 0);
-    // พรสวรรค์เด็กเลี้ยงง่าย (trait_easy_baby -> extra_parent_allowance +15%)
-    if (activeFlags.has('trait_easy_baby')) {
-      supportAmount = Math.round(supportAmount * 1.15);
+  // A1. Family support: separate age-appropriate pocket money from direct-paid care.
+  let familySupport={cashAllowance:0,familyPaidSupport:0,familySupportCapacity:0,supportMultiplier:0,ageRate:0};
+  if(age>=0&&age<=17){
+    const baseSupport=Number(spawnClass?.parent_annual_support_age_0_to_17??state.finance.parentAnnualSupport??0);
+    familySupport=calculateParentalSupport({state,age,baseAnnualSupport:baseSupport,gameConstants:db.getGameConstants()});
+    state.finance.parentAnnualSupport=familySupport.cashAllowance;
+    state.finance.parentPaidSupportAnnual=familySupport.familyPaidSupport;
+    if(familySupport.cashAllowance>0){
+      const toPiggy=age<7&&!state.finance.hasPiggyBankSmashed;
+      recordIncome('เงินค่าขนมจากครอบครัว',familySupport.cashAllowance,toPiggy);
     }
-    state.finance.parentAnnualSupport = supportAmount;
-    if (supportAmount > 0) {
-      const toPiggy = age < 7 && !state.finance.hasPiggyBankSmashed;
-      recordIncome('เงินค่าขนม/ซัพพอร์ตจากพ่อแม่', supportAmount, toPiggy);
-    }
-  } else {
-    state.finance.parentAnnualSupport = 0;
+  }else{
+    state.finance.parentAnnualSupport=0;
+    state.finance.parentPaidSupportAnnual=0;
   }
 
   // A2. รายได้จากอาชีพหลัก (mainJobId) และงานพาร์ทไทม์ (partTimeJobId เฉพาะกำลังเรียน)
@@ -918,6 +924,9 @@ export function processAnnualEconomyAndMarket(state) {
     totalCashIncome,
     totalPiggyIncome,
     totalCashExpense,
+    familySupportCashAllowance: familySupport.cashAllowance,
+    familyPaidSupportAnnual: familySupport.familyPaidSupport,
+    familySupportMultiplier: familySupport.supportMultiplier,
     netCashFlow: totalCashIncome - totalCashExpense,
     incomeItems,
     expenseItems,

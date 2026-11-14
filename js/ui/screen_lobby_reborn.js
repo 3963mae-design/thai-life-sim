@@ -15,6 +15,7 @@ import {
 import { formatCurrency } from '../core/utils.js';
 import { stripEmojis } from '../engine/event_engine.js';
 import { startNewLifeRun } from '../main.js';
+import { DEFAULT_LIFE_PATH_ID, getAvailableLifePaths } from '../engine/life_path_engine.js';
 import { getAudioPrefs, toggleBgm, toggleSfx } from './audio.js';
 import { escapeHtml, renderIcon } from './icons.js';
 import { openModal, showToast } from './modals_ending_ui.js';
@@ -120,7 +121,7 @@ function openSettingsModal(onDataCleared, onAudioUpdated) {
     </div>
 
     <div class="card" style="font-size:13px;color:var(--text-secondary);line-height:1.5;">
-      <p><strong>1 ใน 70 ล้าน สู้ชีวิต Simulator v1.1.0</strong></p>
+      <p><strong>1 ใน 70 ล้าน สู้ชีวิต Simulator v1.2.0</strong></p>
       <p style="margin-top:4px;">ระบบบันทึกข้อมูลลงในอุปกรณ์ของคุณอัตโนมัติ (localStorage) เล่นออฟไลน์ได้หลังโหลดข้อมูลเสร็จ</p>
     </div>
 
@@ -281,6 +282,8 @@ export function renderRebornScreen({ onBackToLobby, onStartLife }) {
   const randIden = generateThaiIdentity(gender, 'class_3', 'player');
   let customName = `${randIden.firstName} ${randIden.lastName} (${randIden.nickname})`;
   const selectedTraitIds = new Set();
+  let selectedLifePathId = DEFAULT_LIFE_PATH_ID;
+  const availableLifePaths = getAvailableLifePaths();
 
   const getSpentMerit = () => {
     let total = 0;
@@ -294,6 +297,17 @@ export function renderRebornScreen({ onBackToLobby, onStartLife }) {
   const renderInner = (rootEl) => {
     const spent = getSpentMerit();
     const remaining = availableMerit - spent;
+
+    const lifePathCardsHtml = availableLifePaths.map((path) => {
+      const selected = path.path_id === selectedLifePathId;
+      return `
+        <button type="button" class="card ${selected ? 'card--highlight' : ''}" data-life-path-id="${escapeHtml(path.path_id)}" aria-pressed="${selected ? 'true' : 'false'}" style="text-align:left;padding:10px 12px;border-width:${selected ? '2px' : '1px'};">
+          <div style="font-weight:700;font-size:13px;">${escapeHtml(path.name_th)}</div>
+          <div style="font-size:11.5px;color:var(--text-secondary);line-height:1.4;margin-top:3px;">${escapeHtml(path.description_th)}</div>
+          ${selected ? '<div style="font-size:11px;font-weight:700;color:var(--success);margin-top:5px;">เลือกเส้นทางนี้แล้ว</div>' : ''}
+        </button>
+      `;
+    }).join('');
 
     const traitCardsHtml = purchasableTraits
       .map((tr) => {
@@ -357,6 +371,12 @@ export function renderRebornScreen({ onBackToLobby, onStartLife }) {
           </div>
 
           <div>
+            <h3 style="font-size:15px;margin-bottom:8px;">เลือกเส้นทางชีวิต</h3>
+            <p style="font-size:12px;color:var(--text-secondary);line-height:1.45;margin-bottom:8px;">เส้นทางมีผลต่อสัดส่วนการสุ่มเหตุการณ์เท่านั้น ไม่ล็อกอาชีพ ความสัมพันธ์ หรือคลังเหตุการณ์หมวดอื่น</p>
+            <div class="list-stack">${lifePathCardsHtml}</div>
+          </div>
+
+          <div>
             <h3 style="font-size:15px;margin-bottom:8px;">เลือกพรสวรรค์ติดตัวแต่เกิด (ไม่บังคับ)</h3>
             <div class="trait-grid">${traitCardsHtml}</div>
           </div>
@@ -404,6 +424,13 @@ export function renderRebornScreen({ onBackToLobby, onStartLife }) {
       });
     });
 
+    rootEl.querySelectorAll('[data-life-path-id]').forEach((card) => {
+      card.addEventListener('click', () => {
+        selectedLifePathId = card.getAttribute('data-life-path-id');
+        renderInner(rootEl);
+      });
+    });
+
     rootEl.querySelectorAll('[data-trait-id]').forEach((card) => {
       card.addEventListener('click', () => {
         const tid = card.getAttribute('data-trait-id');
@@ -427,7 +454,8 @@ export function renderRebornScreen({ onBackToLobby, onStartLife }) {
       }
 
       const freshState = startNewLifeRun(null, null, gender, customName, {
-        purchasedTraitIds: Array.from(selectedTraitIds)
+        purchasedTraitIds: Array.from(selectedTraitIds),
+        lifePathId: selectedLifePathId
       });
 
       if (typeof onStartLife === 'function') {

@@ -16,6 +16,7 @@ import {
   MAX_FREE_ACTION_POINTS
 } from '../core/state.js';
 import { clampStat, getPlayerFlagSet } from '../core/utils.js';
+import { resetAnnualPassiveStatEffects, collectAnnualPassiveStatEffects, applyAnnualPassiveStatEffects } from '../core/annual_passive_stats.js';
 
 import {
   processAnnualEconomyAndMarket,
@@ -216,11 +217,9 @@ export function initializeFirstYearTurn(state = getState()) {
 export function processAnnualLocationAndFlagPassives(state) {
   if (!state) return;
 
-  // 2.1 บวกลบ yearly_passive_effects ของจังหวัดปัจจุบัน
+  // Collect location passives so they share an annual cap with Traits, Statuses and family.
   const currentLoc = db.getLocation(state.profile.currentLocationId);
-  if (currentLoc?.yearly_passive_effects) {
-    applyNonCashStatEffects(state, currentLoc.yearly_passive_effects);
-  }
+  if (currentLoc?.yearly_passive_effects) collectAnnualPassiveStatEffects(state,currentLoc.yearly_passive_effects);
 
   // 2.2 บวกลบ yearly_stat_effects (เฉพาะ health, happiness, intelligence, connections, merit, appearance)
   const activeFlags = getPlayerFlagSet(state);
@@ -233,9 +232,10 @@ export function processAnnualLocationAndFlagPassives(state) {
 
     const def = db.getTraitOrFlag(flagId);
     if (def?.yearly_stat_effects) {
-      applyNonCashStatEffects(state, def.yearly_stat_effects);
+      collectAnnualPassiveStatEffects(state,def.yearly_stat_effects);
     }
   }
+  return applyAnnualPassiveStatEffects(state,db.getGameConstants()?.annual_passive_stat_gain_caps||[]);
 }
 
 /**
@@ -482,6 +482,7 @@ export function startNextYearTurn(state = getState()) {
   }
 
   const maxAp = getMaxFreeActionPointsForAge(newAge);
+  resetAnnualPassiveStatEffects(state);
   state.turn.maxFreeActionPoints = maxAp;
   state.turn.freeActionPoints = maxAp;
   state.turn.awaitingEventAdvance = false;
@@ -489,7 +490,7 @@ export function startNextYearTurn(state = getState()) {
   state.turn.pendingEmergencyDebt = null;
 
   // ขั้นที่ 2: ประมวลผลครอบครัว ความสัมพันธ์ มรดกพ่อแม่ และพัฒนาการลูก
-  const socialReport = processAnnualSocialAndFamilyProgression(state);
+  const socialReport = processAnnualSocialAndFamilyProgression(state,{ deferAnnualPassives:true });
 
   // ขั้นที่ 3: ประมวลผลการเรียน กิจกรรมตามวัย อายุงาน โรคจากการทำงาน และการเกษียณ
   const careerEduReport = processAnnualCareerAndStudyProgression(state);

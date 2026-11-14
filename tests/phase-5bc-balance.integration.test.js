@@ -194,3 +194,31 @@ test('higher education programs have moderated distinct annual intelligence gain
  assert.ok(programs.get('edu_deg_comm_arts').yearly_stat_effects.happiness>
    programs.get('edu_deg_it').yearly_stat_effects.happiness);
 });
+
+test('high responsibility careers exchange larger income for recurring wellbeing costs', () => {
+ const jobs=new Map([
+  ...db.raw.eduJobs.corporate_and_professional_careers,
+  ...db.raw.eduJobs.civil_service_careers,
+  ...db.raw.eduJobs.entrepreneur_and_business_careers
+ ].map(j=>[j.job_id,j]));
+ const ceo=jobs.get('career_c_level_ceo').yearly_stat_effects;
+ const doctor=jobs.get('career_medical_doctor').yearly_stat_effects;
+ const exec=jobs.get('career_multinational_exec').yearly_stat_effects;
+ const manager=jobs.get('career_senior_manager').yearly_stat_effects;
+ const gov=jobs.get('gov_high_ranking_official').yearly_stat_effects;
+ const cafe=jobs.get('own_cafe_and_restaurant').yearly_stat_effects;
+ assert.equal(ceo.health,-6);
+ assert.equal(ceo.happiness,1);
+ assert.equal(ceo.connections,5);
+ assert.equal(doctor.health,-5);
+ assert.equal(doctor.happiness,1);
+ assert.equal(exec.health,-5);
+ assert.equal(exec.happiness,1);
+ assert.equal(manager.health,-4);
+ assert.equal(manager.happiness,0);
+ assert.equal(gov.health,-4);
+ assert.equal(cafe.health,-4);
+ assert.ok(ceo.health<manager.health);
+ assert.ok(ceo.happiness<jobs.get('gov_civil_officer').yearly_stat_effects.happiness);
+ assert.ok(doctor.merit===5);
+});

@@ -965,12 +965,12 @@
         "flag_regular_income"
       ],
       "yearly_stat_effects": {
-        "health": -3,
-        "happiness": 1,
+        "health": -4,
+        "happiness": 0,
         "intelligence": 2,
-        "connections": 4,
+        "connections": 3,
         "merit": 0,
-        "appearance": 2
+        "appearance": 1
       },
       "risk_status_trigger": "status_hypertension",
       "description_th": "ก้าวขึ้นสู่ตำแหน่งผู้บริหารระดับกลาง ดูแลทีมงานและงบประมาณบริษัท รับเงินเดือนระดับ 45,000 บาทขึ้นไป"
@@ -1000,12 +1000,12 @@
         "flag_private_hospital_access"
       ],
       "yearly_stat_effects": {
-        "health": -4,
-        "happiness": 2,
-        "intelligence": 3,
-        "connections": 5,
+        "health": -5,
+        "happiness": 1,
+        "intelligence": 2,
+        "connections": 4,
         "merit": 5,
-        "appearance": 2
+        "appearance": 1
       },
       "risk_status_trigger": "status_chronic_insomnia",
       "description_th": "ตรวจรักษาผู้ป่วยและเข้าเวรห้องฉุกเฉิน เป็นอาชีพที่ได้รับความเคารพนับถือสูงสุด รายได้รวมค่าเวรเกือบล้านบาทต่อปี และได้แต้มบุญจากการช่วยชีวิตผู้คน"
@@ -1038,12 +1038,12 @@
         "flag_private_hospital_access"
       ],
       "yearly_stat_effects": {
-        "health": -3,
-        "happiness": 3,
-        "intelligence": 3,
-        "connections": 6,
+        "health": -5,
+        "happiness": 1,
+        "intelligence": 2,
+        "connections": 4,
         "merit": 0,
-        "appearance": 3
+        "appearance": 1
       },
       "description_th": "บริหารงานระดับภูมิภาคด้วยทักษะภาษาอังกฤษระดับมืออาชีพ รับเงินเดือนหลักแสนต่อเดือนพร้อมโบนัสก้อนโต"
     },
@@ -1077,12 +1077,12 @@
         "flag_private_hospital_access"
       ],
       "yearly_stat_effects": {
-        "health": -4,
-        "happiness": 5,
-        "intelligence": 3,
-        "connections": 8,
+        "health": -6,
+        "happiness": 1,
+        "intelligence": 2,
+        "connections": 5,
         "merit": 0,
-        "appearance": 4
+        "appearance": 1
       },
       "risk_status_trigger": "status_hypertension",
       "description_th": "จุดสูงสุดของสายอาชีพพนักงานองค์กร กุมบังเหียนบริษัทในตลาดหลักทรัพย์ รับผลตอบแทนและโบนัสปีละหลายล้านบาท"
@@ -1260,12 +1260,12 @@
         "flag_elite_connection"
       ],
       "yearly_stat_effects": {
-        "health": -2,
-        "happiness": 4,
+        "health": -4,
+        "happiness": 2,
         "intelligence": 2,
-        "connections": 6,
+        "connections": 5,
         "merit": 2,
-        "appearance": 3
+        "appearance": 2
       },
       "description_th": "จุดสูงสุดของสายงานราชการ มีบารมีและเกียรติยศเป็นที่นับหน้าถือตาของคนทั้งจังหวัด พร้อมเงินประจำตำแหน่งและบำนาญก้อนใหญ่"
     }
@@ -1363,12 +1363,12 @@
         "flag_family_business"
       ],
       "yearly_stat_effects": {
-        "health": -2,
-        "happiness": 4,
+        "health": -4,
+        "happiness": 3,
         "intelligence": 2,
-        "connections": 5,
+        "connections": 4,
         "merit": 0,
-        "appearance": 2
+        "appearance": 1
       },
       "description_th": "บริหารร้านคาเฟ่บรรยากาศดีและคิดค้นเมนูใหม่ๆ เป็นกิจการที่มีหน้าร้านชัดเจน ใช้ยื่นกู้ซื้อบ้านได้และส่งต่อเป็นมรดกให้ลูกหลานได้"
     },
@@ -1430,12 +1430,12 @@
         "flag_private_hospital_access"
       ],
       "yearly_stat_effects": {
-        "health": -2,
-        "happiness": 4,
+        "health": -4,
+        "happiness": 2,
         "intelligence": 2,
-        "connections": 5,
+        "connections": 4,
         "merit": 1,
-        "appearance": 3
+        "appearance": 2
       },
       "description_th": "รับช่วงต่อกิจการของครอบครัวหรือขยายอาณาจักรธุรกิจของตัวเองให้เติบโต รับกำไรสุทธิปีละเกือบล้านบาทพร้อมความมั่นคงระดับเฒ่าแก่"
     }

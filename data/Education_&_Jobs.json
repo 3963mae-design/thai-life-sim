@@ -284,7 +284,7 @@
       "yearly_stat_effects": {
         "health": -4,
         "happiness": -3,
-        "intelligence": 7,
+        "intelligence": 5,
         "connections": 3,
         "merit": 2,
         "appearance": 0
@@ -315,7 +315,7 @@
       "yearly_stat_effects": {
         "health": -1,
         "happiness": -1,
-        "intelligence": 5,
+        "intelligence": 4,
         "connections": 3,
         "merit": 0,
         "appearance": 1
@@ -346,7 +346,7 @@
       "yearly_stat_effects": {
         "health": -2,
         "happiness": -1,
-        "intelligence": 5,
+        "intelligence": 4,
         "connections": 3,
         "merit": 0,
         "appearance": 0
@@ -377,7 +377,7 @@
       "yearly_stat_effects": {
         "health": -1,
         "happiness": 1,
-        "intelligence": 4,
+        "intelligence": 3,
         "connections": 3,
         "merit": 2,
         "appearance": 1
@@ -409,7 +409,7 @@
       "yearly_stat_effects": {
         "health": 0,
         "happiness": 1,
-        "intelligence": 4,
+        "intelligence": 3,
         "connections": 4,
         "merit": 0,
         "appearance": 2
@@ -441,7 +441,7 @@
       "yearly_stat_effects": {
         "health": -2,
         "happiness": 0,
-        "intelligence": 6,
+        "intelligence": 5,
         "connections": 2,
         "merit": 0,
         "appearance": 0
@@ -504,7 +504,7 @@
       "yearly_stat_effects": {
         "health": -1,
         "happiness": 1,
-        "intelligence": 3,
+        "intelligence": 2,
         "connections": 3,
         "merit": 0,
         "appearance": 0

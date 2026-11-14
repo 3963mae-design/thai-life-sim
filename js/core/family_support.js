@@ -20,6 +20,7 @@ export function calculateParentalSupport({state,age,baseAnnualSupport,gameConsta
  if(currentAge<=6&&state?.innateTraits?.includes('trait_easy_baby'))cashAllowance=Math.round(cashAllowance*1.15);
  // The allowance is a transfer from the family's finite annual support budget.
  // A minimum allowance must never create money beyond that budget (notably class_1 at ages 13-17).
- cashAllowance=Math.min(familySupportCapacity,Math.max(0,cashAllowance));
+ const annualCashCap=Math.max(0,Number(gameConstants.max_annual_cash_allowance??Number.MAX_SAFE_INTEGER));
+ cashAllowance=Math.min(familySupportCapacity,annualCashCap,Math.max(0,cashAllowance));
  return{cashAllowance,familyPaidSupport:Math.max(0,familySupportCapacity-cashAllowance),familySupportCapacity,supportMultiplier,ageRate};
 }

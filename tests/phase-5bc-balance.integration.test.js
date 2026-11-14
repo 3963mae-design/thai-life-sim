@@ -35,6 +35,14 @@ test('poor-family teen allowance is capped by the actual family support budget',
  assert.ok(result.cashAllowance+result.familyPaidSupport<=result.familySupportCapacity);
 });
 
+test('high-income family allowance respects the annual personal-cash ceiling',()=>{
+ const s=parents({fr:100,mr:100}),g=db.getGameConstants();
+ const result=calculateParentalSupport({state:s,age:13,baseAnnualSupport:600000,gameConstants:g});
+ assert.equal(result.cashAllowance,10000);
+ assert.equal(result.familyPaidSupport,590000);
+ assert.equal(result.cashAllowance+result.familyPaidSupport,result.familySupportCapacity);
+});
+
 test('parent relationship and household composition affect support multipliers',()=>{
  const rule=db.getGameConstants().parent_support_relationship_multiplier;
  assert.equal(getParentalSupportMultiplier(parents({fr:100,mr:100}),rule),1);

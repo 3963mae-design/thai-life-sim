@@ -140,7 +140,8 @@
           "location_karma": 1.8
         }
       }
-    ]
+    ],
+    "max_annual_cash_allowance": 10000
   },
   "core_stats_definitions": [
     {

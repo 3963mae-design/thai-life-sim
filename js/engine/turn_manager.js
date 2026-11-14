@@ -490,7 +490,7 @@ export function startNextYearTurn(state = getState()) {
   state.turn.pendingEmergencyDebt = null;
 
   // ขั้นที่ 2: ประมวลผลครอบครัว ความสัมพันธ์ มรดกพ่อแม่ และพัฒนาการลูก
-  const socialReport = processAnnualSocialAndFamilyProgression(state);
+  const socialReport = processAnnualSocialAndFamilyProgression(state,{ deferAnnualPassives:true });
 
   // ขั้นที่ 3: ประมวลผลการเรียน กิจกรรมตามวัย อายุงาน โรคจากการทำงาน และการเกษียณ
   const careerEduReport = processAnnualCareerAndStudyProgression(state);

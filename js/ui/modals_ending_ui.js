@@ -132,6 +132,11 @@ export function openAnnualSlipModal(state, onComplete) {
         </div>`
       : '';
 
+  const familySupportNote = Number(slip.familyPaidSupportAnnual || 0) > 0
+    ? `<div class="card" style="padding:9px 12px;background:var(--info-bg);font-size:12px;line-height:1.45;">
+        ครอบครัวช่วยจ่ายค่าใช้จ่ายพื้นฐานโดยตรงประมาณ ${escapeHtml(formatCurrency(slip.familyPaidSupportAnnual))} ในปีนี้ (ไม่ใช่เงินสดหรือ Net Worth ของคุณ)
+      </div>`
+    : '';
   const netFlow = Number(slip.netCashFlow || 0);
 
   openModal(
@@ -145,6 +150,7 @@ export function openAnnualSlipModal(state, onComplete) {
     </div>
 
     ${piggyNote}
+    ${familySupportNote}
 
     <div class="card" style="padding:10px 12px;">
       <div style="font-weight:700;font-size:13px;margin-bottom:4px;color:var(--success);">รายรับประจำปี</div>

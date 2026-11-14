@@ -76,7 +76,7 @@ test('annual passive stat gains are cumulatively capped while negative effects r
  collectAnnualPassiveStatEffects(s,{health:2,happiness:3,intelligence:4,connections:3,merit:4});
  collectAnnualPassiveStatEffects(s,{health:2,happiness:-4,intelligence:-5,connections:3,merit:2});
  const r=applyAnnualPassiveStatEffects(s,db.getGameConstants().annual_passive_stat_gain_caps);
- assert.equal(r.health,3);assert.equal(r.happiness,-1);assert.equal(r.intelligence,-1);assert.equal(r.connections,3);assert.equal(r.merit,6);
+ assert.equal(r.health,1);assert.equal(r.happiness,-1);assert.equal(r.intelligence,-1);assert.equal(r.connections,1);assert.equal(r.merit,6);
  assert.deepEqual(s.turn.annualPassiveStatEffects,{});
 });
 test('annual career and study passives use the shared diminishing-gain cap',()=>{
@@ -89,8 +89,9 @@ test('annual career and study passives use the shared diminishing-gain cap',()=>
   processAnnualCareerAndStudyProgression(s,{deferAnnualPassives:true});
   assert.equal(s.stats.health,70,'recurring career passives are deferred to the annual aggregator');
   const applied=applyAnnualPassiveStatEffects(s,db.getGameConstants().annual_passive_stat_gain_caps);
-  assert.equal(applied.health,3);
-  assert.equal(applied.intelligence,1);
+  assert.equal(applied.health,1);
+  assert.equal(applied.intelligence,0);
+   assert.ok(s.statCounters.statGainRemainders.intelligence > 0);
  } finally { db.getActivity=originalGetActivity; }
 });
 

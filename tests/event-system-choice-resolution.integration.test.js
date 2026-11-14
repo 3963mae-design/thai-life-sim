@@ -127,13 +127,15 @@ test('stat threshold rewards are applied once when a threshold flag becomes acti
   state.stats.appearance = 55;
 
   const first = checkStatThresholdsAndDeath(state);
-  assert.equal(state.stats.happiness, 61);
-  assert.equal(state.stats.appearance, 56);
+  assert.equal(state.stats.happiness, 60);
+  assert.equal(state.stats.appearance, 55);
+  assert.ok(state.statCounters.statGainRemainders.happiness > 0);
+  assert.ok(state.statCounters.statGainRemainders.appearance > 0);
   assert.ok(first.grantedThresholdFlags.includes('flag_iron_body'));
 
   const second = checkStatThresholdsAndDeath(state);
-  assert.equal(state.stats.happiness, 61);
-  assert.equal(state.stats.appearance, 56);
+  assert.equal(state.stats.happiness, 60);
+  assert.equal(state.stats.appearance, 55);
   assert.equal(second.grantedThresholdFlags.includes('flag_iron_body'), false);
 });
 
@@ -229,8 +231,8 @@ test('choice applies stat effects, grants flags, records life feed, and marks th
   const result = selectCurrentEventChoice('choice_apply_effects', state);
 
   assert.equal(result.success, true);
-  assert.equal(state.stats.happiness, 68);
-  assert.equal(state.stats.intelligence, 59);
+  assert.equal(state.stats.happiness, 63);
+  assert.equal(state.stats.intelligence, 56);
   assert.equal(state.finance.cash, 1500);
   assert.ok(state.flags.includes('flag_event_test_reward'));
   assert.ok(state.turn.triggeredEventIdsThisLife.includes('evt_test_choice_resolution'));
@@ -305,7 +307,7 @@ test('RNG choice applies the success branch when the deterministic roll succeeds
 
   assert.equal(result.success, true);
   assert.equal(result.rngRollInfo.isSuccess, true);
-  assert.equal(state.stats.happiness, 72);
+  assert.equal(state.stats.happiness, 64);
   assert.ok(state.flags.includes('flag_rng_success'));
 });
 

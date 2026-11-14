@@ -244,6 +244,7 @@ export function createEmptyGameState() {
     statCounters: {
       zeroHappinessStreakYears: 0,
       lastZeroHappinessCountedAge: -1,
+      statGainRemainders: { health: 0, happiness: 0, intelligence: 0, connections: 0, appearance: 0 },
       onTimeLoanPaymentStreakYears: 0,
       blacklistClearedCountdownYears: 0,
       lastMotherAidAge: -99

@@ -6,6 +6,7 @@
 
 import { db } from '../core/db.js';
 import { calculateParentalSupport } from '../core/family_support.js';
+import { applyStatEffects as applyCoreStatEffects } from '../core/stat_engine.js';
 import { recalculateNetWorth, saveGame } from '../core/state.js';
 import {
   clampStat,
@@ -66,18 +67,7 @@ function removeFlagOrStatusFromState(state, flagId) {
 function applyStatEffects(state, effects) {
   if (!effects || typeof effects !== 'object' || !state.stats) return;
 
-  const coreStats = ['health', 'happiness', 'intelligence', 'connections', 'appearance'];
-  for (const key of coreStats) {
-    if (effects[key] !== undefined && effects[key] !== 0) {
-      state.stats[key] = clampStat(Number(state.stats[key] ?? 0) + Number(effects[key]), 0, 100);
-    }
-  }
-
-  // แต้มบุญ (merit / legacy alias karma) ไม่จำกัดเพดานบน (uncapped)
-  const meritDelta = Number(effects.merit ?? 0) + Number(effects.karma ?? 0);
-  if (meritDelta !== 0) {
-    state.stats.merit = clampStat(Number(state.stats.merit ?? 0) + meritDelta, -9999, null);
-  }
+  applyCoreStatEffects(state, effects);
 }
 
 /**

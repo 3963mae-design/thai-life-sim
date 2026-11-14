@@ -204,7 +204,7 @@ test('event card renders the current event and binds a choice click to the game 
   view.bind(new FakeContainer([choiceButton]));
   choiceButton.click();
 
-  assert.equal(state.stats.happiness, 68);
+  assert.equal(state.stats.happiness, 63);
   assert.equal(state.turn.awaitingEventAdvance, true);
   assert.equal(state.turn.lastChoiceOutcome?.success, true);
   assert.deepEqual(refreshCalls, ['refresh']);

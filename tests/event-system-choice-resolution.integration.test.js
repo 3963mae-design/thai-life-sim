@@ -12,7 +12,8 @@ import {
 } from '../js/engine/event_engine.js';
 import {
   selectCurrentEventChoice,
-  proceedAfterEventOutcome
+  proceedAfterEventOutcome,
+  checkStatThresholdsAndDeath
 } from '../js/engine/turn_manager.js';
 
 const originalLocalStorage = globalThis.localStorage;
@@ -118,6 +119,46 @@ function queueOneEvent(state, eventOverrides = {}, choices = []) {
   state.turn.areTabsLocked = true;
   state.turn.awaitingEventAdvance = false;
 }
+
+test('stat threshold rewards are applied once when a threshold flag becomes active', () => {
+  const state = createEventState(25);
+  state.stats.health = 100;
+  state.stats.happiness = 60;
+  state.stats.appearance = 55;
+
+  const first = checkStatThresholdsAndDeath(state);
+  assert.equal(state.stats.happiness, 61);
+  assert.equal(state.stats.appearance, 56);
+  assert.ok(first.grantedThresholdFlags.includes('flag_iron_body'));
+
+  const second = checkStatThresholdsAndDeath(state);
+  assert.equal(state.stats.happiness, 61);
+  assert.equal(state.stats.appearance, 56);
+  assert.equal(second.grantedThresholdFlags.includes('flag_iron_body'), false);
+});
+
+test('zero-happiness streak advances at most once per age and depression penalty is not repeated by threshold checks', () => {
+  const state = createEventState(25);
+  state.stats.happiness = 0;
+
+  checkStatThresholdsAndDeath(state);
+  checkStatThresholdsAndDeath(state);
+  assert.equal(state.statCounters.zeroHappinessStreakYears, 1);
+  assert.equal(state.stats.health, 70);
+  assert.equal(state.stats.intelligence, 55);
+
+  state.profile.age = 26;
+  const secondYear = checkStatThresholdsAndDeath(state);
+  assert.equal(state.statCounters.zeroHappinessStreakYears, 2);
+  assert.ok(state.flags.includes('flag_depression'));
+  assert.equal(state.stats.health, 65);
+  assert.equal(state.stats.intelligence, 53);
+  assert.ok(secondYear.grantedThresholdFlags.includes('flag_depression'));
+
+  checkStatThresholdsAndDeath(state);
+  assert.equal(state.stats.health, 65);
+  assert.equal(state.stats.intelligence, 53);
+});
 
 test('builds a non-empty annual event queue with unique IDs and chronological Thai months', () => {
   const state = createEventState(25);

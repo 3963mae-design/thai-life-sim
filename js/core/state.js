@@ -243,7 +243,6 @@ export function createEmptyGameState() {
     // ตัวนับสำหรับเงื่อนไขพิเศษข้ามปี (เช่น happiness == 0 ติดกัน 2 ปีติดซึมเศร้า)
     statCounters: {
       zeroHappinessStreakYears: 0,
-      lastZeroHappinessCountedAge: -1,
       onTimeLoanPaymentStreakYears: 0,
       blacklistClearedCountdownYears: 0,
       lastMotherAidAge: -99

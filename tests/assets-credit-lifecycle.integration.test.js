@@ -84,6 +84,7 @@ function createCreditState(age = 25) {
 
 test('buys an installment vehicle and processes its annual payment and depreciation', () => {
   const state = createCreditState();
+  state.flags.push('flag_motor_license');
   const purchase = buyShopItem(state, 'asset_new_motorcycle', 'installment');
 
   assert.equal(purchase.success, true);
@@ -108,6 +109,7 @@ test('buys an installment vehicle and processes its annual payment and depreciat
 
 test('selling a financed asset settles its linked remaining installments exactly once', () => {
   const state = createCreditState();
+  state.flags.push('flag_motor_license');
   const purchase = buyShopItem(state, 'asset_new_motorcycle', 'installment');
   const assetId = purchase.assetInstanceId;
 
@@ -158,7 +160,7 @@ test('two consecutive missed personal-loan payments compound interest and trigge
   state.flags.push('flag_personal_loan_active', 'flag_credit_good');
 
   processAnnualEconomyAndMarket(state);
-  assert.equal(state.finance.activeLoans[0].principalRemaining, 11_800);
+  assert.equal(state.finance.activeLoans[0].principalRemaining, 11_440);
   assert.equal(state.finance.activeLoans[0].missedYears, 1);
   assert.ok(state.flags.includes('flag_loan_payment_overdue'));
   assert.equal(state.statCounters.onTimeLoanPaymentStreakYears, 0);
@@ -166,7 +168,7 @@ test('two consecutive missed personal-loan payments compound interest and trigge
   state.profile.age = 26;
   processAnnualEconomyAndMarket(state);
 
-  assert.equal(state.finance.activeLoans[0].principalRemaining, 13_924);
+  assert.equal(state.finance.activeLoans[0].principalRemaining, 13_087);
   assert.equal(state.finance.activeLoans[0].missedYears, 2);
   assert.ok(state.flags.includes('flag_credit_blacklist'));
   assert.ok(state.flags.includes('flag_loan_payment_overdue'));

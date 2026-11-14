@@ -260,6 +260,8 @@ test('baseline lifetime cash-flow scenarios use configured family support, caree
     state.profile.spawnClassId = classId;
     state.profile.currentClassId = classId;
     state.relationships.npcs = [];
+    state.flags = [...(familyClass.starting_flags || [])];
+    const classMultipliers = getCombinedActionMultipliers(state);
     const familyCapacity = Number(familyClass.parent_annual_support_age_0_to_17 || 0);
     let cash = Math.round(familyCapacity * Number(rules.initial_birth_gift_rate ?? 0.05));
     let lifetimeIncome = cash;
@@ -288,10 +290,20 @@ test('baseline lifetime cash-flow scenarios use configured family support, caree
           const income = calculateJobAnnualIncome(career, {
             profile: { currentLocationId: 'loc_chiangmai' },
             careerAndEdu: { salaryMultiplier: 1 }
-          }, multipliers, true);
+          }, classMultipliers, true);
           cash += income;
           lifetimeIncome += income;
           yearsWithCareer += 1;
+        }
+
+        for (const flagId of state.flags) {
+          const flag = db.getTraitOrFlag(flagId);
+          const minAge = Number(flag?.cash_effect_min_age ?? 0);
+          const flagCash = Number(flag?.yearly_stat_effects?.cash || 0);
+          if (age >= minAge && flagCash > 0) {
+            cash += flagCash;
+            lifetimeIncome += flagCash;
+          }
         }
 
         const elderAllowance = getElderAnnualAllowance(age);

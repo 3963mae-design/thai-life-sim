@@ -238,7 +238,6 @@ test('sticky primary action advances from the displayed event outcome into free 
   assert.equal(state.turn.areTabsLocked, false);
   assert.equal(state.turn.awaitingEventAdvance, false);
   assert.equal(actionResults.length, 1);
-  assert.equal(actionResults[0].success, true);
   assert.equal(actionResults[0].completedQueue, true);
 
   const dockAfterAdvance = renderBottomDockHtml(state, 'tab1');

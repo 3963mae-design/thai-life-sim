@@ -181,7 +181,14 @@ test('pays annual dividends with withholding tax and the elite-connection bonus,
     inv_thai_gov_bond: 0
   });
 
-  const slip = processAnnualEconomyAndMarket(state);
+  const originalRandom = Math.random;
+  let slip;
+  try {
+    Math.random = () => 0.999; // Force the no-prize outcome; this test covers dividends, not lottery variance.
+    slip = processAnnualEconomyAndMarket(state);
+  } finally {
+    Math.random = originalRandom;
+  }
   const savingsInterest = slip.incomeItems.find((item) => item.labelTh.includes('ธนาคารออมสิน'));
   const lotteryInterest = slip.incomeItems.find((item) => item.labelTh.includes('สลากออมสิน'));
   const bondDividend = slip.incomeItems.find((item) => item.labelTh.includes('เงินปันผลสุทธิ') && item.labelTh.includes('พันธบัตร'));

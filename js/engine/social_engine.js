@@ -21,6 +21,7 @@ import {
 } from '../core/utils.js';
 import { isPlayerCurrentlyStudying } from './career_edu_engine.js';
 import { stripEmojis } from './event_engine.js';
+import { collectAnnualPassiveStatEffects } from '../core/annual_passive_stats.js';
 
 // ============================================================================
 // Constants & Internal Helpers
@@ -1164,7 +1165,7 @@ export function processAnnualSocialAndFamilyProgression(state) {
 
     if (Number(npc.relationship || 0) >= 80) {
       if (archDef.yearly_passive_effects_when_high_rel) {
-        applySocialStatEffects(state, archDef.yearly_passive_effects_when_high_rel);
+        collectAnnualPassiveStatEffects(state,archDef.yearly_passive_effects_when_high_rel);
       }
       for (const closeFlag of archDef.grants_flags_when_close || []) {
         addFlagOrStatus(state, closeFlag);
@@ -1188,7 +1189,7 @@ export function processAnnualSocialAndFamilyProgression(state) {
     if (partner.status === 'married' && partner.financialTraitId) {
       const spTrait = db.indexes.spouseTraits.get(partner.financialTraitId);
       if (spTrait?.yearly_stat_effects) {
-        applySocialStatEffects(state, spTrait.yearly_stat_effects);
+        collectAnnualPassiveStatEffects(state,spTrait.yearly_stat_effects);
       }
       if (spTrait?.yearly_relationship_decay) {
         partner.relationship = clampStat(
@@ -1247,7 +1248,7 @@ export function processAnnualSocialAndFamilyProgression(state) {
         });
 
         if (outcome.yearly_parent_stat_bonus) {
-          applySocialStatEffects(state, outcome.yearly_parent_stat_bonus);
+          collectAnnualPassiveStatEffects(state,outcome.yearly_parent_stat_bonus);
         }
 
         const supportAmt = Number(outcome.annual_filial_support_cash || 0);
@@ -1264,7 +1265,7 @@ export function processAnnualSocialAndFamilyProgression(state) {
     else if (child.outcomeId) {
       const outDef = outcomeDefs.find((o) => o.outcome_id === child.outcomeId);
       if (outDef?.yearly_parent_stat_bonus) {
-        applySocialStatEffects(state, outDef.yearly_parent_stat_bonus);
+        collectAnnualPassiveStatEffects(state,outDef.yearly_parent_stat_bonus);
       }
     }
   }

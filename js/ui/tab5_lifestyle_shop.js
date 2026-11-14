@@ -37,6 +37,14 @@ function renderShopCategory(state, categoryId) {
   }
 
   return items
+    .filter((item) => {
+      const ownedOnce = item.is_one_time_purchase && purchasedOneTime.has(item.item_id);
+      const inAge = age >= Number(item.min_age || 0) && age <= Number(item.max_age ?? 100);
+      const meetsFlags = checkRequirement(null, item.req_flags || [], state, {
+        forbiddenFlags: item.forbidden_flags || []
+      });
+      return ownedOnce || (inAge && meetsFlags);
+    })
     .map((item) => {
       const ownedOnce = item.is_one_time_purchase && purchasedOneTime.has(item.item_id);
       const inAge = age >= Number(item.min_age || 0) && age <= Number(item.max_age ?? 100);
@@ -177,7 +185,21 @@ export function renderTab5LifestyleShop(state, { onRefresh }) {
   const phase = db.getLifePhaseByAge(age);
   const estLiving = Math.round(Number(phase?.baseAnnualLivingCost || 0) * Number(loc?.cost_of_living_multiplier || 1));
 
-  const subTabsHtml = SHOP_TABS.map(
+  const visibleShopTabs = SHOP_TABS.filter((tab) => {
+    if (tab.id === 'relocate') return age >= 18;
+    return (db.raw.shop?.[tab.id] || []).some((item) => {
+      const ownedOnce = item.is_one_time_purchase && (state.finance?.purchasedOneTimeItems || []).includes(item.item_id);
+      const inAge = age >= Number(item.min_age || 0) && age <= Number(item.max_age ?? 100);
+      const meetsFlags = checkRequirement(null, item.req_flags || [], state, {
+        forbiddenFlags: item.forbidden_flags || []
+      });
+      return ownedOnce || (inAge && meetsFlags);
+    });
+  });
+  if (!visibleShopTabs.some((tab) => tab.id === activeShopTab)) {
+    activeShopTab = visibleShopTabs[0]?.id || 'childhood_school_shop';
+  }
+  const subTabsHtml = visibleShopTabs.map(
     (t) => `<button type="button" class="subtab-pill ${activeShopTab === t.id ? 'is-active' : ''}" data-shop-subtab="${t.id}">${escapeHtml(t.label)}</button>`
   ).join('');
 

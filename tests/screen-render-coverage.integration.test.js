@@ -50,7 +50,8 @@ const [
   { renderTab3Relationships },
   { renderTab4AssetsDebt },
   { renderTab5LifestyleShop },
-  { renderEndingScreen }
+  { renderEndingScreen },
+  { renderAnnualBreakdownRows }
 ] = await Promise.all([
   import('../js/ui/screen_lobby_reborn.js'),
   import('../js/ui/tab1_life_feed.js'),
@@ -58,6 +59,7 @@ const [
   import('../js/ui/tab3_relationships.js'),
   import('../js/ui/tab4_assets_debt.js'),
   import('../js/ui/tab5_lifestyle_shop.js'),
+  import('../js/ui/modals_ending_ui.js'),
   import('../js/ui/modals_ending_ui.js')
 ]);
 
@@ -258,4 +260,13 @@ test('ending screen renders a completed-life summary and binds the return-to-lob
   returnButton.click();
 
   assert.equal(returned, 1);
+});
+
+test('annual slip breakdown renderer labels and formats category totals', () => {
+  const html = renderAnnualBreakdownRows({ employment: 120000, investment: 2500, other: 0 }, { employment: 'เงินเดือนและงานเสริม', investment: 'ดอกเบี้ยและเงินปันผล', other: 'รายรับอื่น' }, 'amt-pos');
+  assert.match(html, /เงินเดือนและงานเสริม/);
+  assert.match(html, /ดอกเบี้ยและเงินปันผล/);
+  assert.doesNotMatch(html, /รายรับอื่น/);
+  assert.match(html, /amt-pos/);
+  assert.match(html, /120,000/);
 });

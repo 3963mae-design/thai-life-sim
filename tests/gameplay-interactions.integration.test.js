@@ -18,6 +18,7 @@ const originalIndexEntries = Object.fromEntries(
   Object.entries(db.indexes).map(([key, map]) => [key, new Map(map)])
 );
 const storage = new Map();
+let runCounter = 0;
 
 globalThis.localStorage = {
   getItem(key) {
@@ -110,7 +111,7 @@ class FakeContainer {
 
 function createInteractionState(age = 25) {
   const state = createEmptyGameState();
-  state.meta.runId = `phase-4m-${age}-${Math.random()}`;
+  state.meta.runId = `phase-4m-${age}-${++runCounter}`;
   state.profile.name = 'ผู้เล่นทดสอบ';
   state.profile.firstName = 'ผู้เล่น';
   state.profile.lastName = 'ทดสอบ';
@@ -283,5 +284,5 @@ test('assets and debt subtab button switches to owned assets and requests a refr
     onRefresh: () => refreshCalls++
   });
   assert.match(ownedView.html, /data-asset-subtab="owned"/);
-  assert.match(ownedView.html, /ทรัพย์สินที่ครอบครอง/);
+  assert.match(ownedView.html, /class="subtab-pill is-active" data-asset-subtab="owned"/);
 });

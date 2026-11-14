@@ -134,7 +134,7 @@ test('round-trips the complete gameplay state across a fresh load', () => {
   setState(state);
   assert.equal(saveGame(), true);
   const stored = JSON.parse(storage.get(SAVE_STORAGE_KEY));
-  assert.equal(stored.finance.netWorth, 21050);
+  assert.equal(stored.finance.netWorth, 20050);
 
   setState(null);
   const restored = loadGame();

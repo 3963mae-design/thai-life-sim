@@ -211,7 +211,7 @@ test('event card renders the current event and binds a choice click to the game 
 
   const resultView = renderTab1LifeFeed(state, { onRefresh() {} });
   assert.match(resultView.html, /ผลลัพธ์การตัดสินใจ/);
-  assert.match(resultView.html, new RegExp(state.turn.lastChoiceOutcome.outcomeTextTh));
+  assert.ok(resultView.html.includes(state.turn.lastChoiceOutcome.outcomeTextTh));
 });
 
 test('sticky primary action advances from the displayed event outcome into free action', () => {
@@ -263,7 +263,7 @@ test('save and reload preserve the event outcome required to render the same res
 
   const restoredView = renderTab1LifeFeed(restoredState, { onRefresh() {} });
   assert.match(restoredView.html, /ผลลัพธ์การตัดสินใจ/);
-  assert.match(restoredView.html, new RegExp(result.outcomeTextTh));
+  assert.ok(restoredView.html.includes(result.outcomeTextTh));
 
   const restoredDock = renderBottomDockHtml(restoredState, 'tab1');
   assert.match(restoredDock, /เข้าสู่ช่วงอิสระท้ายปี/);

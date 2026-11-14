@@ -104,7 +104,7 @@
       "yearly_stat_effects": {
         "health": -1,
         "happiness": -1,
-        "intelligence": 4,
+        "intelligence": 3,
         "connections": 1,
         "merit": 1,
         "appearance": 0
@@ -128,7 +128,7 @@
       "yearly_stat_effects": {
         "health": -2,
         "happiness": -2,
-        "intelligence": 7,
+        "intelligence": 4,
         "connections": 1,
         "merit": 0,
         "appearance": 0
@@ -153,12 +153,12 @@
         "tag_screen_addict"
       ],
       "yearly_stat_effects": {
-        "health": 5,
-        "happiness": 3,
+        "health": 3,
+        "happiness": 2,
         "intelligence": -1,
-        "connections": 3,
+        "connections": 2,
         "merit": 0,
-        "appearance": 2
+        "appearance": 1
       },
       "description_th": "ฝึกซ้อมกีฬาเป็นตัวแทนโรงเรียน ร่างกายแข็งแรงกำยำและได้เพื่อนฝูงมากมายพร้อมสิทธิ์โควตานักกีฬา"
     },
@@ -177,8 +177,8 @@
       "removes_flags": [],
       "yearly_stat_effects": {
         "health": -2,
-        "happiness": 4,
-        "intelligence": 3,
+        "happiness": 3,
+        "intelligence": 2,
         "connections": 1,
         "merit": 0,
         "appearance": -1
@@ -200,11 +200,11 @@
       "removes_flags": [],
       "yearly_stat_effects": {
         "health": 0,
-        "happiness": 4,
+        "happiness": 3,
         "intelligence": 1,
-        "connections": 4,
+        "connections": 3,
         "merit": 0,
-        "appearance": 2
+        "appearance": 1
       },
       "description_th": "ฝึกซ้อมดนตรี วาดภาพ และเป็นพิธีกรงานโรงเรียน ช่วยเพิ่มเสน่ห์ความกล้าแสดงออกและปูทางสู่สายนิเทศศาสตร์"
     },

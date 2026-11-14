@@ -43,6 +43,15 @@ test('migrates a legacy save without schemaVersion to the current schema', () =>
   assert.equal(migrated.profile.age, 24);
 });
 
+test('migrates a 1.1.0 save to 1.2.0 and fills Life Path defaults',()=>{
+  const old={meta:{schemaVersion:'1.1.0',runId:'old-11'},profile:{age:16},finance:{cash:2500}};
+  const migrated=mergeGameStateWithTemplate(old,createEmptyGameState());
+  assert.equal(migrated.meta.schemaVersion,CURRENT_GAME_SCHEMA_VERSION);
+  assert.equal(migrated.profile.lifePathId,'life_path_balanced');
+  assert.equal(migrated.finance.cash,2500);
+  assert.equal(migrated.finance.parentPaidSupportAnnual,0);
+});
+
 test('loads and upgrades a legacy save through the real loadGame path', () => {
   testStorage.set('thai_life_sim_save_v1', JSON.stringify({
     meta: { runId: 'legacy-load' },

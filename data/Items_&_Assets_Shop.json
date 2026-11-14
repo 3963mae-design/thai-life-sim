@@ -271,7 +271,7 @@
       "is_one_time_purchase": true,
       "is_resellable_asset": true,
       "price_cash": 22000,
-      "annual_depreciation_rate": -0.20,
+      "annual_depreciation_rate": -0.2,
       "installment_option": {
         "available": false
       },
@@ -300,7 +300,7 @@
       "is_one_time_purchase": true,
       "is_resellable_asset": true,
       "price_cash": 65000,
-      "annual_depreciation_rate": -0.20,
+      "annual_depreciation_rate": -0.2,
       "installment_option": {
         "available": true,
         "down_payment": 15000,
@@ -485,7 +485,7 @@
       "is_one_time_purchase": true,
       "is_resellable_asset": true,
       "price_cash": 18000,
-      "annual_depreciation_rate": -0.10,
+      "annual_depreciation_rate": -0.1,
       "installment_option": {
         "available": false
       },
@@ -939,7 +939,9 @@
       "installment_option": {
         "available": false
       },
-      "req_flags": [],
+      "req_flags": [
+        "flag_motor_license"
+      ],
       "forbidden_flags": [],
       "grants_flags": [
         "flag_has_motorcycle"
@@ -1068,7 +1070,7 @@
       "is_one_time_purchase": false,
       "is_resellable_asset": true,
       "price_cash": 5000000,
-      "annual_depreciation_rate": -0.10,
+      "annual_depreciation_rate": -0.1,
       "installment_option": {
         "available": false
       },

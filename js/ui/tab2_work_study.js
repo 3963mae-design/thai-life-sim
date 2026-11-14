@@ -29,15 +29,23 @@ let lastRunId = null;
 
 function getSubTabsForState(state) {
   const age = Number(state?.profile?.age || 0);
-  return [
-    { id: 'activities', label: age >= 60 ? 'กิจวัตรวัยเกษียณ' : 'กิจกรรมตามวัย' },
-    { id: 'education', label: 'มหาวิทยาลัย/ปวส.' },
-    { id: 'licenses', label: 'สอบใบอนุญาต' },
-    { id: 'part_time_gig', label: 'พาร์ทไทม์/อิสระ' },
-    { id: 'corporate', label: 'งานบริษัท/วิชาชีพ' },
-    { id: 'civil_service', label: 'ข้าราชการ' },
-    { id: 'business', label: 'ธุรกิจส่วนตัว' }
-  ];
+  const tabs = [{ id: 'activities', label: age >= 60 ? 'กิจวัตรวัยเกษียณ' : 'กิจกรรมตามวัย' }];
+  if (getAvailableEducationPrograms(state).length > 0) {
+    tabs.push({ id: 'education', label: 'มหาวิทยาลัย/ปวส.' });
+  }
+  if (getAvailableLicenses(state).length > 0) {
+    tabs.push({ id: 'licenses', label: 'สอบใบอนุญาต' });
+  }
+  const jobs = getCategorizedJobsForUI(state);
+  for (const [id, label] of [
+    ['part_time_gig', 'พาร์ทไทม์/อิสระ'],
+    ['corporate', 'งานบริษัท/วิชาชีพ'],
+    ['civil_service', 'ข้าราชการ'],
+    ['business', 'ธุรกิจส่วนตัว']
+  ]) {
+    if ((jobs[id] || []).length > 0) tabs.push({ id, label });
+  }
+  return tabs;
 }
 
 function renderActiveStatusBanner(state) {
@@ -269,6 +277,7 @@ export function renderTab2WorkStudy(state, { onRefresh }) {
   }
 
   const subTabs = getSubTabsForState(state);
+  if (!subTabs.some((tab) => tab.id === activeSubTab)) activeSubTab = subTabs[0]?.id || 'activities';
   const subTabsHtml = subTabs
     .map(
       (st) => `

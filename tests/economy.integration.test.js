@@ -518,3 +518,32 @@ test('annual living-cost engine applies its documented 20 percent housing discou
   assert.ok(livingExpense);
   assert.equal(livingExpense.amount, -100800);
 });
+
+
+test('annual slip exposes categorized expense totals without changing cash-flow totals', () => {
+  const state = createEconomyState(25);
+  state.profile.currentLocationId = 'loc_bangkok';
+  state.finance.cash = 500000;
+  state.finance.hasPiggyBankSmashed = true;
+  state.flags.push('flag_has_own_home');
+  state.finance.installments = [{
+    itemId: 'test_home_installment',
+    annualPayment: 12000,
+    yearsRemaining: 1
+  }];
+
+  const slip = processAnnualEconomyAndMarket(state);
+  const categorizedTotal = Object.values(slip.expenseBreakdown)
+    .reduce((sum, amount) => sum + amount, 0);
+
+  assert.equal(slip.expenseBreakdown.living, 100800);
+  assert.equal(slip.expenseBreakdown.installment, 12000);
+  assert.equal(categorizedTotal, slip.totalCashExpense);
+  assert.equal(
+    slip.expenseItems.reduce((sum, item) => sum + Math.abs(item.amount), 0),
+    slip.totalCashExpense
+  );
+  assert.ok(slip.expenseItems.every((item) =>
+    ['living', 'education', 'family', 'medical', 'installment', 'debt', 'other'].includes(item.category)
+  ));
+});

@@ -9,8 +9,91 @@ import { clampStat, pickRandom, randomInt, weightedRandom } from './utils.js';
 export const SAVE_STORAGE_KEY = 'thai_life_sim_save_v1';
 export const META_STORAGE_KEY = 'thai_life_sim_meta_v1';
 export const MAX_FREE_ACTION_POINTS = 3;
+export const CURRENT_GAME_SCHEMA_VERSION = '1.1.0';
 
 let currentState = null;
+
+/**
+ * ย้ายรูปแบบเซฟเก่าไปยัง GameState schema ปัจจุบัน
+ * เซฟที่ไม่มี schemaVersion ถือเป็น legacy 1.0.0 และจะถูกเติม metadata ของ 1.1.0
+ * เซฟจากเวอร์ชันใหม่กว่าที่เกมนี้ไม่รู้จักจะไม่ถูกเขียนทับ
+ * @param {object} parsedSave
+ * @returns {object}
+ */
+export function migrateGameState(parsedSave) {
+  if (!parsedSave || typeof parsedSave !== 'object' || Array.isArray(parsedSave)) {
+    throw new Error('[State] รูปแบบเซฟเกมไม่ถูกต้อง');
+  }
+
+  const sourceVersion = parsedSave.meta?.schemaVersion || '1.0.0';
+  if (sourceVersion === CURRENT_GAME_SCHEMA_VERSION) {
+    return parsedSave;
+  }
+
+  if (sourceVersion === '1.0.0') {
+    return {
+      ...parsedSave,
+      meta: {
+        ...(parsedSave.meta || {}),
+        schemaVersion: CURRENT_GAME_SCHEMA_VERSION
+      }
+    };
+  }
+
+  throw new Error(
+    `[State] ไม่รองรับ Save schema version "${sourceVersion}" (เกมรองรับถึง ${CURRENT_GAME_SCHEMA_VERSION})`
+  );
+}
+
+/**
+ * รวมข้อมูลเซฟที่ผ่าน migration กับ template ปัจจุบัน และซ่อม collection ที่ชนิดข้อมูลไม่ถูกต้อง
+ * @param {object} parsedSave
+ * @param {object} template
+ * @returns {object}
+ */
+export function mergeGameStateWithTemplate(parsedSave, template = createEmptyGameState()) {
+  const migrated = migrateGameState(parsedSave);
+  const merged = {
+    ...template,
+    ...migrated,
+    meta: { ...template.meta, ...(migrated.meta || {}) },
+    profile: { ...template.profile, ...(migrated.profile || {}) },
+    stats: { ...template.stats, ...(migrated.stats || {}) },
+    statCounters: { ...template.statCounters, ...(migrated.statCounters || {}) },
+    finance: { ...template.finance, ...(migrated.finance || {}) },
+    careerAndEdu: { ...template.careerAndEdu, ...(migrated.careerAndEdu || {}) },
+    relationships: { ...template.relationships, ...(migrated.relationships || {}) },
+    turn: { ...template.turn, ...(migrated.turn || {}) }
+  };
+
+  const arrayCollections = [
+    [merged, 'innateTraits'],
+    [merged, 'talentTags'],
+    [merged, 'flags'],
+    [merged, 'statuses'],
+    [merged.careerAndEdu, 'completedDegrees'],
+    [merged.careerAndEdu, 'licenses'],
+    [merged.relationships, 'npcs'],
+    [merged.relationships, 'children'],
+    [merged.turn, 'pendingEvents'],
+    [merged.turn, 'triggeredEventIdsThisLife'],
+    [merged.turn, 'lifeFeedLog'],
+    [merged.finance, 'ownedAssets'],
+    [merged.finance, 'purchasedOneTimeItems'],
+    [merged.finance, 'installments'],
+    [merged.finance, 'activeLoans']
+  ];
+
+  for (const [owner, key] of arrayCollections) {
+    if (!Array.isArray(owner[key])) owner[key] = [];
+  }
+
+  if (!merged.finance.investments || typeof merged.finance.investments !== 'object' || Array.isArray(merged.finance.investments)) {
+    merged.finance.investments = {};
+  }
+
+  return merged;
+}
 
 /**
  * โครงสร้างข้อมูลข้ามภพชาติ (Meta Progression สำหรับแต้มบุญสะสมและสถิติการเกิดใหม่)
@@ -215,6 +298,10 @@ export function createEmptyGameState() {
       maxFreeActionPoints: MAX_FREE_ACTION_POINTS,
       pendingEvents: [],         // คิวอีเวนต์ 1-3 ใบตามเดือนที่ต้องเคลียร์ในปีนี้
       currentEventIndex: 0,
+      awaitingEventAdvance: false,
+      lastChoiceOutcome: null,
+      endingFinalized: false,
+      finalEndingReport: null,
       triggeredEventIdsThisLife: [],
       lastEventCategory: null,
       lifeFeedLog: []            // ประวัติบันทึกชีวิตย้อนหลังสำหรับแสดงใน Tab 1
@@ -508,20 +595,7 @@ export function loadGame() {
 
     const parsed = JSON.parse(raw);
     const template = createEmptyGameState();
-
-    // Merge กับ template ป้องกันกรณีเพิ่มฟิลด์ใหม่ในอนาคตแล้วเซฟเก่าไม่มีฟิลด์นั้น
-    currentState = {
-      ...template,
-      ...parsed,
-      meta: { ...template.meta, ...(parsed.meta || {}) },
-      profile: { ...template.profile, ...(parsed.profile || {}) },
-      stats: { ...template.stats, ...(parsed.stats || {}) },
-      statCounters: { ...template.statCounters, ...(parsed.statCounters || {}) },
-      finance: { ...template.finance, ...(parsed.finance || {}) },
-      careerAndEdu: { ...template.careerAndEdu, ...(parsed.careerAndEdu || {}) },
-      relationships: { ...template.relationships, ...(parsed.relationships || {}) },
-      turn: { ...template.turn, ...(parsed.turn || {}) }
-    };
+    currentState = mergeGameStateWithTemplate(parsed, template);
 
     return currentState;
   } catch (err) {

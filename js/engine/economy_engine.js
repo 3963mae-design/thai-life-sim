@@ -355,12 +355,12 @@ export function processAnnualEconomyAndMarket(state) {
     }
   };
 
-  const recordExpense = (labelTh, amount) => {
+  const recordExpense = (labelTh, amount, category = 'other') => {
     const val = Math.round(Math.abs(Number(amount || 0)));
     if (val <= 0) return;
     state.finance.cash = Math.round(Number(state.finance.cash || 0) - val);
     totalCashExpense += val;
-    expenseItems.push({ labelTh, amount: -val });
+    expenseItems.push({ labelTh, amount: -val, category });
   };
 
   // =========================================================================
@@ -420,7 +420,7 @@ export function processAnnualEconomyAndMarket(state) {
     if (spouseNetContribution > 0) {
       recordIncome(`รายได้ร่วมจากคู่สมรส (${partner.name})`, spouseNetContribution);
     } else if (spouseNetContribution < 0) {
-      recordExpense(`ภาระค่าใช้จ่ายคู่สมรส (${partner.name})`, Math.abs(spouseNetContribution));
+      recordExpense(`ภาระค่าใช้จ่ายคู่สมรส (${partner.name})`, Math.abs(spouseNetContribution), 'family');
     }
   }
 
@@ -433,7 +433,7 @@ export function processAnnualEconomyAndMarket(state) {
     if (filialCash > 0) {
       recordIncome(`เงินกตัญญูจากลูก (${child.name})`, filialCash);
     } else if (filialCash < 0) {
-      recordExpense(`ลูกขอเงินใช้ (${child.name})`, Math.abs(filialCash));
+      recordExpense(`ลูกขอเงินใช้ (${child.name})`, Math.abs(filialCash), 'family');
     }
   }
 
@@ -512,7 +512,7 @@ export function processAnnualEconomyAndMarket(state) {
         adjustedCost = Math.round(adjustedCost * Number(multipliers.medical_cost ?? 1.0));
       }
       if (adjustedCost > 0) {
-        recordExpense(`ภาระจากป้ายสถานะ: ${flagDef.name_th}`, adjustedCost);
+        recordExpense(`ภาระจากป้ายสถานะ: ${flagDef.name_th}`, adjustedCost, 'medical');
       }
     }
   }
@@ -560,7 +560,8 @@ export function processAnnualEconomyAndMarket(state) {
     const finalLivingCost = Math.round(baseLiving * locColMult * spouseLivingMult * housingDiscountMult);
     recordExpense(
       `ค่าครองชีพประจำปี (${currentLoc?.name_th || 'ทั่วไป'}${hasHousingSaving ? ' - ประหยัดค่าเช่าบ้าน 20%' : ''})`,
-      finalLivingCost
+      finalLivingCost,
+      'living'
     );
   }
 
@@ -568,7 +569,7 @@ export function processAnnualEconomyAndMarket(state) {
   if (state.careerAndEdu?.currentActivityId) {
     const actDef = db.getActivity(state.careerAndEdu.currentActivityId);
     if (actDef && age >= actDef.min_age && age <= actDef.max_age && Number(actDef.annual_cost_cash || 0) > 0) {
-      recordExpense(`ค่ากิจกรรม: ${actDef.name_th}`, Number(actDef.annual_cost_cash));
+      recordExpense(`ค่ากิจกรรม: ${actDef.name_th}`, Number(actDef.annual_cost_cash), 'education');
     }
   }
 
@@ -598,10 +599,10 @@ export function processAnnualEconomyAndMarket(state) {
 
         const outOfPocket = tuition - loanable;
         if (outOfPocket > 0) {
-          recordExpense(`ค่าเทอมส่วนเกินวงเงิน กยศ. (${progDef?.name_th || ''})`, outOfPocket);
+          recordExpense(`ค่าเทอมส่วนเกินวงเงิน กยศ. (${progDef?.name_th || ''})`, outOfPocket, 'education');
         }
       } else {
-        recordExpense(`ค่าเทอม: ${progDef?.name_th || activeStudy.programId}`, tuition);
+        recordExpense(`ค่าเทอม: ${progDef?.name_th || activeStudy.programId}`, tuition, 'education');
       }
     }
   }
@@ -623,7 +624,7 @@ export function processAnnualEconomyAndMarket(state) {
 
     const childCost = Number(chosenOpt?.annual_auto_cost_cash || 0);
     if (childCost > 0) {
-      recordExpense(`ค่าเลี้ยงดูบุตร (${child.name} - ${chosenOpt.name_th})`, childCost);
+      recordExpense(`ค่าเลี้ยงดูบุตร (${child.name} - ${chosenOpt.name_th})`, childCost, 'family');
     }
   }
 
@@ -633,7 +634,7 @@ export function processAnnualEconomyAndMarket(state) {
     const payAmt = Math.round(Number(inst.annualPayment || 0));
     const itemDef = db.getShopItem(inst.itemId);
     if (payAmt > 0) {
-      recordExpense(`ค่างวดผ่อน: ${itemDef?.name_th || inst.itemId}`, payAmt);
+      recordExpense(`ค่างวดผ่อน: ${itemDef?.name_th || inst.itemId}`, payAmt, 'installment');
     }
     const nextYears = Number(inst.yearsRemaining || 1) - 1;
     if (nextYears > 0) {
@@ -691,7 +692,7 @@ export function processAnnualEconomyAndMarket(state) {
       // หนี้นอกระบบ: หักดอกเบี้ยโหดขั้นต่ำ 36,000 บาท หรือ 60% ของต้นคงเหลือ (ไม่ตัดเงินต้นจนกว่าผู้เล่นจะกดโปะเอง!)
       const minSharkInterest = Number(prod?.annual_minimum_interest_payment ?? 36000);
       requiredInstallment = Math.max(minSharkInterest, annualInterest);
-      recordExpense(`ดอกเบี้ยหนี้นอกระบบรายปี (ยังไม่ตัดต้น)`, requiredInstallment);
+      recordExpense(`ดอกเบี้ยหนี้นอกระบบรายปี (ยังไม่ตัดต้น)`, requiredInstallment, 'debt');
       updatedLoans.push({
         ...loan,
         principalRemaining: principal
@@ -710,7 +711,7 @@ export function processAnnualEconomyAndMarket(state) {
 
     // เช็กว่ามีเงินพอจ่ายค่างวดในระบบหรือไม่
     if (state.finance.cash >= requiredInstallment) {
-      recordExpense(`ชำระหนี้: ${prod?.name_th || loan.loanId}`, requiredInstallment);
+      recordExpense(`ชำระหนี้: ${prod?.name_th || loan.loanId}`, requiredInstallment, 'debt');
       const principalPaid = Math.max(0, requiredInstallment - annualInterest);
       principal = Math.max(0, principal - principalPaid);
       loan.missedYears = 0;
@@ -903,6 +904,12 @@ export function processAnnualEconomyAndMarket(state) {
   // คำนวณความมั่งคั่งสุทธิปิดท้าย
   const updatedNetWorth = recalculateNetWorth(state);
 
+  const expenseBreakdown = expenseItems.reduce((totals, item) => {
+    const category = item.category || 'other';
+    totals[category] = (totals[category] || 0) + Math.abs(Number(item.amount || 0));
+    return totals;
+  }, {});
+
   const annualSlip = {
     age,
     yearBE: state.profile.currentYearBE,
@@ -920,6 +927,7 @@ export function processAnnualEconomyAndMarket(state) {
     netCashFlow: totalCashIncome - totalCashExpense,
     incomeItems,
     expenseItems,
+    expenseBreakdown,
     marketHeadlineTh: pickedNews?.headline_th || null,
     marketDescriptionTh: pickedNews?.description_th || null,
     marketItems,

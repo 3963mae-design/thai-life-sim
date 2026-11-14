@@ -88,8 +88,10 @@ test('creates a newborn with the requested profile, origin, family, and starting
   assert.equal(state.profile.currentLocationId, 'loc_bangkok');
   assert.equal(state.profile.isAlive, true);
   assert.deepEqual(state.innateTraits, ['trait_quick_learner']);
-  assert.equal(state.finance.parentAnnualSupport, Number(birthClass.parent_annual_support_age_0_to_17 || 0));
-  assert.equal(state.finance.piggyBank, Math.round(state.finance.parentAnnualSupport * 0.25));
+  assert.equal(state.finance.parentAnnualSupport,0,'newborns do not receive pocket money');
+  assert.equal(state.finance.parentPaidSupportAnnual,Math.round(Number(birthClass.parent_annual_support_age_0_to_17||0)*0.93));
+  assert.equal(state.finance.piggyBank,Math.round(Number(birthClass.parent_annual_support_age_0_to_17||0)*0.93*0.05));
+  assert.equal(state.profile.lifePathId,'life_path_balanced');
   assert.equal(state.finance.cash, 0);
   assert.equal(state.relationships.npcs.length, 2);
   assert.deepEqual(state.relationships.npcs.map((npc) => npc.id).sort(), ['npc_father', 'npc_mother']);

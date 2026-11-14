@@ -5,11 +5,13 @@
 
 import { db } from './db.js';
 import { clampStat, pickRandom, randomInt, weightedRandom } from './utils.js';
+import { calculateParentalSupport } from './family_support.js';
+import { DEFAULT_LIFE_PATH_ID, normalizeLifePathId } from '../engine/life_path_engine.js';
 
 export const SAVE_STORAGE_KEY = 'thai_life_sim_save_v1';
 export const META_STORAGE_KEY = 'thai_life_sim_meta_v1';
 export const MAX_FREE_ACTION_POINTS = 3;
-export const CURRENT_GAME_SCHEMA_VERSION = '1.1.0';
+export const CURRENT_GAME_SCHEMA_VERSION = '1.2.0';
 
 let currentState = null;
 
@@ -30,7 +32,7 @@ export function migrateGameState(parsedSave) {
     return parsedSave;
   }
 
-  if (sourceVersion === '1.0.0') {
+  if (sourceVersion === '1.0.0' || sourceVersion === '1.1.0') {
     return {
       ...parsedSave,
       meta: {
@@ -219,6 +221,7 @@ export function createEmptyGameState() {
       birthYearBE: 2568,
       currentYearBE: 2568,
       lifePhaseId: 'phase_1_infant',
+      lifePathId: DEFAULT_LIFE_PATH_ID,
       spawnClassId: 'class_3',
       currentClassId: 'class_3',
       birthLocationId: 'loc_bangkok',
@@ -251,7 +254,8 @@ export function createEmptyGameState() {
       piggyBank: 0,                // กระปุกออมสินวัยเด็ก (อายุ 0 - 6 ปี)
       hasPiggyBankSmashed: false,  // ทุบกระปุกตอนอายุ 7 ปีหรือยัง
       netWorth: 0,                 // ความมั่งคั่งสุทธิ
-      parentAnnualSupport: 0,      // เงินซัพพอร์ตจากพ่อแม่ (อายุ 0 - 17 ปี)
+      parentAnnualSupport: 0,      // เงินค่าขนมที่ผู้เล่นได้รับจริงตามวัย
+      parentPaidSupportAnnual: 0,  // ครอบครัวจ่ายตรง ไม่ใช่เงินสด/Net Worth ของผู้เล่น
       baseAnnualLivingCost: 0,     // ค่าครองชีพพื้นฐานตามช่วงวัย
       investments: {},             // { [instrument_id]: { amountCash: 0, costBasis: 0 } }
       ownedAssets: [],             // รายการของที่ซื้อและขายต่อได้ [{ instanceId, itemId, currentValue, purchaseAge }]
@@ -304,6 +308,7 @@ export function createEmptyGameState() {
       finalEndingReport: null,
       triggeredEventIdsThisLife: [],
       lastEventCategory: null,
+      annualPassiveStatEffects: {},
       lifeFeedLog: []            // ประวัติบันทึกชีวิตย้อนหลังสำหรับแสดงใน Tab 1
     }
   };
@@ -418,6 +423,7 @@ export function createNewCharacter(
 
   const state = createEmptyGameState();
   const purchasedTraitIds = Array.isArray(options.purchasedTraitIds) ? options.purchasedTraitIds : [];
+  const lifePathId = normalizeLifePathId(options.lifePathId);
 
   // 1. เช็กพรสวรรค์คาบช้อนเงินช้อนทอง (trait_silver_spoon บังคับสุ่มเกิด class_4 หรือ class_5)
   const hasSilverSpoon = purchasedTraitIds.includes('trait_silver_spoon');
@@ -459,6 +465,7 @@ export function createNewCharacter(
     titlePrefix,
     age: 0,
     lifePhaseId: 'phase_1_infant',
+    lifePathId,
     spawnClassId: chosenClass.class_id,
     currentClassId: chosenClass.class_id,
     birthLocationId: chosenLocation.location_id,
@@ -505,18 +512,18 @@ export function createNewCharacter(
   state.innateTraits = Array.from(innateSet);
   state.flags = Array.from(flagSet);
 
-  // 8. ตั้งค่าเงินกระปุกออมสินแรกเกิด (เงินรับขวัญตามฐานะพ่อแม่: 1 ปีของ parent_annual_support_age_0_to_17 หารสัดส่วนขวัญถุง)
+  // Create parents before calculating relationship-adjusted family support.
+  state.relationships.npcs = createStartingParents(identity.lastName, chosenClass.class_id);
   const annualParentSupport = Number(chosenClass.parent_annual_support_age_0_to_17 || 0);
-  const initialPiggyGift = Math.round(annualParentSupport * 0.25);
-
-  state.finance.cash = 0; // วัยทารกเก็บเงินแต๊ะเอีย/ค่าขนมสะสมไว้ในกระปุกออมสินจนกว่าจะอายุ 7 ขวบ
+  const familySupport = calculateParentalSupport({state,age:0,baseAnnualSupport:annualParentSupport,gameConstants:db.getGameConstants()});
+  const birthGiftRate = Number(db.getGameConstants()?.initial_birth_gift_rate ?? 0.05);
+  const initialPiggyGift = Math.round(familySupport.familySupportCapacity * birthGiftRate);
+  state.finance.cash = 0;
   state.finance.piggyBank = initialPiggyGift;
   state.finance.hasPiggyBankSmashed = false;
-  state.finance.parentAnnualSupport = annualParentSupport;
+  state.finance.parentAnnualSupport = familySupport.cashAllowance;
+  state.finance.parentPaidSupportAnnual = familySupport.familyPaidSupport;
   state.finance.baseAnnualLivingCost = 0;
-
-  // 9. สร้าง NPC คุณพ่อและคุณแม่
-  state.relationships.npcs = createStartingParents(identity.lastName, chosenClass.class_id);
 
   // 10. คำนวณความมั่งคั่งสุทธิเริ่มต้น และบันทึกข้อความแรกในบันทึกชีวิต
   recalculateNetWorth(state);

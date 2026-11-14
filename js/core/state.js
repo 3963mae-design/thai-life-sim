@@ -201,7 +201,7 @@ export function generateThaiIdentity(gender, classId, generation = 'player') {
 export function createEmptyGameState() {
   return {
     meta: {
-      schemaVersion: '1.1.0',
+      schemaVersion: CURRENT_GAME_SCHEMA_VERSION,
       runId: `run_${Date.now()}_${randomInt(1000, 9999)}`,
       generationNumber: 1,
       createdAt: new Date().toISOString(),

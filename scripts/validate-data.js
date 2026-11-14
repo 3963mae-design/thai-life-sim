@@ -28,8 +28,11 @@ for (const [manifestKey, filename] of Object.entries(DATA_MANIFEST)) {
     continue;
   }
 
+  // ไฟล์หลักบางชุด (เช่น Core Rules, Traits, Market) ไม่ใช่ Event Pool
+  // ตรวจ event-specific fields เฉพาะไฟล์ที่มี events property
+  if (data.events === undefined) continue;
   if (!Array.isArray(data.events)) {
-    errors.push(`[${manifestKey}] ${filename}: ไม่พบ events array`);
+    errors.push(`[${manifestKey}] ${filename}: events ต้องเป็น array`);
     continue;
   }
 

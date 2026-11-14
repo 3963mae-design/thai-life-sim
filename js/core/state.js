@@ -82,6 +82,7 @@ export function mergeGameStateWithTemplate(parsedSave, template = createEmptyGam
     [merged.turn, 'lifeFeedLog'],
     [merged.finance, 'ownedAssets'],
     [merged.finance, 'purchasedOneTimeItems'],
+    [merged.finance, 'statRewardedRepeatableAssetTypes'],
     [merged.finance, 'installments'],
     [merged.finance, 'activeLoans']
   ];
@@ -262,6 +263,7 @@ export function createEmptyGameState() {
       investments: {},             // { [instrument_id]: { amountCash: 0, costBasis: 0 } }
       ownedAssets: [],             // รายการของที่ซื้อและขายต่อได้ [{ instanceId, itemId, currentValue, purchaseAge }]
       purchasedOneTimeItems: [],   // item_id ที่ซื้อได้ครั้งเดียวในชีวิต
+      statRewardedRepeatableAssetTypes: [], // item_id ของสินทรัพย์ซื้อซ้ำที่เคยรับโบนัสค่าสถานะแล้ว
       installments: [],            // รายการผ่อนสินค้า/บ้าน/รถ [{ itemId, annualPayment, yearsRemaining }]
       activeLoans: [],             // สินเชื่อคงค้าง [{ loanId, principalRemaining, annualRate, missedYears }]
       currentMarketNewsId: null,   // ข่าวตลาดประจำปีปัจจุบัน

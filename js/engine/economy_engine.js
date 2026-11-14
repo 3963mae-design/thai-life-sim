@@ -1395,9 +1395,22 @@ export function buyShopItem(state, itemId, paymentMode = 'cash') {
     addFlagOrStatusToState(state, 'flag_uninsured_rider');
   }
 
-  // ประมวลผลค่าสถานะเมื่อซื้อ (stat_effects_on_buy)
-  if (itemDef.stat_effects_on_buy) {
+  // สินทรัพย์ซื้อซ้ำได้หลายชิ้น แต่ให้โบนัสค่าสถานะจากการซื้อชนิดเดิมเพียงครั้งเดียวตลอดชีวิต
+  // ป้องกันการซื้อ-ขาย/สะสมสินทรัพย์ชนิดเดิมเพื่อฟาร์ม Stat โดยไม่กระทบของสิ้นเปลืองและบริการที่ซื้อซ้ำ
+  const isRepeatableResellableAsset =
+    itemDef.is_resellable_asset === true && itemDef.is_one_time_purchase === false;
+  if (!Array.isArray(state.finance.statRewardedRepeatableAssetTypes)) {
+    state.finance.statRewardedRepeatableAssetTypes = [];
+  }
+  const shouldGrantPurchaseStats =
+    !isRepeatableResellableAsset ||
+    !state.finance.statRewardedRepeatableAssetTypes.includes(itemId);
+
+  if (itemDef.stat_effects_on_buy && shouldGrantPurchaseStats) {
     applyStatEffects(state, itemDef.stat_effects_on_buy);
+    if (isRepeatableResellableAsset) {
+      state.finance.statRewardedRepeatableAssetTypes.push(itemId);
+    }
   }
 
   // โบนัสหัวใจพ่อแม่ (parent_hearts_bonus โดย 1 ดวง = 20 คะแนนความสัมพันธ์)

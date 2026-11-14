@@ -129,3 +129,30 @@ test('motorcycle purchase requires the matching license even when age and cash a
  const allowed=buyShopItem(s,'asset_secondhand_motorcycle','cash');
  assert.equal(allowed.success,true);
 });
+
+test('repeatable resellable assets grant purchase stats only on first lifetime acquisition', async () => {
+ const {buyShopItem}=await import('../js/engine/economy_engine.js');
+ const s=createEmptyGameState();
+ s.profile.age=15;s.finance.cash=100000;s.finance.hasPiggyBankSmashed=true;
+ const first=buyShopItem(s,'item_flagship_iphone','cash');
+ const happinessAfterFirst=s.stats.happiness;
+ const second=buyShopItem(s,'item_flagship_iphone','cash');
+ assert.equal(first.success,true);
+ assert.equal(second.success,true);
+ assert.equal(s.finance.ownedAssets.filter(x=>x.itemId==='item_flagship_iphone').length,2);
+ assert.equal(s.stats.happiness,happinessAfterFirst,'second purchase must not repeat the asset-type stat reward');
+ assert.deepEqual(s.finance.statRewardedRepeatableAssetTypes,['item_flagship_iphone']);
+});
+
+test('repeatable non-resellable purchases still grant their effects every time', async () => {
+ const {buyShopItem}=await import('../js/engine/economy_engine.js');
+ const s=createEmptyGameState();
+ s.profile.age=20;s.finance.cash=2000;s.finance.hasPiggyBankSmashed=true;
+ s.turn.freeActionPoints=3;
+ const first=buyShopItem(s,'item_temple_sanghadana','cash');
+ const second=buyShopItem(s,'item_temple_sanghadana','cash');
+ assert.equal(first.success,true);
+ assert.equal(second.success,true);
+ assert.equal(s.stats.merit,10);
+ assert.equal(s.turn.freeActionPoints,1);
+});

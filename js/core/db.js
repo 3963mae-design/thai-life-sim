@@ -36,7 +36,6 @@ export const DATA_MANIFEST = {
 class GameDatabase {
   constructor() {
     this.isLoaded = false;
-    this.isLoaded = false;
     this.raw = {};
     this.loadErrors = [];
 
@@ -118,6 +117,7 @@ class GameDatabase {
     const totalCount = entries.length;
     let loadedCount = 0;
 
+    this.isLoaded = false;
     this.raw = {};
     this.loadErrors = [];
 

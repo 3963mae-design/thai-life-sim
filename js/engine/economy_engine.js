@@ -341,17 +341,17 @@ export function processAnnualEconomyAndMarket(state) {
   let totalPiggyIncome = 0;
   let totalCashExpense = 0;
 
-  const recordIncome = (labelTh, amount, toPiggy = false) => {
+  const recordIncome = (labelTh, amount, toPiggy = false, category = 'other') => {
     const val = Math.round(Number(amount || 0));
     if (val <= 0) return;
     if (toPiggy) {
       state.finance.piggyBank = Math.round(Number(state.finance.piggyBank || 0) + val);
       totalPiggyIncome += val;
-      incomeItems.push({ labelTh: `${labelTh} (หยอดกระปุก 🐷)`, amount: val, wallet: 'piggyBank' });
+      incomeItems.push({ labelTh: `${labelTh} (หยอดกระปุก 🐷)`, amount: val, wallet: 'piggyBank', category });
     } else {
       state.finance.cash = Math.round(Number(state.finance.cash || 0) + val);
       totalCashIncome += val;
-      incomeItems.push({ labelTh, amount: val, wallet: 'cash' });
+      incomeItems.push({ labelTh, amount: val, wallet: 'cash', category });
     }
   };
 
@@ -376,7 +376,7 @@ export function processAnnualEconomyAndMarket(state) {
     state.finance.parentPaidSupportAnnual=familySupport.familyPaidSupport;
     if(familySupport.cashAllowance>0){
       const toPiggy=age<7&&!state.finance.hasPiggyBankSmashed;
-      recordIncome('เงินค่าขนมจากครอบครัว',familySupport.cashAllowance,toPiggy);
+      recordIncome('เงินค่าขนมจากครอบครัว', familySupport.cashAllowance, toPiggy, 'family');
     }
   }else{
     state.finance.parentAnnualSupport=0;
@@ -395,7 +395,7 @@ export function processAnnualEconomyAndMarket(state) {
     const mainJob = db.getJob(state.careerAndEdu.mainJobId);
     if (mainJob) {
       const mainIncome = calculateJobAnnualIncome(mainJob, state, multipliers, true);
-      recordIncome(`รายได้หลัก: ${mainJob.name_th}`, mainIncome);
+      recordIncome(`รายได้หลัก: ${mainJob.name_th}`, mainIncome, false, 'employment');
     }
   }
 
@@ -404,7 +404,7 @@ export function processAnnualEconomyAndMarket(state) {
     // กฎเหล็ก: ถือพาร์ทไทม์ควบได้เฉพาะตอนกำลังเรียน (หรือกรณียังไม่มีอาชีพหลัก)
     if (ptJob && (isStudyingSchoolOrUni || !state.careerAndEdu?.mainJobId)) {
       const ptIncome = calculateJobAnnualIncome(ptJob, state, multipliers, false);
-      recordIncome(`งานพาร์ทไทม์/เสริม: ${ptJob.name_th}`, ptIncome);
+      recordIncome(`งานพาร์ทไทม์/เสริม: ${ptJob.name_th}`, ptIncome, false, 'employment');
     }
   }
 
@@ -418,7 +418,7 @@ export function processAnnualEconomyAndMarket(state) {
       0
     );
     if (spouseNetContribution > 0) {
-      recordIncome(`รายได้ร่วมจากคู่สมรส (${partner.name})`, spouseNetContribution);
+      recordIncome(`รายได้ร่วมจากคู่สมรส (${partner.name})`, spouseNetContribution, false, 'family');
     } else if (spouseNetContribution < 0) {
       recordExpense(`ภาระค่าใช้จ่ายคู่สมรส (${partner.name})`, Math.abs(spouseNetContribution), 'family');
     }
@@ -431,7 +431,7 @@ export function processAnnualEconomyAndMarket(state) {
     const outDef = childOutcomesList.find((o) => o.outcome_id === child.outcomeId);
     const filialCash = Number(outDef?.annual_filial_support_cash || 0);
     if (filialCash > 0) {
-      recordIncome(`เงินกตัญญูจากลูก (${child.name})`, filialCash);
+      recordIncome(`เงินกตัญญูจากลูก (${child.name})`, filialCash, false, 'family');
     } else if (filialCash < 0) {
       recordExpense(`ลูกขอเงินใช้ (${child.name})`, Math.abs(filialCash), 'family');
     }
@@ -442,7 +442,7 @@ export function processAnnualEconomyAndMarket(state) {
     const itemDef = db.getShopItem(owned.itemId);
     const rentalYield = Number(itemDef?.annual_rental_yield_cash || 0);
     if (rentalYield > 0) {
-      recordIncome(`ค่าเช่า/ผลผลิต: ${itemDef.name_th}`, rentalYield);
+      recordIncome(`ค่าเช่า/ผลผลิต: ${itemDef.name_th}`, rentalYield, false, 'assets');
     }
   }
 
@@ -480,7 +480,8 @@ export function processAnnualEconomyAndMarket(state) {
           ? `ดอกเบี้ย: ${instDef.name_th}`
           : `เงินปันผลสุทธิ: ${instDef.name_th}`,
         netDividend,
-        toPiggy
+        toPiggy,
+        'investment'
       );
     }
   }
@@ -504,7 +505,7 @@ export function processAnnualEconomyAndMarket(state) {
 
     if (cashEffect > 0) {
       const toPiggy = age < 7 && !state.finance.hasPiggyBankSmashed;
-      recordIncome(`สิทธิพิเศษ/ป้ายสถานะ: ${flagDef.name_th}`, cashEffect, toPiggy);
+      recordIncome(`สิทธิพิเศษ/ป้ายสถานะ: ${flagDef.name_th}`, cashEffect, toPiggy, 'benefits');
     } else {
       // กรณีเป็นค่าใช้จ่ายจากโรคประจำตัว ให้คูณตัวคูณค่ารักษาพยาบาล (medical_cost) เช่น บัตรทอง 0.0 หรือประกันเอกชน 0.5
       let adjustedCost = Math.abs(cashEffect);
@@ -521,11 +522,11 @@ export function processAnnualEconomyAndMarket(state) {
   if (activeFlags.has('flag_elder_allowance_active') || age >= 60) {
     const elderCash = getElderAnnualAllowance(age);
     if (elderCash > 0) {
-      recordIncome(`เบี้ยยังชีพผู้สูงอายุ (วัย ${age} ปี)`, elderCash);
+      recordIncome(`เบี้ยยังชีพผู้สูงอายุ (วัย ${age} ปี)`, elderCash, false, 'benefits');
     }
     // บำนาญข้าราชการรายปี (กรณีมีสิทธิ์บำนาญข้าราชการและเกษียณแล้ว)
     if (age >= 60 && activeFlags.has('flag_gov_pension_right')) {
-      recordIncome('เงินบำนาญข้าราชการประจำปี', 144000);
+      recordIncome('เงินบำนาญข้าราชการประจำปี', 144000, false, 'retirement');
     }
   }
 
@@ -904,6 +905,12 @@ export function processAnnualEconomyAndMarket(state) {
   // คำนวณความมั่งคั่งสุทธิปิดท้าย
   const updatedNetWorth = recalculateNetWorth(state);
 
+  const incomeBreakdown = incomeItems.reduce((totals, item) => {
+    const category = item.category || 'other';
+    totals[category] = (totals[category] || 0) + Number(item.amount || 0);
+    return totals;
+  }, {});
+
   const expenseBreakdown = expenseItems.reduce((totals, item) => {
     const category = item.category || 'other';
     totals[category] = (totals[category] || 0) + Math.abs(Number(item.amount || 0));
@@ -926,6 +933,7 @@ export function processAnnualEconomyAndMarket(state) {
     familySupportMultiplier: familySupport.supportMultiplier,
     netCashFlow: totalCashIncome - totalCashExpense,
     incomeItems,
+    incomeBreakdown,
     expenseItems,
     expenseBreakdown,
     marketHeadlineTh: pickedNews?.headline_th || null,

@@ -547,3 +547,25 @@ test('annual slip exposes categorized expense totals without changing cash-flow 
     ['living', 'education', 'family', 'medical', 'installment', 'debt', 'other'].includes(item.category)
   ));
 });
+
+
+test('annual slip categorizes income and reconciles cash plus piggy-bank totals', () => {
+  const state = createEconomyState(25);
+  state.profile.currentLocationId = 'loc_bangkok';
+  state.finance.cash = 500000;
+  state.finance.hasPiggyBankSmashed = true;
+  state.flags.push('flag_trust_fund');
+
+  const slip = processAnnualEconomyAndMarket(state);
+  const categorizedTotal = Object.values(slip.incomeBreakdown)
+    .reduce((sum, amount) => sum + amount, 0);
+  const itemTotal = slip.incomeItems
+    .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+  assert.equal(categorizedTotal, itemTotal);
+  assert.equal(categorizedTotal, slip.totalCashIncome + slip.totalPiggyIncome);
+  assert.ok(slip.incomeItems.every((item) =>
+    ['employment', 'family', 'assets', 'investment', 'benefits', 'retirement', 'other'].includes(item.category)
+  ));
+  assert.ok(slip.incomeBreakdown.family > 0 || slip.incomeBreakdown.benefits > 0);
+});

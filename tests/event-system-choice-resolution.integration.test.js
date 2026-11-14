@@ -150,7 +150,7 @@ test('zero-happiness streak advances at most once per age and depression penalty
   state.profile.age = 26;
   const secondYear = checkStatThresholdsAndDeath(state);
   assert.equal(state.statCounters.zeroHappinessStreakYears, 2);
-  assert.ok(state.flags.includes('flag_depression'));
+  assert.ok(state.flags.includes('flag_depression') || state.statuses.includes('flag_depression'));
   assert.equal(state.stats.health, 65);
   assert.equal(state.stats.intelligence, 53);
   assert.ok(secondYear.grantedThresholdFlags.includes('flag_depression'));

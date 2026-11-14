@@ -250,7 +250,6 @@ test('adds a new deficit to an existing informal loan instead of duplicating the
 test('baseline lifetime cash-flow scenarios use configured family support, careers, and living costs', () => {
   const rules = db.getGameConstants();
   const location = db.getLocation('loc_chiangmai');
-  const multipliers = { ...getCombinedActionMultipliers(createEconomyState(18)), work_efficiency: 1, business_income: 1 };
 
   function project(classId, careerId) {
     const familyClass = db.getClass(classId);

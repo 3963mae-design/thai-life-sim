@@ -1480,11 +1480,12 @@ export function buildAnnualEventQueue(state) {
 
     if (supplementalEvent) {
       selectedIds.add(supplementalEvent.event_id);
+      const supplementBucket = age <= 4 ? 'life_phase' : 'annual_minimum';
       rawQueue.push(
         normalizeEventCard(
-          { ...supplementalEvent, source_type: 'pool_event', pool_bucket: 'annual_minimum' },
+          { ...supplementalEvent, source_type: 'pool_event', pool_bucket: supplementBucket },
           'pool_event',
-          resolveBucketIconKey('life_phase', supplementalEvent)
+          resolveBucketIconKey(supplementBucket === 'annual_minimum' ? 'life_phase' : supplementBucket, supplementalEvent)
         )
       );
     }

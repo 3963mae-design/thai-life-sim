@@ -180,6 +180,27 @@ function createUiEventState() {
       grants_flags: [],
       removes_flags: []
     }]
+  }, {
+    event_id: 'evt_ui_contract_second',
+    source_type: 'pool_event',
+    category: 'general',
+    min_age: 0,
+    max_age: 100,
+    title_th: 'เหตุการณ์ใบที่สอง',
+    description_th: 'ใช้ตรวจสอบการแสดงเหตุการณ์ถัดไป',
+    monthNum: 2,
+    monthTh: 'กุมภาพันธ์',
+    req_flags: [],
+    forbidden_flags: [],
+    choices: [{
+      choice_id: 'choice_ui_second',
+      label_th: 'ดำเนินการต่อ',
+      req_stats: {},
+      req_flags: [],
+      stat_effects: { intelligence: 1 },
+      grants_flags: [],
+      removes_flags: []
+    }]
   }];
   state.turn.currentEventIndex = 0;
   state.turn.awaitingEventAdvance = false;
@@ -218,13 +239,13 @@ test('event card renders the current event and binds a choice click to the game 
   assert.match(state.turn.lastChoiceOutcome.outcomeTextTh, /ทางเลือกนี้ส่งผลในด้านที่เป็นประโยชน์/);
 });
 
-test('sticky primary action advances from the displayed event outcome into free action', () => {
+test('sticky primary action advances through the second event before free action', () => {
   const state = createUiEventState();
   const choiceResult = selectCurrentEventChoice('choice_ui_yes', state);
   assert.equal(choiceResult.success, true);
 
   const dockBeforeAdvance = renderBottomDockHtml(state, 'tab1');
-  assert.match(dockBeforeAdvance, /เข้าสู่ช่วงอิสระท้ายปี/);
+  assert.match(dockBeforeAdvance, /เหตุการณ์ถัดไป/);
   assert.match(dockBeforeAdvance, /id="btn-primary-turn-action"/);
 
   const primaryButton = new FakeElement();
@@ -238,11 +259,26 @@ test('sticky primary action advances from the displayed event outcome into free 
   });
   primaryButton.click();
 
+  assert.equal(state.turn.phase, 'EVENT_QUEUE');
+  assert.equal(state.turn.currentEventIndex, 1);
+  assert.equal(state.turn.awaitingEventAdvance, false);
+  assert.equal(actionResults.length, 1);
+  assert.equal(actionResults[0].completedQueue, false);
+
+  const secondEventView = renderTab1LifeFeed(state, { onRefresh() {} });
+  assert.match(secondEventView.html, /เหตุการณ์ใบที่สอง/);
+
+  const secondChoice = selectCurrentEventChoice('choice_ui_second', state);
+  assert.equal(secondChoice.success, true);
+  const dockBeforeUnlock = renderBottomDockHtml(state, 'tab1');
+  assert.match(dockBeforeUnlock, /เข้าสู่ช่วงอิสระท้ายปี/);
+  primaryButton.click();
+
   assert.equal(state.turn.phase, 'FREE_ACTION');
   assert.equal(state.turn.areTabsLocked, false);
   assert.equal(state.turn.awaitingEventAdvance, false);
-  assert.equal(actionResults.length, 1);
-  assert.equal(actionResults[0].completedQueue, true);
+  assert.equal(actionResults.length, 2);
+  assert.equal(actionResults[1].completedQueue, true);
 
   const dockAfterAdvance = renderBottomDockHtml(state, 'tab1');
   assert.match(dockAfterAdvance, /ปีถัดไป \(\+1 ปี\)/);
@@ -269,7 +305,7 @@ test('save and reload preserve the event outcome required to render the same res
   assert.ok(restoredView.html.includes(result.outcomeTextTh));
 
   const restoredDock = renderBottomDockHtml(restoredState, 'tab1');
-  assert.match(restoredDock, /เข้าสู่ช่วงอิสระท้ายปี/);
+  assert.match(restoredDock, /เหตุการณ์ถัดไป/);
 });
 
 test('bottom navigation honors the tab lock and allows navigation after the lock is lifted', () => {

@@ -1421,19 +1421,22 @@ export function buildAnnualEventQueue(state) {
 
   // Fallback การันตีขั้นสุดท้าย: ใน 1 ปีต้องมีอย่างน้อย 1 อีเวนต์เสมอแม้เล่นซ้ำจนการ์ดหมดถัง
   if (rawQueue.length === 0) {
-    const emergencyPool = [
-      ...(db.raw.eventsLocKarma?.events || []),
-      ...Array.from(db.indexes.events.values())
-    ].filter((e) => isEventEligible(e, state, { ageWindowTolerance: 5, ignoreTriggeredHistory: true }));
+    const emergencyPool = (age <= 4
+      ? getEligibleEventsFromBucket('life_phase', state, selectedIds)
+      : [
+          ...(db.raw.eventsLocKarma?.events || []),
+          ...Array.from(db.indexes.events.values())
+        ].filter((e) => isEventEligible(e, state, { ageWindowTolerance: 5, ignoreTriggeredHistory: true }))
+    );
 
     const fallbackEvt = pickRandom(emergencyPool);
     if (fallbackEvt) {
       selectedIds.add(fallbackEvt.event_id);
       rawQueue.push(
         normalizeEventCard(
-          { ...fallbackEvt, source_type: 'pool_event', pool_bucket: 'fallback' },
+          { ...fallbackEvt, source_type: 'pool_event', pool_bucket: age <= 4 ? 'life_phase' : 'fallback' },
           'pool_event',
-          'sparkle'
+          age <= 4 ? resolveBucketIconKey('life_phase', fallbackEvt) : 'sparkle'
         )
       );
     } else {

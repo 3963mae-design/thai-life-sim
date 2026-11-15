@@ -9,7 +9,8 @@ import {
   buildAnnualEventQueue,
   getCurrentPendingEvent,
   isEventEligible,
-  normalizeEventCard
+  normalizeEventCard,
+  ensureAnnualEventMinimum
 } from '../js/engine/event_engine.js';
 import {
   selectCurrentEventChoice,
@@ -148,6 +149,38 @@ test('normalized system-generated events are supplemented to three choices', () 
   assert.equal(event.choices.length, 3);
   assert.equal(event.choices[2].isLocked, undefined);
   assert.deepEqual(event.choices[2].req_flags, []);
+});
+
+test('legacy in-progress saves receive one supplemental event only during restore repair', () => {
+  const state = createEventState(25);
+  queueOneEvent(state, {}, [{
+    choice_id: 'choice_legacy',
+    label_th: 'ตัวเลือกจากเซฟเดิม',
+    req_stats: {},
+    req_flags: [],
+    stat_effects: { happiness: 1 }
+  }]);
+
+  assert.equal(state.turn.pendingEvents.length, 1);
+  assert.equal(ensureAnnualEventMinimum(state), true);
+  assert.equal(state.turn.pendingEvents.length, 2);
+  assert.equal(ensureAnnualEventMinimum(state), false);
+  assert.equal(state.turn.pendingEvents.length, 2);
+  assert.equal(state.turn.pendingEvents[0].event_id, 'evt_test_choice_resolution');
+});
+
+test('legacy age-zero saves do not receive a supplemental event', () => {
+  const state = createEventState(0);
+  queueOneEvent(state, {}, [{
+    choice_id: 'choice_newborn_legacy',
+    label_th: 'ตัวเลือกวัยแรกเกิด',
+    req_stats: {},
+    req_flags: [],
+    stat_effects: {}
+  }]);
+
+  assert.equal(ensureAnnualEventMinimum(state), false);
+  assert.equal(state.turn.pendingEvents.length, 1);
 });
 
 test('annual event queue contains at least two events from age one onward, while age zero is exempt', () => {

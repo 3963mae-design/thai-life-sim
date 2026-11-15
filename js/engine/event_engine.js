@@ -1303,6 +1303,7 @@ function createAnnualMinimumFallbackCard(age, existingIds = new Set()) {
   let suffix = 1;
   while (existingIds.has(eventId)) eventId = `evt_annual_minimum_${age}_${suffix++}`;
 
+  existingIds.add(eventId);
   return normalizeEventCard(
     {
       event_id: eventId,
@@ -1553,7 +1554,9 @@ export function ensureAnnualEventMinimum(state) {
   if (age <= 0 || queue.length >= 2) return false;
 
   const existingIds = new Set(queue.map((event) => event.event_id));
-  queue.push(createAnnualMinimumFallbackCard(age, existingIds));
+  while (queue.length < 2) {
+    queue.push(createAnnualMinimumFallbackCard(age, existingIds));
+  }
   state.turn.pendingEvents = queue;
   return true;
 }

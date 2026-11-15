@@ -142,6 +142,21 @@
             "merit": 1,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 1,
+            "intelligence": 3,
+            "cash": -250,
+            "merit": 1
+          }
         }
       ]
     },
@@ -197,6 +212,21 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": -2,
+            "intelligence": 2,
+            "connections": 2,
+            "cash": 600
           }
         }
       ]
@@ -256,6 +286,22 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 2,
+            "happiness": 4,
+            "intelligence": 2,
+            "connections": 2,
+            "cash": 800
+          }
         }
       ]
     },
@@ -311,6 +357,21 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 1,
+            "connections": 1,
+            "cash": 1250,
+            "appearance": 1
           }
         }
       ]
@@ -381,6 +442,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 1,
+            "happiness": 4,
+            "intelligence": 1,
+            "cash": 2250
+          }
         }
       ]
     },
@@ -437,6 +513,23 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 1,
+            "happiness": 5,
+            "intelligence": 2,
+            "connections": 2,
+            "cash": 1000,
+            "merit": 2
+          }
         }
       ]
     },
@@ -492,6 +585,21 @@
             "cash": -400,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 1,
+            "intelligence": 3,
+            "connections": 2,
+            "cash": 50
           }
         }
       ]
@@ -551,6 +659,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 2,
+            "happiness": 3,
+            "intelligence": 2,
+            "cash": -250
+          }
         }
       ]
     },
@@ -606,6 +729,22 @@
             "cash": 0,
             "merit": 10,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 7,
+            "intelligence": 2,
+            "connections": 7,
+            "cash": 2500,
+            "merit": 13
           }
         }
       ]
@@ -665,6 +804,20 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 5,
+            "connections": 5,
+            "cash": 2750
+          }
         }
       ]
     },
@@ -720,6 +873,22 @@
             "cash": 1500,
             "merit": 3,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 4,
+            "intelligence": 5,
+            "connections": 4,
+            "cash": 2250,
+            "merit": 2
           }
         }
       ]
@@ -778,6 +947,21 @@
             "cash": 1000,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 4,
+            "intelligence": 4,
+            "connections": 4,
+            "cash": 2000
           }
         }
       ]
@@ -848,6 +1032,20 @@
               "appearance": -3
             }
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 2,
+            "happiness": 3,
+            "intelligence": 2
+          }
         }
       ]
     },
@@ -903,6 +1101,22 @@
             "cash": 2500,
             "merit": 4,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": -1,
+            "happiness": 5,
+            "connections": 7,
+            "cash": 3500,
+            "merit": 2
           }
         }
       ]
@@ -962,6 +1176,22 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 2,
+            "happiness": 7,
+            "intelligence": 3,
+            "connections": 5,
+            "cash": 8000
+          }
         }
       ]
     },
@@ -1017,6 +1247,21 @@
             "cash": 2500,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": -2,
+            "happiness": 1,
+            "intelligence": 3,
+            "cash": 2250
           }
         }
       ]
@@ -1076,6 +1321,22 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 2,
+            "happiness": 4,
+            "intelligence": 2,
+            "connections": 3,
+            "cash": -250
+          }
         }
       ]
     },
@@ -1132,6 +1393,22 @@
             "merit": 12,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 6,
+            "intelligence": 3,
+            "connections": 5,
+            "cash": 2750,
+            "merit": 6
+          }
         }
       ]
     },
@@ -1187,6 +1464,22 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 2,
+            "happiness": 5,
+            "intelligence": 5,
+            "connections": 5,
+            "cash": 2000
           }
         }
       ]
@@ -1246,6 +1539,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": -3,
+            "intelligence": 3,
+            "connections": 2,
+            "cash": 2500
+          }
         }
       ]
     },
@@ -1301,6 +1609,20 @@
             "cash": 10000,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 6,
+            "intelligence": 6,
+            "cash": 9000
           }
         }
       ]
@@ -1360,6 +1682,22 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": -1,
+            "happiness": 6,
+            "intelligence": 6,
+            "connections": 3,
+            "cash": 20000
+          }
         }
       ]
     },
@@ -1418,6 +1756,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": -1,
+            "happiness": 4,
+            "intelligence": 4,
+            "cash": 1850
+          }
         }
       ]
     },
@@ -1474,6 +1827,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 6,
+            "intelligence": 5,
+            "connections": 6,
+            "cash": 9000
+          }
         }
       ]
     },
@@ -1529,6 +1897,22 @@
             "cash": 15000,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 8,
+            "intelligence": 2,
+            "connections": 9,
+            "cash": 16500,
+            "appearance": 2
           }
         }
       ]
@@ -1588,6 +1972,21 @@
             "merit": 0,
             "appearance": 3
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 10,
+            "connections": 9,
+            "cash": 27500,
+            "appearance": 2
+          }
         }
       ]
     },
@@ -1643,6 +2042,22 @@
             "cash": -8000,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": -2,
+            "intelligence": 3,
+            "connections": 1,
+            "cash": -4000,
+            "merit": 2
           }
         }
       ]
@@ -1713,6 +2128,21 @@
               "appearance": -5
             }
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 4,
+            "connections": 4,
+            "cash": 35000,
+            "merit": -1
+          }
         }
       ]
     },
@@ -1771,6 +2201,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 9,
+            "intelligence": 4,
+            "connections": 9,
+            "cash": 23500
+          }
         }
       ]
     },
@@ -1828,6 +2273,21 @@
             "cash": 6000,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 7,
+            "intelligence": 2,
+            "connections": 6,
+            "cash": 10500
           }
         }
       ]
@@ -1898,6 +2358,21 @@
               "appearance": -4
             }
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 3,
+            "connections": 4,
+            "cash": 30000,
+            "merit": -2
+          }
         }
       ]
     },
@@ -1953,6 +2428,20 @@
             "cash": 500,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 1,
+            "intelligence": 2,
+            "cash": 1500
           }
         }
       ]
@@ -2010,6 +2499,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 1,
+            "happiness": 4,
+            "intelligence": 4,
+            "cash": 6500
+          }
         }
       ]
     },
@@ -2065,6 +2569,21 @@
             "cash": 0,
             "merit": 30,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 14,
+            "connections": 7,
+            "cash": 1500,
+            "merit": 28
           }
         }
       ]
@@ -2122,6 +2641,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 2,
+            "happiness": 6,
+            "connections": 3,
+            "cash": 3000
+          }
         }
       ]
     },
@@ -2177,6 +2711,22 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 1,
+            "happiness": 3,
+            "intelligence": 7,
+            "connections": 2,
+            "cash": 750
           }
         }
       ]
@@ -2234,6 +2784,22 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": -2,
+            "intelligence": 3,
+            "connections": 2,
+            "cash": -4000,
+            "merit": 2
+          }
         }
       ]
     },
@@ -2289,6 +2855,21 @@
             "cash": 3000,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 4,
+            "happiness": 5,
+            "intelligence": 2,
+            "cash": 900
           }
         }
       ]
@@ -2347,6 +2928,21 @@
             "cash": 7500,
             "merit": 0,
             "appearance": 3
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 7,
+            "connections": 7,
+            "cash": 5500,
+            "appearance": 2
           }
         }
       ]

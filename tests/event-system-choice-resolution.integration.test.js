@@ -8,7 +8,8 @@ import { createEmptyGameState, getState, setState } from '../js/core/state.js';
 import {
   buildAnnualEventQueue,
   getCurrentPendingEvent,
-  isEventEligible
+  isEventEligible,
+  normalizeEventCard
 } from '../js/engine/event_engine.js';
 import {
   selectCurrentEventChoice,
@@ -119,6 +120,46 @@ function queueOneEvent(state, eventOverrides = {}, choices = []) {
   state.turn.areTabsLocked = true;
   state.turn.awaitingEventAdvance = false;
 }
+
+test('every authored event pool record contains at least three choices', () => {
+  for (const [key, data] of Object.entries(fixtureData)) {
+    if (!Array.isArray(data?.events)) continue;
+    for (const event of data.events) {
+      assert.ok(
+        event.choices.length >= 3,
+        `${key}/${event.event_id} should have at least three choices`
+      );
+    }
+  }
+});
+
+test('normalized system-generated events are supplemented to three choices', () => {
+  const event = normalizeEventCard({
+    event_id: 'evt_test_minimum_choices',
+    title_th: 'เหตุการณ์ทดสอบ',
+    description_th: 'ทดสอบเติมตัวเลือกของการ์ดที่สร้างจากระบบ',
+    category: 'general',
+    choices: [
+      { choice_id: 'c1', label_th: 'ทางเลือกหนึ่ง', stat_effects: { happiness: 2 } },
+      { choice_id: 'c2', label_th: 'ทางเลือกสอง', stat_effects: { health: 2 } }
+    ]
+  });
+
+  assert.equal(event.choices.length, 3);
+  assert.equal(event.choices[2].isLocked, undefined);
+  assert.deepEqual(event.choices[2].req_flags, []);
+});
+
+test('annual event queue contains at least two events from age one onward, while age zero is exempt', () => {
+  const firstYear = createEventState(0);
+  const infantQueue = buildAnnualEventQueue(firstYear);
+  assert.ok(infantQueue.length >= 1);
+  assert.equal(infantQueue.some((event) => event.event_id === 'evt_annual_minimum_0'), false);
+
+  const ageOne = createEventState(1);
+  const ageOneQueue = buildAnnualEventQueue(ageOne);
+  assert.ok(ageOneQueue.length >= 2, `expected at least two events, received ${ageOneQueue.length}`);
+});
 
 test('stat threshold rewards are applied once when a threshold flag becomes active', () => {
   const state = createEventState(25);

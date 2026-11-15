@@ -117,6 +117,61 @@ export function parseHintTokens(rawHintTh) {
     .filter((token) => token.text.length > 0);
 }
 
+const PREVIEW_EFFECT_COPY = {
+  health: ['ช่วยส่งเสริมสุขภาพ', 'อาจกระทบสุขภาพ'],
+  happiness: ['ช่วยเพิ่มความสบายใจและความสุข', 'อาจทำให้รู้สึกกดดันหรือไม่สบายใจ'],
+  intelligence: ['ช่วยพัฒนาความรู้และทักษะ', 'อาจทำให้เสียโอกาสในการเรียนรู้'],
+  connections: ['ช่วยสร้างความสัมพันธ์และความไว้วางใจ', 'อาจทำให้ความสัมพันธ์ตึงเครียด'],
+  merit: ['ส่งเสริมด้านคุณงามความดีและความเชื่อ', 'อาจไม่เป็นผลดีต่อความเชื่อหรือความตั้งใจ'],
+  appearance: ['ช่วยเสริมบุคลิกภาพ', 'อาจกระทบภาพลักษณ์'],
+  cash: ['ช่วยเพิ่มเงินสดหรือเงินออม', 'อาจมีค่าใช้จ่ายหรือทำให้เงินลดลง']
+};
+
+function describeEffectSet(effects = {}, relationshipChange = 0) {
+  const parts = [];
+  for (const [key, rawValue] of Object.entries(effects || {})) {
+    const value = Number(rawValue || 0);
+    if (!Number.isFinite(value) || value === 0) continue;
+    const copy = PREVIEW_EFFECT_COPY[key];
+    if (copy) parts.push(copy[value > 0 ? 0 : 1]);
+  }
+  const relationship = Number(relationshipChange || 0);
+  if (relationship > 0) parts.push('ช่วยให้ความสัมพันธ์กับคนที่เกี่ยวข้องดีขึ้น');
+  if (relationship < 0) parts.push('อาจสร้างระยะห่างกับคนที่เกี่ยวข้อง');
+  return [...new Set(parts)];
+}
+
+/**
+ * สร้างคำอธิบายผลที่คาดว่าจะตามมาโดยไม่เปิดเผยตัวเลขค่าสถานะก่อนผู้เล่นตัดสินใจ
+ */
+export function getChoicePreviewText(choice = {}) {
+  if (typeof choice.preview_text_th === 'string' && choice.preview_text_th.trim()) {
+    return stripEmojis(choice.preview_text_th);
+  }
+
+  const successEffects = describeEffectSet(
+    choice.stat_effects || choice.on_success?.stat_effects || {},
+    choice.relationship_change
+  );
+  const failureEffects = describeEffectSet(
+    choice.rng_mechanic?.fail_stat_effects || choice.on_fail?.stat_effects || {},
+    choice.rng_mechanic?.fail_relationship_change || 0
+  );
+
+  if (choice.rng_mechanic || choice.on_fail) {
+    const successText = successEffects.length ? successEffects.join(' และ ') : 'อาจเปิดโอกาสหรือสถานะใหม่';
+    const failureText = failureEffects.length ? failureEffects.join(' และ ') : 'อาจต้องรับมือกับผลที่ไม่เป็นไปตามแผน';
+    return `หากเป็นไปตามแผน: ${successText} หากไม่สำเร็จ: ${failureText}`;
+  }
+
+  const effects = successEffects;
+  if (effects.length) return `ผลที่อาจตามมา: ${effects.join(' และ ')}`;
+  if ((choice.grants_flags || []).length || (choice.removes_flags || []).length) {
+    return 'อาจเปลี่ยนสถานะหรือเปิดโอกาสใหม่ในเส้นทางชีวิต';
+  }
+  return 'เป็นอีกทางเลือกในการรับมือกับสถานการณ์ โดยไม่มีผลกระทบที่ระบุไว้ล่วงหน้า';
+}
+
 /**
  * สร้างข้อความสรุปผลกระทบค่าสถานะแบบไร้ Emoji สำหรับช้อยส์ที่สร้างขึ้นไดนามิก (เช่น Milestone / ดราม่าคู่สมรส)
  * @param {Record<string, number>} statEffects
@@ -413,17 +468,97 @@ export function assignFlavorMonthsToQueue(eventsQueue) {
  * @param {string} [defaultIconKey='calendar']
  * @returns {object}
  */
+function getBalancedChoiceLabel(rawCard) {
+  const title = String(rawCard.title_th || rawCard.name_th || '');
+  const category = String(rawCard.category || rawCard.source_type || '').toLowerCase();
+  const context = `${title} ${rawCard.description_th || ''}`.toLowerCase();
+
+  if (/romance|relationship|family|friend|partner|children_parenting|spouse/.test(category) ||
+      /ครอบครัว|พ่อแม่|เพื่อน|คู่รัก|แฟน|ความสัมพันธ์|แต่งงาน|ลูก/.test(context)) {
+    return 'พูดคุยรับฟังกันและหาทางออกร่วมกัน';
+  }
+  if (/career|job|work/.test(category) || /อาชีพ|สมัครงาน|ทำงาน|หัวหน้า|ลูกค้า|ธุรกิจ/.test(context)) {
+    return 'ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม';
+  }
+  if (/education|school|study/.test(category) || /เรียน|โรงเรียน|สอบ|มหาวิทยาลัย|ติว/.test(context)) {
+    return 'แบ่งเวลาให้ทั้งความก้าวหน้าและการพักผ่อนอย่างสมดุล';
+  }
+  if (/เงิน|ซื้อ|ขาย|ลงทุน|ออม|ค่าใช้จ่าย|หนี้/.test(context)) {
+    return 'เปรียบเทียบทางเลือกและวางแผนทรัพยากรก่อนตัดสินใจ';
+  }
+  if (Number(rawCard.trigger_age ?? rawCard.min_age ?? 100) <= 4) {
+    return 'ให้ผู้ใหญ่ช่วยประคองและเลือกวิธีที่เหมาะกับสถานการณ์';
+  }
+  if (Number(rawCard.trigger_age ?? rawCard.min_age ?? 100) <= 17) {
+    return 'ขอคำแนะนำจากผู้ใหญ่แล้วเลือกวิธีที่พอดีกับตัวเอง';
+  }
+  return 'เลือกแนวทางที่สมดุล โดยคำนึงถึงผลที่จะตามมา';
+}
+
+function getAverageEffects(choices, fieldName) {
+  const valuesByKey = new Map();
+  for (const choice of choices || []) {
+    const source = choice?.[fieldName];
+    if (!source || typeof source !== 'object' || Array.isArray(source)) continue;
+    for (const [key, rawValue] of Object.entries(source)) {
+      const value = Number(rawValue);
+      if (!Number.isFinite(value)) continue;
+      const bucket = valuesByKey.get(key) || [];
+      bucket.push(value);
+      valuesByKey.set(key, bucket);
+    }
+  }
+
+  return Object.fromEntries(
+    [...valuesByKey.entries()]
+      .map(([key, values]) => [key, Math.round(values.reduce((sum, value) => sum + value, 0) / values.length)])
+      .filter(([, value]) => value !== 0)
+  );
+}
+
+function ensureMinimumEventChoices(rawCard) {
+  const choices = Array.isArray(rawCard.choices) ? [...rawCard.choices] : [];
+  while (choices.length < 3) {
+    const usedIds = new Set(choices.map((choice) => choice.choice_id).filter(Boolean));
+    let nextId = `c${choices.length + 1}`;
+    let suffix = 1;
+    while (usedIds.has(nextId)) nextId = `choice_balanced_${suffix++}`;
+
+    const averageEffects = getAverageEffects(choices, 'stat_effects');
+    const relationshipValues = choices
+      .map((choice) => Number(choice.relationship_change || 0))
+      .filter(Number.isFinite);
+    const relationshipChange = relationshipValues.length
+      ? Math.round(relationshipValues.reduce((sum, value) => sum + value, 0) / relationshipValues.length)
+      : 0;
+
+    choices.push({
+      choice_id: nextId,
+      label_th: getBalancedChoiceLabel(rawCard),
+      preview_text_th: 'เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน',
+      req_stats: {},
+      req_flags: [],
+      grants_flags: [],
+      removes_flags: [],
+      ...(relationshipChange ? { relationship_change: relationshipChange } : {}),
+      stat_effects: averageEffects
+    });
+  }
+  return choices;
+}
+
 export function normalizeEventCard(rawCard, defaultSourceType = 'pool_event', defaultIconKey = 'calendar') {
   const cleanTitle = stripEmojis(rawCard.title_th || rawCard.name_th || 'เหตุการณ์สำคัญ');
   const cleanDesc = stripEmojis(rawCard.description_th || '');
 
-  const normalizedChoices = (rawCard.choices || []).map((ch, idx) => {
+  const normalizedChoices = ensureMinimumEventChoices(rawCard).map((ch, idx) => {
     const rawHint = ch.hint_th || '';
     return {
       ...ch,
       choice_id: ch.choice_id || `c${idx + 1}`,
       label_th: stripEmojis(ch.label_th || ch.choice_label_th || `ตัวเลือกที่ ${idx + 1}`),
       hint_th: stripEmojis(rawHint),
+      preview_text_th: getChoicePreviewText(ch),
       hintTokens: parseHintTokens(rawHint)
     };
   });
@@ -1298,6 +1433,59 @@ export function buildAnnualEventQueue(state) {
     }
   }
 
+  // ตั้งแต่อายุ 1 ปีขึ้นไป ต้องมีอย่างน้อย 2 เหตุการณ์ให้ตัดสินใจในแต่ละปี
+  // เติมจาก Event Pool ที่ยังไม่เคยเกิดก่อน หากหมดจริงจึงใช้การ์ดเหตุการณ์สำรอง
+  if (age > 0 && rawQueue.length < 2) {
+    const flexYears = Number(db.raw.loansCrisesEndings?.event_pool_mixing_rules?.age_window_flexibility_years ?? 2);
+    const supplementalPool = Array.from(db.indexes.events.values()).filter((event) =>
+      !selectedIds.has(event.event_id) &&
+      isEventEligible(event, state, { ageWindowTolerance: flexYears })
+    );
+    const supplementalEvent = pickRandom(supplementalPool);
+
+    if (supplementalEvent) {
+      selectedIds.add(supplementalEvent.event_id);
+      rawQueue.push(
+        normalizeEventCard(
+          { ...supplementalEvent, source_type: 'pool_event', pool_bucket: 'annual_minimum' },
+          'pool_event',
+          resolveBucketIconKey('life_phase', supplementalEvent)
+        )
+      );
+    }
+
+    // รับประกันขั้นต่ำแม้ผู้เล่นใช้ Event Pool จนหมด โดยไม่เล่น Event เก่าซ้ำ
+    if (rawQueue.length < 2) {
+      rawQueue.push(
+        normalizeEventCard(
+          {
+            event_id: `evt_annual_minimum_${age}`,
+            title_th: 'เรื่องเล็ก ๆ ที่ทำให้ปีนี้ไม่ธรรมดา',
+            description_th: 'ระหว่างปีมีเรื่องราวเล็กน้อยเกิดขึ้น เปิดโอกาสให้คุณเลือกวิธีรับมือและกำหนดจังหวะชีวิตของตัวเอง',
+            source_type: 'annual_fallback',
+            category: 'shared',
+            choices: [
+              {
+                choice_id: 'c1',
+                label_th: 'ใช้โอกาสนี้ลองทำสิ่งใหม่อย่างค่อยเป็นค่อยไป',
+                stat_effects: { happiness: 1, intelligence: 1 },
+                req_stats: {}, req_flags: [], grants_flags: [], removes_flags: []
+              },
+              {
+                choice_id: 'c2',
+                label_th: 'รักษาสิ่งที่ทำได้ดีอยู่แล้วและดูแลตัวเองให้พร้อม',
+                stat_effects: { health: 1, happiness: 1 },
+                req_stats: {}, req_flags: [], grants_flags: [], removes_flags: []
+              }
+            ]
+          },
+          'annual_fallback',
+          'calendar'
+        )
+      );
+    }
+  }
+
   // จัดเรียงเดือนไทย 1-12 ให้สอดคล้องบริบทและไม่ย้อนกลับ
   const finalizedQueue = assignFlavorMonthsToQueue(rawQueue);
 
@@ -1509,6 +1697,60 @@ function evaluateImmediateDeathCauseId(state) {
   return 'death_general_illness';
 }
 
+function buildChoiceOutcomeNarrativeTh(eventCard, choice, baseText, statDeltas, relationshipUpdate, rngRollInfo) {
+  const eventTitle = stripEmojis(eventCard.title_th || 'เหตุการณ์นี้');
+  const choiceLabel = stripEmojis(choice.label_th || 'แนวทางที่เลือก');
+  const base = stripEmojis(baseText || '');
+  const looksGeneric = !base ||
+    /^คุณ(?:เลือก|ตัดสินใจเลือก|ตัดสินใจ):?/u.test(base) ||
+    base.includes('สำเร็จตามเป้าหมาย') && base.length < 90;
+
+  let opening = looksGeneric
+    ? `หลังจากคุณเลือก “${choiceLabel}” ในเหตุการณ์ “${eventTitle}”`
+    : base;
+
+  const category = String(eventCard.category || eventCard.source_type || '').toLowerCase();
+  let storyBeat;
+  if (/romance|relationship|family|friend|partner|children_parenting|spouse/.test(category)) {
+    storyBeat = 'ท่าทีและความสัมพันธ์ระหว่างคุณกับคนที่เกี่ยวข้องจึงเปลี่ยนไปจากเดิม';
+  } else if (/career|job|work/.test(category) || eventCard.req_job_id) {
+    storyBeat = 'การตัดสินใจครั้งนี้ส่งผลต่อจังหวะการทำงานและโอกาสที่คุณจะต้องรับมือในระยะต่อไป';
+  } else if (/education|school|study/.test(category) || /เรียน|โรงเรียน|สอบ|มหาวิทยาลัย/.test(eventTitle)) {
+    storyBeat = 'ประสบการณ์ครั้งนี้กลายเป็นส่วนหนึ่งของเส้นทางการเรียนรู้และการเติบโตของคุณ';
+  } else if (/location|karma|travel/.test(category) || eventCard.req_location_id) {
+    storyBeat = 'เหตุการณ์รอบตัวค่อย ๆ คลี่คลายตามทางที่คุณเลือก และทิ้งประสบการณ์ให้คุณนำไปใช้ต่อ';
+  } else {
+    storyBeat = 'สถานการณ์ตรงหน้าค่อย ๆ ดำเนินต่อไป และคนรอบข้างตอบสนองต่อการกระทำของคุณ';
+  }
+
+  const deltas = Object.values(statDeltas || {}).map(Number).filter((value) => Number.isFinite(value) && value !== 0);
+  const hasPositive = deltas.some((value) => value > 0);
+  const hasNegative = deltas.some((value) => value < 0);
+  let consequence;
+  if (relationshipUpdate?.delta > 0) {
+    consequence = 'ความสัมพันธ์ได้รับการประคับประคองไปในทางที่ดีขึ้น';
+  } else if (relationshipUpdate?.delta < 0) {
+    consequence = 'ความสัมพันธ์มีระยะห่างหรือความตึงเครียดเพิ่มขึ้น';
+  } else if (hasPositive && hasNegative) {
+    consequence = 'ผลที่ตามมามีทั้งด้านที่ช่วยให้คุณเดินหน้าและด้านที่ต้องแลกหรือรับมือ';
+  } else if (hasPositive) {
+    consequence = 'ทางเลือกนี้ส่งผลในด้านที่เป็นประโยชน์กับคุณ';
+  } else if (hasNegative || (rngRollInfo && !rngRollInfo.isSuccess)) {
+    consequence = 'ผลลัพธ์ไม่เป็นไปตามที่หวัง และทำให้คุณต้องรับมือกับข้อจำกัดที่เกิดขึ้น';
+  } else if ((choice.grants_flags || []).length || (choice.removes_flags || []).length) {
+    consequence = 'การตัดสินใจครั้งนี้ยังเปลี่ยนสถานะหรือเปิดโอกาสใหม่ให้กับเส้นทางชีวิตของคุณ';
+  } else {
+    consequence = 'แม้ไม่มีการเปลี่ยนแปลงเด่นชัดในทันที แต่เหตุการณ์นี้ก็กลายเป็นอีกหนึ่งประสบการณ์ของชีวิต';
+  }
+
+  if (!looksGeneric && base.length > 150) {
+    // เก็บคำบรรยายเฉพาะที่ผู้เขียนใส่มา แล้วเติมบทสรุปผลที่เกิดขึ้นในโลกเกม
+    opening = base;
+  }
+
+  return `${opening} ${storyBeat} ${consequence}`.replace(/\s+/g, ' ').trim();
+}
+
 /**
  * ประมวลผลเมื่อผู้เล่นกดปุ่มเลือกตัวเลือก (Choice) ในการ์ดอีเวนต์ใบปัจจุบัน
  * รองรับการทอยเต๋า RNG ทั้ง 2 สคีมา, อัปเดตสเตตัส/ป้าย/ความสัมพันธ์, เช็กการตายกลางคิว และบันทึก Life Feed
@@ -1644,6 +1886,16 @@ export function selectEventChoice(state, choiceId) {
 
   // 4. อัปเดตความสัมพันธ์ NPC / คู่รัก / ลูก
   const relationshipUpdate = applyEventRelationshipChange(state, currentEvent, chosen.relationship_change);
+
+  // 4.1 สร้างคำบรรยายเหตุการณ์หลังการตัดสินใจ แทนการแสดงเพียงข้อความชื่อ Choice
+  outcomeTextTh = buildChoiceOutcomeNarrativeTh(
+    currentEvent,
+    chosen,
+    outcomeTextTh,
+    statDeltas,
+    relationshipUpdate,
+    rngRollInfo
+  );
 
   // 5. บันทึกหมวดหมู่อีเวนต์ล่าสุด (สำหรับเช็กสาเหตุการตาย เช่น อุบัติเหตุทางถนน) และบันทึกว่าอีเวนต์นี้เล่นไปแล้ว
   const isRoadAccidentEvent =

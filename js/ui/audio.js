@@ -23,10 +23,10 @@ let prefs = loadPrefs();
 function loadPrefs() {
   try {
     const raw = localStorage.getItem(AUDIO_STORAGE_KEY);
-    if (!raw) return { bgmEnabled: true, sfxEnabled: true, bgmVolume: 0.35 };
+    if (!raw) return { bgmEnabled: true, sfxEnabled: true, bgmVolume: 0.35, sfxVolume: 0.8 };
     return { bgmEnabled: true, sfxEnabled: true, bgmVolume: 0.35, ...JSON.parse(raw) };
   } catch {
-    return { bgmEnabled: true, sfxEnabled: true, bgmVolume: 0.35 };
+    return { bgmEnabled: true, sfxEnabled: true, bgmVolume: 0.35, sfxVolume: 0.8 };
   }
 }
 
@@ -67,8 +67,29 @@ function getAudioContext() {
   return audioCtx;
 }
 
+function normalizeVolume(value, fallback = 0.5) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return fallback;
+  return Math.min(1, Math.max(0, numeric));
+}
+
 export function getAudioPrefs() {
   return { ...prefs };
+}
+
+export function setBgmVolume(value) {
+  prefs.bgmVolume = normalizeVolume(value, prefs.bgmVolume);
+  for (const audio of Object.values(trackPlayers)) {
+    if (audio) audio.volume = prefs.bgmVolume;
+  }
+  savePrefs();
+  return prefs.bgmVolume;
+}
+
+export function setSfxVolume(value) {
+  prefs.sfxVolume = normalizeVolume(value, prefs.sfxVolume);
+  savePrefs();
+  return prefs.sfxVolume;
 }
 
 export function pauseAllBgm() {
@@ -133,12 +154,12 @@ export function toggleBgm() {
 export function toggleSfx() {
   prefs.sfxEnabled = !prefs.sfxEnabled;
   savePrefs();
-  if (prefs.sfxEnabled) playSfx('click');
   return prefs.sfxEnabled;
 }
 
 export function playSfx(type = 'click') {
-  if (!prefs.sfxEnabled) return;
+  const volume = normalizeVolume(prefs.sfxVolume, 0.8);
+  if (!prefs.sfxEnabled || volume <= 0) return;
   const ctx = getAudioContext();
   if (!ctx) return;
 
@@ -152,7 +173,7 @@ export function playSfx(type = 'click') {
     osc.type = 'triangle';
     osc.frequency.setValueAtTime(523.25, now);
     osc.frequency.setValueAtTime(659.25, now + 0.06);
-    gain.gain.setValueAtTime(0.05, now);
+    gain.gain.setValueAtTime(0.05 * volume, now);
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
     osc.start(now);
     osc.stop(now + 0.19);
@@ -160,18 +181,21 @@ export function playSfx(type = 'click') {
     osc.type = 'sine';
     osc.frequency.setValueAtTime(220, now);
     osc.frequency.linearRampToValueAtTime(160, now + 0.14);
-    gain.gain.setValueAtTime(0.06, now);
+    gain.gain.setValueAtTime(0.06 * volume, now);
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
     osc.start(now);
     osc.stop(now + 0.17);
   } else {
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(480, now);
-    osc.frequency.exponentialRampToValueAtTime(320, now + 0.04);
-    gain.gain.setValueAtTime(0.035, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+    // A short, warm two-step chime sits above the BGM without becoming sharp or intrusive.
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(620, now);
+    osc.frequency.exponentialRampToValueAtTime(850, now + 0.065);
+    osc.frequency.exponentialRampToValueAtTime(730, now + 0.14);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.11 * volume, now + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
     osc.start(now);
-    osc.stop(now + 0.05);
+    osc.stop(now + 0.16);
   }
 }
 

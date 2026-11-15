@@ -83,9 +83,26 @@ function createEventQueueState() {
       req_flags: [],
       grants_flags: [],
       removes_flags: [],
-      stat_effects: {
-        happiness: 5
-      }
+      stat_effects: { happiness: 5 }
+    }]
+  }, {
+    event_id: 'test_event_turn_flow_02',
+    trigger_age: 25,
+    category: 'general',
+    title_th: 'เหตุการณ์ทดสอบใบที่สอง',
+    description_th: 'ใช้ตรวจสอบว่าระบบแสดงเหตุการณ์ใบถัดไปก่อนปลดล็อกช่วงอิสระ',
+    monthNum: 2,
+    monthTh: 'กุมภาพันธ์',
+    req_flags: [],
+    forbidden_flags: [],
+    choices: [{
+      choice_id: 'choice_continue_second',
+      label_th: 'เลือกดำเนินการต่อ',
+      req_stats: {},
+      req_flags: [],
+      grants_flags: [],
+      removes_flags: [],
+      stat_effects: { happiness: 1 }
     }]
   }];
   state.turn.currentEventIndex = 0;
@@ -105,7 +122,7 @@ test('acknowledging the annual summary opens the first queued event', () => {
   assert.equal(state.turn.areTabsLocked, true);
 });
 
-test('event choice can be applied once, then the primary action advances to free action', () => {
+test('event choices advance through the annual queue before free action', () => {
   const state = createEventQueueState();
   acknowledgeAnnualSlipAndStartEvents(state);
 
@@ -122,11 +139,24 @@ test('event choice can be applied once, then the primary action advances to free
   assert.equal(state.stats.happiness, 62);
 
   const actionSpec = getPrimaryActionButtonSpec(state);
-  assert.equal(actionSpec.actionType, 'UNLOCK_FREE_ACTION');
+  assert.equal(actionSpec.actionType, 'NEXT_EVENT');
   assert.equal(actionSpec.disabled, false);
 
-  const advanceResult = triggerPrimaryActionButton(state);
+  const advanceToSecondEvent = triggerPrimaryActionButton(state);
+  assert.equal(advanceToSecondEvent.completedQueue, false);
+  assert.equal(state.turn.phase, 'EVENT_QUEUE');
+  assert.equal(state.turn.currentEventIndex, 1);
+  assert.equal(state.turn.awaitingEventAdvance, false);
 
+  const secondChoice = selectCurrentEventChoice('choice_continue_second', state);
+  assert.equal(secondChoice.success, true);
+  assert.equal(state.turn.awaitingEventAdvance, true);
+
+  const finalActionSpec = getPrimaryActionButtonSpec(state);
+  assert.equal(finalActionSpec.actionType, 'UNLOCK_FREE_ACTION');
+  assert.equal(finalActionSpec.disabled, false);
+
+  const advanceResult = triggerPrimaryActionButton(state);
   assert.equal(advanceResult.completedQueue, true);
   assert.equal(state.turn.phase, 'FREE_ACTION');
   assert.equal(state.turn.areTabsLocked, false);

@@ -73,6 +73,22 @@
             "merit": 3,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 11,
+          "stat_effects": {
+            "happiness": 4,
+            "intelligence": 2,
+            "connections": 1,
+            "merit": 2
+          }
         }
       ]
     },
@@ -135,6 +151,21 @@
             "merit": 10,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 15,
+          "stat_effects": {
+            "happiness": 6,
+            "cash": -1250,
+            "merit": 11
+          }
         }
       ]
     },
@@ -193,6 +224,20 @@
             "merit": -3,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": -2,
+          "stat_effects": {
+            "intelligence": 3,
+            "merit": -1
+          }
         }
       ]
     },
@@ -250,6 +295,21 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 16,
+          "stat_effects": {
+            "happiness": 7,
+            "intelligence": 5,
+            "merit": 5
           }
         }
       ]
@@ -314,6 +374,21 @@
             "merit": 25,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 23,
+          "stat_effects": {
+            "happiness": 11,
+            "cash": 12500,
+            "merit": 20
+          }
         }
       ]
     },
@@ -372,6 +447,21 @@
             "merit": 10,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 17,
+          "stat_effects": {
+            "health": 3,
+            "happiness": 8,
+            "merit": 8
+          }
         }
       ]
     },
@@ -429,6 +519,21 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 1,
+          "stat_effects": {
+            "happiness": 1,
+            "intelligence": 3,
+            "merit": 3
           }
         }
       ]
@@ -491,6 +596,22 @@
             "merit": 12,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 20,
+          "stat_effects": {
+            "health": 1,
+            "happiness": 9,
+            "cash": -2500,
+            "merit": 16
+          }
         }
       ]
     },
@@ -551,6 +672,22 @@
             "merit": 15,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 18,
+          "stat_effects": {
+            "health": 2,
+            "happiness": 11,
+            "cash": 5000,
+            "merit": 8
+          }
         }
       ]
     },
@@ -608,6 +745,22 @@
             "cash": 0,
             "merit": 10,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 15,
+          "stat_effects": {
+            "health": 1,
+            "happiness": 8,
+            "cash": -750,
+            "merit": 14
           }
         }
       ]
@@ -847,6 +1000,20 @@
               "appearance": 0
             }
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 2,
+            "intelligence": 4,
+            "merit": 3
+          }
         }
       ]
     },
@@ -906,6 +1073,22 @@
             "cash": 45000,
             "merit": 10,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 14,
+          "stat_effects": {
+            "happiness": 14,
+            "connections": 8,
+            "cash": 37500,
+            "merit": 13
           }
         }
       ]
@@ -978,6 +1161,20 @@
               "appearance": 0
             }
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 4,
+            "intelligence": 3,
+            "cash": 6000
+          }
         }
       ]
     },
@@ -1035,6 +1232,21 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 15,
+          "stat_effects": {
+            "happiness": 7,
+            "connections": 4,
+            "cash": -100
           }
         }
       ]
@@ -1094,6 +1306,22 @@
             "merit": 6,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 20,
+          "stat_effects": {
+            "happiness": 6,
+            "connections": 3,
+            "cash": -300,
+            "merit": 9
+          }
         }
       ]
     },
@@ -1151,6 +1379,22 @@
             "cash": -500,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 18,
+          "stat_effects": {
+            "health": 2,
+            "happiness": 8,
+            "connections": 3,
+            "cash": 1000
           }
         }
       ]
@@ -1210,6 +1454,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 3,
+          "stat_effects": {
+            "happiness": 4,
+            "intelligence": 5,
+            "merit": 4
+          }
         }
       ]
     },
@@ -1267,6 +1526,22 @@
             "cash": 0,
             "merit": 8,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 23,
+          "stat_effects": {
+            "happiness": 9,
+            "connections": 7,
+            "cash": 750,
+            "merit": 4
           }
         }
       ]
@@ -1328,6 +1603,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 21,
+          "stat_effects": {
+            "happiness": 6,
+            "intelligence": 7,
+            "cash": -75
+          }
         }
       ]
     },
@@ -1385,6 +1675,22 @@
             "cash": 0,
             "merit": 8,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 25,
+          "stat_effects": {
+            "happiness": 6,
+            "intelligence": 3,
+            "connections": 3,
+            "merit": 10
           }
         }
       ]
@@ -1446,6 +1752,22 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 15,
+          "stat_effects": {
+            "happiness": 7,
+            "intelligence": 6,
+            "connections": 3,
+            "cash": 20000
+          }
         }
       ]
     },
@@ -1503,6 +1825,21 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 20,
+          "stat_effects": {
+            "happiness": 7,
+            "connections": 5,
+            "appearance": 2
           }
         }
       ]
@@ -1562,6 +1899,23 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 18,
+          "stat_effects": {
+            "health": 3,
+            "happiness": 6,
+            "intelligence": 2,
+            "connections": 4,
+            "cash": 4500
+          }
         }
       ]
     },
@@ -1619,6 +1973,22 @@
             "cash": 0,
             "merit": 5,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 22,
+          "stat_effects": {
+            "happiness": 7,
+            "connections": 7,
+            "cash": -250,
+            "merit": 3
           }
         }
       ]
@@ -1691,6 +2061,21 @@
               "appearance": -4
             }
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": -2,
+          "stat_effects": {
+            "intelligence": 3,
+            "cash": 10000,
+            "merit": -5
+          }
         }
       ]
     },
@@ -1749,6 +2134,22 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 23,
+          "stat_effects": {
+            "happiness": 9,
+            "intelligence": 2,
+            "connections": 8,
+            "cash": 8600
+          }
         }
       ]
     },
@@ -1806,6 +2207,22 @@
             "cash": -800,
             "merit": 12,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 21,
+          "stat_effects": {
+            "happiness": 6,
+            "intelligence": 2,
+            "cash": -400,
+            "merit": 14
           }
         }
       ]
@@ -1867,6 +2284,22 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 16,
+          "stat_effects": {
+            "health": 3,
+            "happiness": 7,
+            "connections": 6,
+            "cash": -1150
+          }
         }
       ]
     },
@@ -1924,6 +2357,22 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 3,
+          "stat_effects": {
+            "happiness": 6,
+            "intelligence": 6,
+            "connections": 6,
+            "cash": 6000
           }
         }
       ]
@@ -1983,6 +2432,22 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 17,
+          "stat_effects": {
+            "happiness": 7,
+            "intelligence": 3,
+            "connections": 9,
+            "cash": 9600
+          }
         }
       ]
     },
@@ -2040,6 +2505,21 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 3,
+          "stat_effects": {
+            "happiness": -1,
+            "intelligence": 3,
+            "connections": -1
           }
         }
       ]
@@ -2099,6 +2579,22 @@
             "merit": 8,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 23,
+          "stat_effects": {
+            "happiness": 7,
+            "connections": 5,
+            "cash": 3750,
+            "merit": 9
+          }
         }
       ]
     },
@@ -2156,6 +2652,22 @@
             "cash": -500,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 15,
+          "stat_effects": {
+            "health": 2,
+            "happiness": 8,
+            "connections": 6,
+            "cash": -650
           }
         }
       ]
@@ -2217,6 +2729,22 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 16,
+          "stat_effects": {
+            "happiness": 7,
+            "intelligence": 5,
+            "connections": 7,
+            "cash": 25000
+          }
         }
       ]
     },
@@ -2274,6 +2802,21 @@
             "cash": 25000,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": -5,
+          "stat_effects": {
+            "happiness": 6,
+            "intelligence": 7,
+            "cash": 22500
           }
         }
       ]
@@ -2333,6 +2876,22 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 19,
+          "stat_effects": {
+            "happiness": 8,
+            "intelligence": 7,
+            "connections": 7,
+            "cash": 30000
+          }
         }
       ]
     },
@@ -2391,6 +2950,23 @@
             "merit": 10,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 28,
+          "stat_effects": {
+            "health": -1,
+            "happiness": 8,
+            "connections": 8,
+            "cash": 16000,
+            "merit": 15
+          }
         }
       ]
     },
@@ -2448,6 +3024,21 @@
             "cash": 25000,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 18,
+          "stat_effects": {
+            "happiness": 8,
+            "connections": 11,
+            "cash": 27500
           }
         }
       ]
@@ -2508,6 +3099,23 @@
             "cash": 40000,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 23,
+          "stat_effects": {
+            "happiness": 9,
+            "intelligence": 3,
+            "connections": 11,
+            "cash": 18500,
+            "merit": 3
           }
         }
       ]
@@ -2571,6 +3179,23 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 22,
+          "stat_effects": {
+            "happiness": 9,
+            "intelligence": 7,
+            "connections": 13,
+            "cash": 30000,
+            "appearance": 2
+          }
         }
       ]
     },
@@ -2631,6 +3256,22 @@
             "merit": -20,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": -10,
+          "stat_effects": {
+            "happiness": 2,
+            "intelligence": 3,
+            "connections": -1,
+            "cash": 40000
+          }
         }
       ]
     },
@@ -2688,6 +3329,22 @@
             "cash": -10000,
             "merit": 30,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 23,
+          "stat_effects": {
+            "happiness": 10,
+            "connections": 11,
+            "cash": 17500,
+            "merit": 15
           }
         }
       ]
@@ -2748,6 +3405,22 @@
             "cash": -3000,
             "merit": 12,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "relationship_change": 23,
+          "stat_effects": {
+            "happiness": 9,
+            "connections": 13,
+            "cash": -4000,
+            "merit": 16
           }
         }
       ]

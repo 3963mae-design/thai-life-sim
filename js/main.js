@@ -118,6 +118,10 @@ export async function bootGame() {
     if (hasSavedGame()) {
       activeState = loadGame();
       if (activeState) {
+        // Repair legacy in-progress annual queues once on restore; ordinary queue reads remain side-effect free.
+        if (eventEngine.ensureAnnualEventMinimum(activeState)) {
+          saveGame(activeState);
+        }
         bootSource = 'LOADED_SAVE';
         const hasNoEventsYet =
           !Array.isArray(activeState.turn?.pendingEvents) || activeState.turn.pendingEvents.length === 0;

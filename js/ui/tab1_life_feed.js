@@ -5,7 +5,7 @@
 
 import { db } from '../core/db.js';
 import { formatCurrency } from '../core/utils.js';
-import { getCurrentPendingEvent, stripEmojis } from '../engine/event_engine.js';
+import { getCurrentPendingEvent, getChoicePreviewText, stripEmojis } from '../engine/event_engine.js';
 import { selectCurrentEventChoice } from '../engine/turn_manager.js';
 import { escapeHtml, renderIcon } from './icons.js';
 import { openAnnualSlipModal, openEmergencyDebtModal, showToast } from './modals_ending_ui.js';
@@ -108,15 +108,17 @@ function renderOutcomeCardHtml(outcome) {
     <div class="card card--highlight">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;">
         <div style="display:flex;align-items:center;gap:6px;font-weight:700;font-size:15px;">
-          ${renderIcon('check')}
-          <span>ผลลัพธ์การตัดสินใจ</span>
+          ${renderIcon('book_open')}
+          <span>เรื่องราวหลังการตัดสินใจ</span>
         </div>
         ${rngBadge}
       </div>
       <p style="font-size:14px;line-height:1.5;color:var(--text-primary);">
         ${escapeHtml(stripEmojis(outcome.outcomeTextTh || ''))}
       </p>
-      ${deltasHtml.length ? `<div class="badges-row" style="margin-top:10px;">${deltasHtml.join('')}</div>` : ''}
+      ${deltasHtml.length ? `
+        <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-top:12px;">ผลลัพธ์ค่าสถานะ</div>
+        <div class="badges-row" style="margin-top:6px;">${deltasHtml.join('')}</div>` : ''}
       <p style="font-size:12px;color:var(--text-secondary);margin-top:10px;">
         กดปุ่มด้านล่างเพื่อไปต่อ
       </p>
@@ -166,15 +168,11 @@ function renderActiveTurnCardHtml(state) {
             ((ch.req_flags && ch.req_flags.length > 0) ||
               (ch.req_stats && Object.keys(ch.req_stats).length > 0));
 
-          const hintsHtml = (ch.hintTokens || [])
-            .map(
-              (tok) => `
-              <span class="choice-hint-token">
-                ${renderIcon(tok.iconKey, 'svg-icon--sm')}
-                <span>${escapeHtml(tok.text)}</span>
-              </span>`
-            )
-            .join('');
+          const previewText = getChoicePreviewText(ch);
+          const previewHtml = `<span class="choice-hint-token choice-preview-token">
+            ${renderIcon('info', 'svg-icon--sm')}
+            <span>${escapeHtml(previewText)}</span>
+          </span>`;
 
           const rngTag = ch.hasRngRoll
             ? `<span class="choice-hint-token">${renderIcon('dice', 'svg-icon--sm')}<span>โอกาสสำเร็จ ${ch.effectiveSuccessChance}%</span></span>`
@@ -196,7 +194,7 @@ function renderActiveTurnCardHtml(state) {
             >
               <div class="choice-label">${escapeHtml(ch.label_th)}</div>
               <div class="choice-hints">
-                ${lockBanner || `${rngTag}${hintsHtml}`}
+                ${lockBanner || `${rngTag}${previewHtml}`}
               </div>
             </button>
           `;

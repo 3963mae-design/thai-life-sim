@@ -64,6 +64,9 @@ for (const [manifestKey, filename] of Object.entries(DATA_MANIFEST)) {
       errors.push(`[${filename}] ${eventId || `events[${eventIndex}]`}: ไม่มี choices ที่ใช้งานได้`);
       continue;
     }
+    if (event.choices.length < 3) {
+      errors.push(`[${filename}] ${eventId}: ต้องมีอย่างน้อย 3 choices (พบ ${event.choices.length})`);
+    }
 
     const choiceIds = new Set();
     for (const [choiceIndex, choice] of event.choices.entries()) {

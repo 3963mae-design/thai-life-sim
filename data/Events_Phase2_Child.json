@@ -142,6 +142,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 2,
+            "happiness": 2,
+            "connections": 1,
+            "appearance": 1
+          }
         }
       ]
     },
@@ -196,6 +211,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "แบ่งเวลาให้ทั้งความก้าวหน้าและการพักผ่อนอย่างสมดุล",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 4,
+            "intelligence": 1,
+            "connections": 1,
+            "appearance": 1
+          }
         }
       ]
     },
@@ -248,6 +278,21 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "แบ่งเวลาให้ทั้งความก้าวหน้าและการพักผ่อนอย่างสมดุล",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 1,
+            "intelligence": 2,
+            "connections": 2,
+            "merit": 2
           }
         }
       ]
@@ -306,6 +351,21 @@
             "merit": 0,
             "appearance": 2
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "แบ่งเวลาให้ทั้งความก้าวหน้าและการพักผ่อนอย่างสมดุล",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 3,
+            "intelligence": 5,
+            "connections": 5,
+            "appearance": 1
+          }
         }
       ]
     },
@@ -359,6 +419,20 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 2,
+            "intelligence": 2,
+            "connections": 4
           }
         }
       ]
@@ -564,6 +638,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำจากผู้ใหญ่แล้วเลือกวิธีที่พอดีกับตัวเอง",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 3,
+            "happiness": 3,
+            "intelligence": 1,
+            "connections": 1
+          }
         }
       ]
     },
@@ -614,6 +703,21 @@
             "cash": 0,
             "merit": 0,
             "appearance": -1
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 4,
+            "happiness": 3,
+            "connections": 1,
+            "merit": 2
           }
         }
       ]
@@ -668,6 +772,21 @@
             "merit": 0,
             "appearance": 1
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "แบ่งเวลาให้ทั้งความก้าวหน้าและการพักผ่อนอย่างสมดุล",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 4,
+            "intelligence": 2,
+            "connections": 4,
+            "appearance": 2
+          }
         }
       ]
     },
@@ -721,6 +840,22 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 1,
+            "happiness": 5,
+            "intelligence": 2,
+            "connections": 2,
+            "cash": 100
           }
         }
       ]
@@ -852,6 +987,22 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 2,
+            "happiness": 3,
+            "intelligence": 1,
+            "connections": 4,
+            "cash": 25
+          }
         }
       ]
     },
@@ -906,6 +1057,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 1,
+            "happiness": 2,
+            "intelligence": 1,
+            "connections": 2
+          }
         }
       ]
     },
@@ -956,6 +1122,22 @@
             "cash": 0,
             "merit": 3,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "แบ่งเวลาให้ทั้งความก้าวหน้าและการพักผ่อนอย่างสมดุล",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 2,
+            "intelligence": 2,
+            "connections": 1,
+            "cash": 50,
+            "merit": 4
           }
         }
       ]
@@ -1010,6 +1192,21 @@
             "merit": 0,
             "appearance": 1
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 2,
+            "happiness": 3,
+            "connections": 6,
+            "appearance": 2
+          }
         }
       ]
     },
@@ -1063,6 +1260,21 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 1,
+            "happiness": 3,
+            "intelligence": 2,
+            "connections": 4
           }
         }
       ]
@@ -1122,6 +1334,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "แบ่งเวลาให้ทั้งความก้าวหน้าและการพักผ่อนอย่างสมดุล",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 4,
+            "intelligence": 4,
+            "connections": 3,
+            "cash": 50
+          }
         }
       ]
     },
@@ -1177,6 +1404,20 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "แบ่งเวลาให้ทั้งความก้าวหน้าและการพักผ่อนอย่างสมดุล",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 3,
+            "intelligence": 4,
+            "connections": 1
           }
         }
       ]
@@ -1234,6 +1475,21 @@
             "merit": 0,
             "appearance": 2
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "แบ่งเวลาให้ทั้งความก้าวหน้าและการพักผ่อนอย่างสมดุล",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 3,
+            "happiness": 4,
+            "connections": 5,
+            "appearance": 1
+          }
         }
       ]
     },
@@ -1284,6 +1540,22 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำจากผู้ใหญ่แล้วเลือกวิธีที่พอดีกับตัวเอง",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": -1,
+            "happiness": 3,
+            "intelligence": 1,
+            "connections": 1,
+            "cash": 75
           }
         }
       ]
@@ -1338,6 +1610,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 1,
+            "happiness": 5,
+            "intelligence": 3,
+            "connections": 5
+          }
         }
       ]
     },
@@ -1391,6 +1678,20 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 3,
+            "connections": 1,
+            "appearance": 1
           }
         }
       ]
@@ -1448,6 +1749,20 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "แบ่งเวลาให้ทั้งความก้าวหน้าและการพักผ่อนอย่างสมดุล",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 4,
+            "intelligence": 4,
+            "connections": 2
+          }
         }
       ]
     },
@@ -1501,6 +1816,20 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 4,
+            "intelligence": 4,
+            "connections": 3
           }
         }
       ]
@@ -1625,6 +1954,22 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 4,
+            "intelligence": 4,
+            "connections": 2,
+            "cash": 750,
+            "merit": 3
+          }
         }
       ]
     },
@@ -1675,6 +2020,20 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 4,
+            "intelligence": 5,
+            "connections": 5
           }
         }
       ]
@@ -1729,6 +2088,21 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 1,
+            "happiness": 4,
+            "intelligence": 3,
+            "connections": 3
           }
         }
       ]
@@ -1786,6 +2160,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำและวางแผนก่อนตัดสินใจรับภาระเพิ่มเติม",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 3,
+            "intelligence": 4,
+            "connections": 3,
+            "cash": 250
+          }
         }
       ]
     },
@@ -1839,6 +2228,22 @@
             "cash": 0,
             "merit": 2,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 3,
+            "intelligence": 3,
+            "connections": 5,
+            "merit": 1,
+            "appearance": 1
           }
         }
       ]
@@ -1967,6 +2372,23 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 2,
+            "happiness": 2,
+            "intelligence": 1,
+            "connections": 2,
+            "cash": 200,
+            "merit": 1
+          }
         }
       ]
     },
@@ -2020,6 +2442,21 @@
             "connections": 5,
             "cash": 0,
             "merit": 0,
+            "appearance": 1
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "แบ่งเวลาให้ทั้งความก้าวหน้าและการพักผ่อนอย่างสมดุล",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 4,
+            "intelligence": 5,
+            "connections": 5,
             "appearance": 1
           }
         }
@@ -2076,6 +2513,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 2,
+            "happiness": 5,
+            "intelligence": 1,
+            "connections": 5
+          }
         }
       ]
     },
@@ -2131,6 +2583,22 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "แบ่งเวลาให้ทั้งความก้าวหน้าและการพักผ่อนอย่างสมดุล",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 2,
+            "happiness": 3,
+            "intelligence": 3,
+            "connections": 3,
+            "appearance": 1
           }
         }
       ]
@@ -2260,6 +2728,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 2,
+            "happiness": 3,
+            "intelligence": 2,
+            "connections": 4
+          }
         }
       ]
     },
@@ -2318,6 +2801,20 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "แบ่งเวลาให้ทั้งความก้าวหน้าและการพักผ่อนอย่างสมดุล",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 4,
+            "intelligence": 5,
+            "connections": 4
+          }
         }
       ]
     },
@@ -2372,6 +2869,21 @@
             "merit": -8,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "แบ่งเวลาให้ทั้งความก้าวหน้าและการพักผ่อนอย่างสมดุล",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 1,
+            "connections": 3,
+            "cash": 150,
+            "merit": 1
+          }
         }
       ]
     },
@@ -2425,6 +2937,23 @@
             "merit": 2,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำจากผู้ใหญ่แล้วเลือกวิธีที่พอดีกับตัวเอง",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 1,
+            "happiness": 3,
+            "intelligence": 2,
+            "connections": 4,
+            "cash": 50,
+            "merit": 1
+          }
         }
       ]
     },
@@ -2477,6 +3006,21 @@
             "cash": 0,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "แบ่งเวลาให้ทั้งความก้าวหน้าและการพักผ่อนอย่างสมดุล",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 5,
+            "intelligence": 7,
+            "connections": 4,
+            "appearance": 1
           }
         }
       ]
@@ -2680,6 +3224,21 @@
             "merit": 0,
             "appearance": 2
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 6,
+            "intelligence": 1,
+            "connections": 5,
+            "appearance": 1
+          }
         }
       ]
     },
@@ -2733,6 +3292,20 @@
             "cash": 0,
             "merit": 0,
             "appearance": -2
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "ขอคำแนะนำจากผู้ใหญ่แล้วเลือกวิธีที่พอดีกับตัวเอง",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 1,
+            "happiness": 3,
+            "appearance": 1
           }
         }
       ]
@@ -2788,6 +3361,21 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 6,
+            "intelligence": 1,
+            "connections": 6,
+            "cash": -75
+          }
         }
       ]
     },
@@ -2842,6 +3430,22 @@
             "merit": 3,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 3,
+            "intelligence": 2,
+            "connections": 3,
+            "cash": 100,
+            "merit": 2
+          }
         }
       ]
     },
@@ -2895,6 +3499,23 @@
             "merit": 0,
             "appearance": 0
           }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "พูดคุยรับฟังกันและหาทางออกร่วมกัน",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "health": 2,
+            "happiness": 3,
+            "intelligence": 3,
+            "connections": 2,
+            "cash": 1000,
+            "merit": 2
+          }
         }
       ]
     },
@@ -2947,6 +3568,22 @@
             "cash": 5000,
             "merit": 0,
             "appearance": 0
+          }
+        },
+        {
+          "choice_id": "c3",
+          "label_th": "แบ่งเวลาให้ทั้งความก้าวหน้าและการพักผ่อนอย่างสมดุล",
+          "hint_th": "เป็นทางเลือกประนีประนอมที่พิจารณาผลดีและข้อจำกัดไปพร้อมกัน",
+          "req_stats": {},
+          "req_flags": [],
+          "grants_flags": [],
+          "removes_flags": [],
+          "stat_effects": {
+            "happiness": 5,
+            "intelligence": 5,
+            "connections": 3,
+            "cash": 2500,
+            "appearance": 1
           }
         }
       ]

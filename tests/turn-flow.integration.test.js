@@ -122,7 +122,7 @@ test('acknowledging the annual summary opens the first queued event', () => {
   assert.equal(state.turn.areTabsLocked, true);
 });
 
-test('event choice can be applied once, then the primary action advances to free action', () => {
+test('event choices advance through the annual queue before free action', () => {
   const state = createEventQueueState();
   acknowledgeAnnualSlipAndStartEvents(state);
 
@@ -150,7 +150,7 @@ test('event choice can be applied once, then the primary action advances to free
 
   const secondChoice = selectCurrentEventChoice('choice_continue_second', state);
   assert.equal(secondChoice.success, true);
-  assert.equal(state.stats.happiness, 63);
+  assert.equal(state.turn.awaitingEventAdvance, true);
 
   const finalActionSpec = getPrimaryActionButtonSpec(state);
   assert.equal(finalActionSpec.actionType, 'UNLOCK_FREE_ACTION');

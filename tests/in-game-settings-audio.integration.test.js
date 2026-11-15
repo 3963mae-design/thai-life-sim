@@ -2,9 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 const storage = new Map();
+let failStorageWrites = false;
 globalThis.localStorage = {
   getItem(key) { return storage.has(key) ? storage.get(key) : null; },
-  setItem(key, value) { storage.set(key, String(value)); },
+  setItem(key, value) {
+    if (failStorageWrites) throw new Error('storage unavailable');
+    storage.set(key, String(value));
+  },
   removeItem(key) { storage.delete(key); }
 };
 
@@ -150,6 +154,30 @@ test('settings gear opens audio controls, saves slider changes, and returns to t
   assert.equal(lobbyReturnCount, 1);
   assert.equal(modalRoot.classes.has('is-open'), false);
   assert.ok(storage.has(SAVE_STORAGE_KEY), 'leaving the game should save the current life');
+});
+
+test('failed save keeps the settings modal open and does not navigate away', () => {
+  const state = createEmptyGameState();
+  const gearButton = new FakeElement();
+  const root = {
+    querySelector(selector) {
+      return selector === '#btn-open-settings-modal' ? gearButton : null;
+    },
+    querySelectorAll() { return []; }
+  };
+  let lobbyReturnCount = 0;
+
+  bindHeaderFooterEvents(root, state, {
+    onReturnToLobby() { lobbyReturnCount += 1; }
+  });
+  gearButton.click();
+  failStorageWrites = true;
+  nodes['btn-game-return-lobby'].click();
+  failStorageWrites = false;
+
+  assert.equal(lobbyReturnCount, 0);
+  assert.ok(modalRoot.classes.has('is-open'));
+  assert.match(modalRoot.innerHTML, /บันทึกและออกไปหน้าล็อบบี้/);
 });
 
 test('audio volumes are clamped, saved, and applied independently', () => {

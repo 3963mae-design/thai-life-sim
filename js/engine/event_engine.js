@@ -1298,6 +1298,38 @@ export function getAnnualEventPoolWeights(state){
  });
 }
 
+function createAnnualMinimumFallbackCard(age, existingIds = new Set()) {
+  let eventId = `evt_annual_minimum_${age}`;
+  let suffix = 1;
+  while (existingIds.has(eventId)) eventId = `evt_annual_minimum_${age}_${suffix++}`;
+
+  return normalizeEventCard(
+    {
+      event_id: eventId,
+      title_th: 'เรื่องเล็ก ๆ ที่ทำให้ปีนี้ไม่ธรรมดา',
+      description_th: 'ระหว่างปีมีเรื่องราวเล็กน้อยเกิดขึ้น เปิดโอกาสให้คุณเลือกวิธีรับมือและกำหนดจังหวะชีวิตของตัวเอง',
+      source_type: 'annual_fallback',
+      category: 'shared',
+      choices: [
+        {
+          choice_id: 'c1',
+          label_th: 'ใช้โอกาสนี้ลองทำสิ่งใหม่อย่างค่อยเป็นค่อยไป',
+          stat_effects: { happiness: 1, intelligence: 1 },
+          req_stats: {}, req_flags: [], grants_flags: [], removes_flags: []
+        },
+        {
+          choice_id: 'c2',
+          label_th: 'รักษาสิ่งที่ทำได้ดีอยู่แล้วและดูแลตัวเองให้พร้อม',
+          stat_effects: { health: 1, happiness: 1 },
+          req_stats: {}, req_flags: [], grants_flags: [], removes_flags: []
+        }
+      ]
+    },
+    'annual_fallback',
+    'calendar'
+  );
+}
+
 export function buildAnnualEventQueue(state) {
   if (!state || !state.turn) return [];
 
@@ -1395,6 +1427,7 @@ export function buildAnnualEventQueue(state) {
 
     const fallbackEvt = pickRandom(emergencyPool);
     if (fallbackEvt) {
+      selectedIds.add(fallbackEvt.event_id);
       rawQueue.push(
         normalizeEventCard(
           { ...fallbackEvt, source_type: 'pool_event', pool_bucket: 'fallback' },
@@ -1456,33 +1489,7 @@ export function buildAnnualEventQueue(state) {
 
     // รับประกันขั้นต่ำแม้ผู้เล่นใช้ Event Pool จนหมด โดยไม่เล่น Event เก่าซ้ำ
     if (rawQueue.length < 2) {
-      rawQueue.push(
-        normalizeEventCard(
-          {
-            event_id: `evt_annual_minimum_${age}`,
-            title_th: 'เรื่องเล็ก ๆ ที่ทำให้ปีนี้ไม่ธรรมดา',
-            description_th: 'ระหว่างปีมีเรื่องราวเล็กน้อยเกิดขึ้น เปิดโอกาสให้คุณเลือกวิธีรับมือและกำหนดจังหวะชีวิตของตัวเอง',
-            source_type: 'annual_fallback',
-            category: 'shared',
-            choices: [
-              {
-                choice_id: 'c1',
-                label_th: 'ใช้โอกาสนี้ลองทำสิ่งใหม่อย่างค่อยเป็นค่อยไป',
-                stat_effects: { happiness: 1, intelligence: 1 },
-                req_stats: {}, req_flags: [], grants_flags: [], removes_flags: []
-              },
-              {
-                choice_id: 'c2',
-                label_th: 'รักษาสิ่งที่ทำได้ดีอยู่แล้วและดูแลตัวเองให้พร้อม',
-                stat_effects: { health: 1, happiness: 1 },
-                req_stats: {}, req_flags: [], grants_flags: [], removes_flags: []
-              }
-            ]
-          },
-          'annual_fallback',
-          'calendar'
-        )
-      );
+      rawQueue.push(createAnnualMinimumFallbackCard(age, selectedIds));
     }
   }
 
@@ -1541,6 +1548,12 @@ export function getCurrentPendingEvent(state) {
   if (!state?.turn || !Array.isArray(state.turn.pendingEvents)) return null;
 
   const queue = state.turn.pendingEvents;
+
+  // Save รุ่นเก่าอาจมีคิวของปีปัจจุบันเพียงใบเดียว เติมใบสำรองต่อท้ายโดยไม่แตะ Event เดิม
+  if (state.turn.phase === 'EVENT_QUEUE' && Number(state.profile?.age || 0) > 0 && queue.length < 2) {
+    const existingIds = new Set(queue.map((event) => event.event_id));
+    queue.push(createAnnualMinimumFallbackCard(Number(state.profile.age), existingIds));
+  }
 
   while (state.turn.currentEventIndex < queue.length) {
     const candidate = queue[state.turn.currentEventIndex];

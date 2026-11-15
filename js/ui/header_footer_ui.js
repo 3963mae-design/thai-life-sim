@@ -140,7 +140,11 @@ function openGameSettingsModal(state, onReturnToLobby) {
   });
 
   document.getElementById('btn-game-return-lobby')?.addEventListener('click', () => {
-    saveGame(state);
+    const saved = saveGame(state);
+    if (!saved) {
+      showToast('บันทึกชีวิตไม่สำเร็จ จึงยังไม่ออกจากเกม', 'error');
+      return;
+    }
     closeModal();
     if (typeof onReturnToLobby === 'function') onReturnToLobby();
   });

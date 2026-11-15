@@ -16,7 +16,7 @@ import { formatCurrency } from '../core/utils.js';
 import { stripEmojis } from '../engine/event_engine.js';
 import { startNewLifeRun } from '../main.js';
 import { DEFAULT_LIFE_PATH_ID, getAvailableLifePaths } from '../engine/life_path_engine.js';
-import { getAudioPrefs, toggleBgm, toggleSfx } from './audio.js';
+import { getAudioPrefs, setBgmVolume, setSfxVolume, toggleBgm, toggleSfx } from './audio.js';
 import { escapeHtml, renderIcon } from './icons.js';
 import { openModal, showToast } from './modals_ending_ui.js';
 
@@ -111,13 +111,27 @@ function openSettingsModal(onDataCleared, onAudioUpdated) {
     </div>
 
     <div class="grid-2">
-      <button id="btn-set-bgm" class="btn btn--soft btn--sm" type="button">
+      <button id="btn-set-bgm" class="btn btn--soft btn--sm" type="button" aria-pressed="${audioPrefs.bgmEnabled}">
         ${renderIcon(audioPrefs.bgmEnabled ? 'music' : 'music_off', 'svg-icon--sm')}
         <span>${audioPrefs.bgmEnabled ? 'เพลง: เปิด' : 'เพลง: ปิด'}</span>
       </button>
-      <button id="btn-set-sfx" class="btn btn--soft btn--sm" type="button">
+      <button id="btn-set-sfx" class="btn btn--soft btn--sm" type="button" aria-pressed="${audioPrefs.sfxEnabled}">
+        ${renderIcon('volume', 'svg-icon--sm')}
         <span>${audioPrefs.sfxEnabled ? 'เสียงปุ่ม: เปิด' : 'เสียงปุ่ม: ปิด'}</span>
       </button>
+    </div>
+
+    <div class="audio-settings-list">
+      <label class="audio-setting">
+        <span class="audio-setting__label">ระดับเสียงเพลง</span>
+        <output id="lobby-bgm-volume-value" class="audio-setting__value">${Math.round(audioPrefs.bgmVolume * 100)}%</output>
+        <input id="lobby-bgm-volume" class="audio-setting__range" type="range" min="0" max="100" step="5" value="${Math.round(audioPrefs.bgmVolume * 100)}" aria-label="ระดับเสียงเพลง">
+      </label>
+      <label class="audio-setting">
+        <span class="audio-setting__label">ระดับเสียงปุ่มกด</span>
+        <output id="lobby-sfx-volume-value" class="audio-setting__value">${Math.round(audioPrefs.sfxVolume * 100)}%</output>
+        <input id="lobby-sfx-volume" class="audio-setting__range" type="range" min="0" max="100" step="5" value="${Math.round(audioPrefs.sfxVolume * 100)}" aria-label="ระดับเสียงปุ่มกด">
+      </label>
     </div>
 
     <div class="card" style="font-size:13px;color:var(--text-secondary);line-height:1.5;">
@@ -133,13 +147,28 @@ function openSettingsModal(onDataCleared, onAudioUpdated) {
 
   document.getElementById('btn-set-bgm')?.addEventListener('click', (e) => {
     const enabled = toggleBgm();
+    e.currentTarget.setAttribute('aria-pressed', String(enabled));
     e.currentTarget.innerHTML = `${renderIcon(enabled ? 'music' : 'music_off', 'svg-icon--sm')}<span>${enabled ? 'เพลง: เปิด' : 'เพลง: ปิด'}</span>`;
     if (typeof onAudioUpdated === 'function') onAudioUpdated();
   });
 
   document.getElementById('btn-set-sfx')?.addEventListener('click', (e) => {
     const enabled = toggleSfx();
-    e.currentTarget.innerHTML = `<span>${enabled ? 'เสียงปุ่ม: เปิด' : 'เสียงปุ่ม: ปิด'}</span>`;
+    e.currentTarget.setAttribute('aria-pressed', String(enabled));
+    e.currentTarget.innerHTML = `${renderIcon('volume', 'svg-icon--sm')}<span>${enabled ? 'เสียงปุ่ม: เปิด' : 'เสียงปุ่ม: ปิด'}</span>`;
+  });
+
+  document.getElementById('lobby-bgm-volume')?.addEventListener('input', (e) => {
+    const value = Math.round(setBgmVolume(Number(e.currentTarget.value) / 100) * 100);
+    const output = document.getElementById('lobby-bgm-volume-value');
+    if (output) output.textContent = `${value}%`;
+    if (typeof onAudioUpdated === 'function') onAudioUpdated();
+  });
+
+  document.getElementById('lobby-sfx-volume')?.addEventListener('input', (e) => {
+    const value = Math.round(setSfxVolume(Number(e.currentTarget.value) / 100) * 100);
+    const output = document.getElementById('lobby-sfx-volume-value');
+    if (output) output.textContent = `${value}%`;
   });
 
   document.getElementById('btn-clear-current-save')?.addEventListener('click', () => {

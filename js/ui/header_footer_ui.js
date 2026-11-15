@@ -86,7 +86,7 @@ function openGameSettingsModal(state, onReturnToLobby) {
         <span>${audioPrefs.bgmEnabled ? 'เพลง: เปิด' : 'เพลง: ปิด'}</span>
       </button>
       <button id="btn-game-toggle-sfx" class="btn btn--soft btn--sm" type="button" aria-pressed="${audioPrefs.sfxEnabled}">
-        ${renderIcon('volume_2', 'svg-icon--sm')}
+        ${renderIcon('volume', 'svg-icon--sm')}
         <span>${audioPrefs.sfxEnabled ? 'เสียงปุ่ม: เปิด' : 'เสียงปุ่ม: ปิด'}</span>
       </button>
     </div>
@@ -124,7 +124,7 @@ function openGameSettingsModal(state, onReturnToLobby) {
   document.getElementById('btn-game-toggle-sfx')?.addEventListener('click', (e) => {
     const enabled = toggleSfx();
     e.currentTarget.setAttribute('aria-pressed', String(enabled));
-    e.currentTarget.innerHTML = `${renderIcon('volume_2', 'svg-icon--sm')}<span>${enabled ? 'เสียงปุ่ม: เปิด' : 'เสียงปุ่ม: ปิด'}</span>`;
+    e.currentTarget.innerHTML = `${renderIcon('volume', 'svg-icon--sm')}<span>${enabled ? 'เสียงปุ่ม: เปิด' : 'เสียงปุ่ม: ปิด'}</span>`;
   });
 
   document.getElementById('game-bgm-volume')?.addEventListener('input', (e) => {

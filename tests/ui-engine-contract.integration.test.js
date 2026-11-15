@@ -199,6 +199,8 @@ test('event card renders the current event and binds a choice click to the game 
   assert.match(view.html, /เหตุการณ์จากหน้าจอ/);
   assert.match(view.html, /data-choice-id="choice_ui_yes"/);
   assert.match(view.html, /เลือกช่วยเหลือ/);
+  assert.match(view.html, /ช่วยเพิ่มความสบายใจและความสุข/);
+  assert.doesNotMatch(view.html, /\\+8|ความสุข\\s*8/);
 
   const choiceButton = new FakeElement({ 'data-choice-id': 'choice_ui_yes' });
   view.bind(new FakeContainer([choiceButton]));
@@ -210,8 +212,10 @@ test('event card renders the current event and binds a choice click to the game 
   assert.deepEqual(refreshCalls, ['refresh']);
 
   const resultView = renderTab1LifeFeed(state, { onRefresh() {} });
-  assert.match(resultView.html, /ผลลัพธ์การตัดสินใจ/);
+  assert.match(resultView.html, /เรื่องราวหลังการตัดสินใจ/);
   assert.ok(resultView.html.includes(state.turn.lastChoiceOutcome.outcomeTextTh));
+  assert.match(state.turn.lastChoiceOutcome.outcomeTextTh, /หลังจากคุณเลือก/);
+  assert.match(state.turn.lastChoiceOutcome.outcomeTextTh, /ทางเลือกนี้ส่งผลในด้านที่เป็นประโยชน์/);
 });
 
 test('sticky primary action advances from the displayed event outcome into free action', () => {
@@ -261,7 +265,7 @@ test('save and reload preserve the event outcome required to render the same res
   assert.equal(restoredState.turn.lastChoiceOutcome.outcomeTextTh, result.outcomeTextTh);
 
   const restoredView = renderTab1LifeFeed(restoredState, { onRefresh() {} });
-  assert.match(restoredView.html, /ผลลัพธ์การตัดสินใจ/);
+  assert.match(restoredView.html, /เรื่องราวหลังการตัดสินใจ/);
   assert.ok(restoredView.html.includes(result.outcomeTextTh));
 
   const restoredDock = renderBottomDockHtml(restoredState, 'tab1');

@@ -24,7 +24,7 @@ function loadPrefs() {
   try {
     const raw = localStorage.getItem(AUDIO_STORAGE_KEY);
     if (!raw) return { bgmEnabled: true, sfxEnabled: true, bgmVolume: 0.35, sfxVolume: 0.8 };
-    return { bgmEnabled: true, sfxEnabled: true, bgmVolume: 0.35, ...JSON.parse(raw) };
+    return { bgmEnabled: true, sfxEnabled: true, bgmVolume: 0.35, sfxVolume: 0.8, ...JSON.parse(raw) };
   } catch {
     return { bgmEnabled: true, sfxEnabled: true, bgmVolume: 0.35, sfxVolume: 0.8 };
   }

@@ -1470,10 +1470,12 @@ export function buildAnnualEventQueue(state) {
   // เติมจาก Event Pool ที่ยังไม่เคยเกิดก่อน หากหมดจริงจึงใช้การ์ดเหตุการณ์สำรอง
   if (age > 0 && rawQueue.length < 2) {
     const flexYears = Number(db.raw.loansCrisesEndings?.event_pool_mixing_rules?.age_window_flexibility_years ?? 2);
-    const supplementalPool = Array.from(db.indexes.events.values()).filter((event) =>
-      !selectedIds.has(event.event_id) &&
-      isEventEligible(event, state, { ageWindowTolerance: flexYears })
-    );
+    const supplementalPool = age <= 4
+      ? getEligibleEventsFromBucket('life_phase', state, selectedIds)
+      : Array.from(db.indexes.events.values()).filter((event) =>
+          !selectedIds.has(event.event_id) &&
+          isEventEligible(event, state, { ageWindowTolerance: flexYears })
+        );
     const supplementalEvent = pickRandom(supplementalPool);
 
     if (supplementalEvent) {
@@ -1540,6 +1542,22 @@ function buildChoiceLockReasonTh(choice, state) {
 }
 
 /**
+ * ซ่อมคิว Event ของ Save รุ่นเก่าที่มี Event เหลือในปีปัจจุบันไม่ถึงสองใบ
+ * เรียกตอน Boot/Restore เท่านั้น ไม่ผูกกับการดึงการ์ด เพื่อไม่เปลี่ยนคิวของ test fixture หรือการเล่นปกติ
+ */
+export function ensureAnnualEventMinimum(state) {
+  if (!state?.turn || state.turn.phase !== 'EVENT_QUEUE') return false;
+  const age = Number(state.profile?.age || 0);
+  const queue = Array.isArray(state.turn.pendingEvents) ? state.turn.pendingEvents : [];
+  if (age <= 0 || queue.length >= 2) return false;
+
+  const existingIds = new Set(queue.map((event) => event.event_id));
+  queue.push(createAnnualMinimumFallbackCard(age, existingIds));
+  state.turn.pendingEvents = queue;
+  return true;
+}
+
+/**
  * ดึงอีเวนต์ใบปัจจุบันที่รอผู้เล่นตัดสินใจ พร้อม revalidate เงื่อนไขซ้ำและประเมินสถานะล็อกของแต่ละช้อยส์
  * @param {object} state
  * @returns {object|null} อีเวนต์ปัจจุบันพร้อมข้อมูล choices ที่คำนวณ isLocked แล้ว หรือ null ถ้าหมดคิว
@@ -1548,12 +1566,6 @@ export function getCurrentPendingEvent(state) {
   if (!state?.turn || !Array.isArray(state.turn.pendingEvents)) return null;
 
   const queue = state.turn.pendingEvents;
-
-  // Save รุ่นเก่าอาจมีคิวของปีปัจจุบันเพียงใบเดียว เติมใบสำรองต่อท้ายโดยไม่แตะ Event เดิม
-  if (state.turn.phase === 'EVENT_QUEUE' && Number(state.profile?.age || 0) > 0 && queue.length < 2) {
-    const existingIds = new Set(queue.map((event) => event.event_id));
-    queue.push(createAnnualMinimumFallbackCard(Number(state.profile.age), existingIds));
-  }
 
   while (state.turn.currentEventIndex < queue.length) {
     const candidate = queue[state.turn.currentEventIndex];

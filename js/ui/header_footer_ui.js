@@ -8,9 +8,9 @@ import { saveGame } from '../core/state.js';
 import { formatCurrency, formatShortCurrency, getPlayerFlagSet } from '../core/utils.js';
 import { stripEmojis } from '../engine/event_engine.js';
 import { getPrimaryActionButtonSpec, triggerPrimaryActionButton } from '../engine/turn_manager.js';
-import { getAudioPrefs, toggleBgm, toggleSfx } from './audio.js';
+import { getAudioPrefs, setBgmVolume, setSfxVolume, toggleBgm, toggleSfx } from './audio.js';
 import { escapeHtml, renderIcon } from './icons.js';
-import { openModal, showToast } from './modals_ending_ui.js';
+import { closeModal, openModal, showToast } from './modals_ending_ui.js';
 
 export const BOTTOM_TABS = [
   { id: 'tab1', label: 'บันทึกชีวิต', iconKey: 'book' },
@@ -20,11 +20,10 @@ export const BOTTOM_TABS = [
   { id: 'tab5', label: 'ใช้ชีวิต', iconKey: 'cart' }
 ];
 
-function openProfileStatusModal(state, onReturnToLobby) {
+function openProfileStatusModal(state) {
   const cls = db.getClass(state.profile.currentClassId);
   const loc = db.getLocation(state.profile.currentLocationId);
   const activeFlags = Array.from(getPlayerFlagSet(state));
-  const audioPrefs = getAudioPrefs();
 
   const badgesHtml = activeFlags
     .map((fid) => {
@@ -58,43 +57,91 @@ function openProfileStatusModal(state, onReturnToLobby) {
       <div class="slip-row"><span>หน้าตา/บุคลิก</span><strong>${state.stats.appearance}/100</strong></div>
     </div>
 
-    <div class="grid-2">
-      <button id="btn-modal-toggle-bgm" class="btn btn--soft btn--sm" type="button">
-        ${renderIcon(audioPrefs.bgmEnabled ? 'music' : 'music_off', 'svg-icon--sm')}
-        <span>${audioPrefs.bgmEnabled ? 'เพลง: เปิด' : 'เพลง: ปิด'}</span>
-      </button>
-      <button id="btn-modal-toggle-sfx" class="btn btn--soft btn--sm" type="button">
-        <span>${audioPrefs.sfxEnabled ? 'เสียงปุ่ม: เปิด' : 'เสียงปุ่ม: ปิด'}</span>
-      </button>
-    </div>
-
     <div>
       <div style="font-size:13px;font-weight:700;margin-bottom:6px;">ป้ายสถานะทั้งหมด (${activeFlags.length})</div>
       <div class="badges-row" style="max-height:160px;overflow-y:auto;">
         ${badgesHtml || '<span style="font-size:12.5px;color:var(--text-muted);">ยังไม่มีป้ายสถานะ</span>'}
       </div>
     </div>
+  `);
+}
 
-    <button id="btn-modal-go-lobby" class="btn btn--outline btn--block">
+function openGameSettingsModal(state, onReturnToLobby) {
+  const audioPrefs = getAudioPrefs();
+  const bgmPercent = Math.round(audioPrefs.bgmVolume * 100);
+  const sfxPercent = Math.round(audioPrefs.sfxVolume * 100);
+
+  openModal(`
+    <div class="modal-header">
+      <div class="modal-title">
+        ${renderIcon('settings')}
+        <span>การตั้งค่าเกม</span>
+      </div>
+      <button class="icon-btn" data-close-modal aria-label="ปิด">${renderIcon('x', 'svg-icon--sm')}</button>
+    </div>
+
+    <div class="grid-2">
+      <button id="btn-game-toggle-bgm" class="btn btn--soft btn--sm" type="button" aria-pressed="${audioPrefs.bgmEnabled}">
+        ${renderIcon(audioPrefs.bgmEnabled ? 'music' : 'music_off', 'svg-icon--sm')}
+        <span>${audioPrefs.bgmEnabled ? 'เพลง: เปิด' : 'เพลง: ปิด'}</span>
+      </button>
+      <button id="btn-game-toggle-sfx" class="btn btn--soft btn--sm" type="button" aria-pressed="${audioPrefs.sfxEnabled}">
+        ${renderIcon('volume_2', 'svg-icon--sm')}
+        <span>${audioPrefs.sfxEnabled ? 'เสียงปุ่ม: เปิด' : 'เสียงปุ่ม: ปิด'}</span>
+      </button>
+    </div>
+
+    <div class="audio-settings-list">
+      <label class="audio-setting">
+        <span class="audio-setting__label">ระดับเสียงเพลง</span>
+        <output id="game-bgm-volume-value" class="audio-setting__value">${bgmPercent}%</output>
+        <input id="game-bgm-volume" class="audio-setting__range" type="range" min="0" max="100" step="5" value="${bgmPercent}" aria-label="ระดับเสียงเพลง">
+      </label>
+      <label class="audio-setting">
+        <span class="audio-setting__label">ระดับเสียงปุ่มกด</span>
+        <output id="game-sfx-volume-value" class="audio-setting__value">${sfxPercent}%</output>
+        <input id="game-sfx-volume" class="audio-setting__range" type="range" min="0" max="100" step="5" value="${sfxPercent}" aria-label="ระดับเสียงปุ่มกด">
+      </label>
+    </div>
+
+    <div class="card" style="font-size:12.5px;color:var(--text-secondary);line-height:1.5;">
+      ปรับระดับเสียงแยกกันได้ การตั้งค่าจะถูกบันทึกไว้ในอุปกรณ์นี้
+    </div>
+
+    <button id="btn-game-return-lobby" class="btn btn--outline btn--block" type="button">
       ${renderIcon('home', 'svg-icon--sm')}
-      <span>บันทึกและกลับหน้าหลัก (Lobby)</span>
+      <span>บันทึกและออกไปหน้าล็อบบี้</span>
     </button>
   `);
 
-  document.getElementById('btn-modal-toggle-bgm')?.addEventListener('click', (e) => {
+  document.getElementById('btn-game-toggle-bgm')?.addEventListener('click', (e) => {
     const enabled = toggleBgm();
+    e.currentTarget.setAttribute('aria-pressed', String(enabled));
     e.currentTarget.innerHTML = `${renderIcon(enabled ? 'music' : 'music_off', 'svg-icon--sm')}<span>${enabled ? 'เพลง: เปิด' : 'เพลง: ปิด'}</span>`;
     showToast(enabled ? 'เปิดเพลงพื้นหลังแล้ว' : 'ปิดเพลงพื้นหลังแล้ว', 'info');
   });
 
-  document.getElementById('btn-modal-toggle-sfx')?.addEventListener('click', (e) => {
+  document.getElementById('btn-game-toggle-sfx')?.addEventListener('click', (e) => {
     const enabled = toggleSfx();
-    e.currentTarget.innerHTML = `<span>${enabled ? 'เสียงปุ่ม: เปิด' : 'เสียงปุ่ม: ปิด'}</span>`;
+    e.currentTarget.setAttribute('aria-pressed', String(enabled));
+    e.currentTarget.innerHTML = `${renderIcon('volume_2', 'svg-icon--sm')}<span>${enabled ? 'เสียงปุ่ม: เปิด' : 'เสียงปุ่ม: ปิด'}</span>`;
   });
 
-  document.getElementById('btn-modal-go-lobby')?.addEventListener('click', () => {
+  document.getElementById('game-bgm-volume')?.addEventListener('input', (e) => {
+    const percent = Math.round(setBgmVolume(Number(e.currentTarget.value) / 100) * 100);
+    const output = document.getElementById('game-bgm-volume-value');
+    if (output) output.textContent = `${percent}%`;
+  });
+
+  document.getElementById('game-sfx-volume')?.addEventListener('input', (e) => {
+    const percent = Math.round(setSfxVolume(Number(e.currentTarget.value) / 100) * 100);
+    const output = document.getElementById('game-sfx-volume-value');
+    if (output) output.textContent = `${percent}%`;
+  });
+
+  document.getElementById('btn-game-return-lobby')?.addEventListener('click', () => {
     saveGame(state);
-    document.getElementById('modal-root')?.classList.remove('is-open');
+    closeModal();
     if (typeof onReturnToLobby === 'function') onReturnToLobby();
   });
 }
@@ -113,7 +160,7 @@ export function renderTopHeaderHtml(state) {
     <header class="top-header">
       <div class="header-row">
         <div class="profile-block">
-          <button id="btn-open-profile-modal" class="avatar-circle" type="button" title="ดูข้อมูลตัวละครและกลับหน้าหลัก">
+          <button id="btn-open-profile-modal" class="avatar-circle" type="button" title="ดูข้อมูลตัวละคร" aria-label="ดูข้อมูลตัวละคร">
             ${renderIcon('user')}
           </button>
           <div class="profile-meta">
@@ -128,15 +175,20 @@ export function renderTopHeaderHtml(state) {
           </div>
         </div>
 
-        <div class="currency-stack">
-          <div class="pill-badge">
-            ${renderIcon(primaryMoneyIcon, 'svg-icon--sm')}
-            <span>${primaryMoneyLabel}: ${escapeHtml(formatShortCurrency(primaryMoneyVal))}</span>
+        <div class="header-actions">
+          <div class="currency-stack">
+            <div class="pill-badge">
+              ${renderIcon(primaryMoneyIcon, 'svg-icon--sm')}
+              <span>${primaryMoneyLabel}: ${escapeHtml(formatShortCurrency(primaryMoneyVal))}</span>
+            </div>
+            <div class="pill-badge">
+              ${renderIcon('sparkle', 'svg-icon--sm')}
+              <span>แต้มบุญ: ${Number(state.stats.merit || 0).toLocaleString('th-TH')}</span>
+            </div>
           </div>
-          <div class="pill-badge">
-            ${renderIcon('sparkle', 'svg-icon--sm')}
-            <span>แต้มบุญ: ${Number(state.stats.merit || 0).toLocaleString('th-TH')}</span>
-          </div>
+          <button id="btn-open-settings-modal" class="icon-btn header-settings-btn" type="button" title="การตั้งค่าเกม" aria-label="เปิดการตั้งค่าเกม">
+            ${renderIcon('settings', 'svg-icon--sm')}
+          </button>
         </div>
       </div>
     </header>
@@ -189,7 +241,11 @@ export function renderBottomDockHtml(state, activeTab) {
 
 export function bindHeaderFooterEvents(rootEl, state, { onTabChange, onAfterPrimaryAction, onReturnToLobby }) {
   rootEl.querySelector('#btn-open-profile-modal')?.addEventListener('click', () => {
-    openProfileStatusModal(state, onReturnToLobby);
+    openProfileStatusModal(state);
+  });
+
+  rootEl.querySelector('#btn-open-settings-modal')?.addEventListener('click', () => {
+    openGameSettingsModal(state, onReturnToLobby);
   });
 
   rootEl.querySelector('#btn-primary-turn-action')?.addEventListener('click', () => {
